@@ -11,8 +11,8 @@ public class Room {
     MulticastSocket multicastSocket;
     InetAddress multicastAddress;
 
-    public Room(String name) {
-        this.multicastPort = choosePort(name);
+    public Room(String name, int portsInUse[]) {
+        this.multicastPort = choosePort(name, portsInUse);
         try {
             this.multicastSocket = new MulticastSocket(this.multicastPort);
             this.multicastAddress = InetAddress.getByName("224.5.4.4");
@@ -24,7 +24,7 @@ public class Room {
         runner.run();
     }
 
-    public int choosePort(String name) {
+    public int choosePort(String name, int portsInUse[]) {
         return 54321;
     }
 
