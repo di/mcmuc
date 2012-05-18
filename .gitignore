@@ -1,3 +1,9 @@
+# Ant Build Files #
+dist/
+build/
+
+# Eclipse Build Files #
+bin/
 *.class
 
 # Package Files #
