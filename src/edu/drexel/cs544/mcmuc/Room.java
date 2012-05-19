@@ -4,6 +4,10 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
+import java.nio.ByteBuffer;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 
 public class Room {
 
@@ -25,7 +29,31 @@ public class Room {
     }
 
     public int choosePort(String name, int portsInUse[]) {
-        return 54321;
+    	int f = -1;
+    	
+    	try {
+			MessageDigest md5 = MessageDigest.getInstance("MD5");
+			MessageDigest sha1 = MessageDigest.getInstance("SHA-1");
+			
+			byte[] md5_digest = md5.digest(name.getBytes());
+			byte[] sha1_digest = sha1.digest(name.getBytes());
+			
+			int g = ByteBuffer.wrap(md5_digest,0,4).getInt();
+			int h = ByteBuffer.wrap(sha1_digest,0,4).getInt();
+			
+			int i = 1;
+			do
+			{
+				f = ((g + i * h) % 16382) + 49152;
+				i++;
+			}
+			while(Arrays.asList(portsInUse).contains(f));
+
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+    	
+        return f;
     }
 
     public void send(String message) {
