@@ -3,7 +3,7 @@ package edu.drexel.cs544.mcmuc;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class Message implements Action {
+public class Message extends Action implements JSON {
 
 	private String from;
 	private String body;
@@ -54,10 +54,8 @@ public class Message implements Action {
 	
 	public Message(JSONObject json)
 	{
-			try {
-				if(!json.getString("action").equalsIgnoreCase("message"))
-					throw new JSONException("Incorrect action");
-				
+		super(json,"message");
+			try {		
 				String from = json.getString("from");
 				String body = json.getString("body");
 				
@@ -107,6 +105,7 @@ public class Message implements Action {
 		
 		try {
 			json.put("action", "message");
+			json.put("uid", uid);
 			json.put("from", from);
 			json.put("body", body);
 			if(hasTo)

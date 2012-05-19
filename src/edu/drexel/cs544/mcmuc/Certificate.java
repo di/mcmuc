@@ -3,7 +3,7 @@ package edu.drexel.cs544.mcmuc;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class Certificate implements Action {
+public class Certificate implements JSON {
 	private String format;
 	private String certificate;
 	
