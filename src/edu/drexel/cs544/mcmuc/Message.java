@@ -113,7 +113,7 @@ public class Message implements Action {
 			if(hasTo)
 				json.put("to", to);
 			if(hasKey)
-				json.put("key", key);
+				json.put("key", key.toJSON());
 		} catch (JSONException e) {
 
 		}
