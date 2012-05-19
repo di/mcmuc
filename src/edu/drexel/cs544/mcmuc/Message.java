@@ -55,24 +55,22 @@ public class Message implements Action {
 	public Message(JSONObject json)
 	{
 			try {
-				from = json.getString("from");
-				body = json.getString("body");
+				if(!json.getString("action").equalsIgnoreCase("message"))
+					throw new JSONException("Incorrect action");
+				
+				String from = json.getString("from");
+				String body = json.getString("body");
+				
+				String to = null;
+				Certificate key = null;
 				
 				if(json.has("to"))
-				{
 					to = json.getString("to");
-					hasTo = true;
-				}
-				else
-					hasTo = false;
 				
 				if(json.has("key"))
-				{
 					key = new Certificate(json.getJSONObject("key"));
-					hasKey = true;
-				}
-				else
-					hasKey = false;
+				
+				init(from,body,to,key);
 				
 			} catch (JSONException e) {
 				e.printStackTrace();
@@ -108,6 +106,7 @@ public class Message implements Action {
 		JSONObject json = new JSONObject();
 		
 		try {
+			json.put("action", "message");
 			json.put("from", from);
 			json.put("body", body);
 			if(hasTo)
