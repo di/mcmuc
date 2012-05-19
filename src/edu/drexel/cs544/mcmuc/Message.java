@@ -55,24 +55,24 @@ public class Message extends Action implements JSON {
 	public Message(JSONObject json)
 	{
 		super(json,"message");
-			try {		
-				String from = json.getString("from");
-				String body = json.getString("body");
-				
-				String to = null;
-				Certificate key = null;
-				
-				if(json.has("to"))
-					to = json.getString("to");
-				
-				if(json.has("key"))
-					key = new Certificate(json.getJSONObject("key"));
-				
-				init(from,body,to,key);
-				
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
+		try {		
+			String from = json.getString("from");
+			String body = json.getString("body");
+			
+			String to = null;
+			Certificate key = null;
+			
+			if(json.has("to"))
+				to = json.getString("to");
+			
+			if(json.has("key"))
+				key = new Certificate(json.getJSONObject("key"));
+			
+			init(from,body,to,key);
+			
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public String getFrom() {
