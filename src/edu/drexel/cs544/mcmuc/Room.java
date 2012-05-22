@@ -93,7 +93,7 @@ public class Room {
 		}
 		if (jo != null) {
 			m = new Message(jo);
-	        System.out.println("Got:\n" + m.getFrom() + ": " + m.getBody());
+	        System.out.println("Got:\n" + m.getFrom() + ": " + m.getBody() + " (" + m.getUID() + ")");
 		}
     }
 }

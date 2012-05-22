@@ -43,4 +43,8 @@ abstract class Action {
 			e.printStackTrace();
 		}
 	}
+	
+	public String getUID(){
+		return uid;
+	}
 }
