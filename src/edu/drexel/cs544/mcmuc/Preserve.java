@@ -10,7 +10,7 @@ import org.json.JSONObject;
 
 public class Preserve extends Action implements JSON {
 
-	public List<Integer> rooms = new ArrayList<Integer>();
+	private List<Integer> rooms = new ArrayList<Integer>();
 	
 	public Preserve(List<Integer> rooms){
 		this.rooms = rooms;

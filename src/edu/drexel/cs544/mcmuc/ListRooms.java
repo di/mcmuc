@@ -10,7 +10,7 @@ import org.json.JSONObject;
 
 public class ListRooms extends Action implements JSON {
 
-	public List<Integer> rooms;
+	private List<Integer> rooms;
 
 	public ListRooms(List<Integer> rooms){
 		this.rooms = rooms;
