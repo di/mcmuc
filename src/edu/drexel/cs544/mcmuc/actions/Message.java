@@ -7,11 +7,11 @@ import edu.drexel.cs544.mcmuc.Certificate;
 import edu.drexel.cs544.mcmuc.JSON;
 
 /**
- * A chat room message action must carry a �from� field, which is a nickname that identifies 
- * the sender, and a �body� field that carries the user�s input. Messages can also optionally
- *  contain a �to� value, for which clients can choose to hide from the user messages not 
+ * A chat room message action must carry a "from" field, which is a nickname that identifies 
+ * the sender, and a "body" field that carries the user's input. Messages can also optionally
+ *  contain a "to" value, for which clients can choose to hide from the user messages not 
  *  meant for them. Messages can also be optionally encrypted with the public key certificate 
- *  specified by �key�. Using �to� and �key� together allows clients to avoid checking the �key� 
+ *  specified by "key". Using "to" and "key" together allows clients to avoid checking the "key" 
  *  against their own keystore, as they will know the messages was not directed at them.
  *  
  *  The possible JSON formats are:
