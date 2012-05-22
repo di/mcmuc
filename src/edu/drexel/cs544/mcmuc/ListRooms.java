@@ -11,8 +11,8 @@ import org.json.JSONObject;
  * provided, the client wishes to know the status of just those channels. 
  * 
  * The JSON format of a ListRooms is either
- * {'action':'list-rooms','rooms':'<rooms>'} or
- * {'action':'list-rooms'}
+ * {'uid':'<uid>','action':'list-rooms','rooms':'<rooms>'} or
+ * {'uid':'<uid>','action':'list-rooms'}
  */
 public class ListRooms extends RoomAction {
 	

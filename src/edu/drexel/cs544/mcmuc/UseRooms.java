@@ -10,7 +10,7 @@ import org.json.JSONObject;
  * channels in use that were asked about in the original list-rooms action. In 
  * addition, use-rooms is also used to create a new room.
  *
- * The JSON format of a UseRooms is {'action':'use-rooms','rooms':'<rooms>'}
+ * The JSON format of a UseRooms is {'uid':'<uid>','action':'use-rooms','rooms':'<rooms>'}
  */
 public class UseRooms extends RoomAction {
 	

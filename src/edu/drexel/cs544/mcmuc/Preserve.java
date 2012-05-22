@@ -8,7 +8,7 @@ import org.json.JSONObject;
  * The preserve action is used to reply to a timeout action, indicating that 
  * clients should continue to forward traffic for the included rooms.
  *
- * The JSON format of a Preserve is {'action':'preserve','rooms':'<rooms>'}
+ * The JSON format of a Preserve is {'uid':'<uid>','action':'preserve','rooms':'<rooms>'}
  */
 public class Preserve extends RoomAction {
 

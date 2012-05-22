@@ -10,7 +10,7 @@ import org.json.JSONObject;
  * The timeout is used to ask the other clients which of the provided rooms they 
  * are using.
  * 
- * The JSON format of a Timeout is {'action':'timeout','rooms':'<rooms>'}
+ * The JSON format of a Timeout is {'uid':'<uid>','action':'timeout','rooms':'<rooms>'}
  *
  */
 public class Timeout extends RoomAction {
