@@ -21,8 +21,16 @@ public class Presence extends Action implements JSON {
 	private String status;
 	private List<Certificate> keys;
 	
-	
-	public Presence(String from, String status, List<Certificate> keys) throws Exception{
+	/**
+	 * Initializes the from, status, and keys attributes of the Presence class. Status must be either:
+	 * 'online' or 'offline'
+	 * @param from
+	 * @param status must be 'online' or 'offline'
+	 * @param keys
+	 * @throws Exception thrown if status is not 'online' or 'offline'
+	 */
+	private void init(String from, String status, List<Certificate> keys) throws Exception
+	{
 		if(!status.equalsIgnoreCase("online") && !status.equalsIgnoreCase("offline"))
 			throw new Exception("Status must be online or offline");
 		
@@ -31,26 +39,59 @@ public class Presence extends Action implements JSON {
 		this.keys = keys;
 	}
 	
-	public Presence(String from, String status) throws Exception{
-		if(!status.equalsIgnoreCase("online") && !status.equalsIgnoreCase("offline"))
-			throw new Exception("Status must be online or offline");
-		
-		this.from = from;
-		this.status= status;
+	/**
+	 * Calls init with passed-in parameters - exception is forwarded from init. Use if user desires
+	 * to include public-keys with presence.
+	 * @param from
+	 * @param status
+	 * @param keys
+	 * @throws Exception
+	 */
+	public Presence(String from, String status, List<Certificate> keys) throws Exception{
+		init(from,status,keys);
 	}
 	
+	/**
+	 * Calls init with passed-in parameters - exception is forwarded from init. Use if no keys are
+	 * required to be sent along with presence.
+	 * @param from
+	 * @param status
+	 * @throws Exception
+	 */
+	public Presence(String from, String status) throws Exception{
+		init(from,status,null);
+	}
+	
+	/**
+	 * Accessor for message's from field
+	 * @return
+	 */
 	public String getFrom(){
 		return this.from;
 	}
 	
+	/**
+	 * Accessor for message's status field
+	 * @return
+	 */
 	public String getStatus(){
 		return this.status;
 	}
 	
+	/**
+	 * Accessor for message's (optional) list of public-key certificates
+	 * @return
+	 */
 	public List<Certificate> getKeys(){
 		return this.keys;
 	}
-		
+	
+	/**
+	 * Deserializes JSON into a Presence object. The status key must have 'offline' or 'online' as its value.
+	 * The keys key/value pair is optional.
+	 * @param json
+	 * @throws Exception thrown if status is not 'online' or 'offline'
+	 */
 	public Presence(JSONObject json) throws Exception
 	{
 		super(json,"presence");
@@ -82,6 +123,10 @@ public class Presence extends Action implements JSON {
 		
 	}
 	
+	/**
+	 * Serializes Presence object into JSON. keys key/value pair is only set if object was created with
+	 * a list of keys.
+	 */
 	@Override
 	public JSONObject toJSON() {
 		JSONObject json = new JSONObject();
