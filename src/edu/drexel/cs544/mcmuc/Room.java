@@ -10,6 +10,11 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import edu.drexel.cs544.mcmuc.actions.Message;
+
 public class Room {
 
     int multicastPort;
@@ -62,9 +67,10 @@ public class Room {
         return f;
     }
 
-    public void send(String message) {
+    public void send(Message message) {
+    	String msg = message.toJSON().toString();
         System.out.println("Sending: " + message);
-        DatagramPacket dp = new DatagramPacket(message.getBytes(), message.length(), this.multicastAddress, this.multicastPort);
+        DatagramPacket dp = new DatagramPacket(msg.getBytes(), msg.length(), this.multicastAddress, this.multicastPort);
         try {
             this.multicastSocket.send(dp);
         } catch (IOException e) {
@@ -77,6 +83,17 @@ public class Room {
     }
 
     public void receive(String s) {
-        System.out.println("Got:\"" + s + "\"");
+    	JSONObject jo = null;
+    	Message m;
+    	try {
+			jo = new JSONObject(s);
+		} catch (JSONException e) {
+			System.err.println("Got bad string in MUC. Contents:\n" + s);
+			e.printStackTrace();
+		}
+		if (jo != null) {
+			m = new Message(jo);
+	        System.out.println("Got:\n" + m.getFrom() + ": " + m.getBody());
+		}
     }
 }
