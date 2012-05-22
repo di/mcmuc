@@ -1,4 +1,4 @@
-package edu.drexel.cs544.mcmuc;
+package edu.drexel.cs544.mcmuc.actions;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -7,6 +7,9 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import edu.drexel.cs544.mcmuc.Certificate;
+import edu.drexel.cs544.mcmuc.JSON;
 
 /**
  * Presence is used by each client to respond to a broadcast PollPresence.

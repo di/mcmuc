@@ -1,14 +1,17 @@
-package edu.drexel.cs544.mcmuc;
+package edu.drexel.cs544.mcmuc.actions;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import edu.drexel.cs544.mcmuc.Certificate;
+import edu.drexel.cs544.mcmuc.JSON;
+
 /**
- * A chat room message action must carry a ‘from’ field, which is a nickname that identifies 
- * the sender, and a ‘body’ field that carries the user’s input. Messages can also optionally
- *  contain a ‘to’ value, for which clients can choose to hide from the user messages not 
+ * A chat room message action must carry a ï¿½fromï¿½ field, which is a nickname that identifies 
+ * the sender, and a ï¿½bodyï¿½ field that carries the userï¿½s input. Messages can also optionally
+ *  contain a ï¿½toï¿½ value, for which clients can choose to hide from the user messages not 
  *  meant for them. Messages can also be optionally encrypted with the public key certificate 
- *  specified by ‘key’. Using ‘to’ and ‘key’ together allows clients to avoid checking the ‘key’ 
+ *  specified by ï¿½keyï¿½. Using ï¿½toï¿½ and ï¿½keyï¿½ together allows clients to avoid checking the ï¿½keyï¿½ 
  *  against their own keystore, as they will know the messages was not directed at them.
  *  
  *  The possible JSON formats are:

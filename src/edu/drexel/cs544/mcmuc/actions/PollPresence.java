@@ -1,7 +1,9 @@
-package edu.drexel.cs544.mcmuc;
+package edu.drexel.cs544.mcmuc.actions;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import edu.drexel.cs544.mcmuc.JSON;
 
 /**
  * PollPresence is used to query the other clients in a chat room about their online/offline status.

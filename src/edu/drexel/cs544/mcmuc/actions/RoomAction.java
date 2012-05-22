@@ -1,4 +1,4 @@
-package edu.drexel.cs544.mcmuc;
+package edu.drexel.cs544.mcmuc.actions;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -7,6 +7,8 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import edu.drexel.cs544.mcmuc.JSON;
 
 /**
  * RoomAction is the common parent class to the room management message types: 
