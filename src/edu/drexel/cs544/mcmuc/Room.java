@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
+import java.net.SocketException;
 import java.nio.ByteBuffer;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -21,6 +22,10 @@ public class Room {
             this.multicastSocket = new MulticastSocket(this.multicastPort);
             this.multicastAddress = InetAddress.getByName("224.5.4.4");
             this.multicastSocket.joinGroup(multicastAddress);
+        } catch (SocketException e) {
+        	System.err.println("Error: Multicast route likely does not exist. Add using (for example):\n" +
+        			"\t$ ip route add 224.0.0.0/4 dev eth0");
+            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
