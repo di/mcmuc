@@ -8,17 +8,35 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * Presence is used by each client to respond to a broadcast PollPresence.
+ *
+ * The JSON format of a Presence is: 
+ * {'action':'presence','from':'<from>','status':'<status>'} if no public-keys are included or
+ * {'action':'presence','from':'<from>','status':'<status>','keys':[<keys>]} if they are.
+ */
 public class Presence extends Action implements JSON {
 	
 	private String from;
 	private String status;
-	private List<Certificate> keys = new ArrayList<Certificate>();
+	private List<Certificate> keys;
 	
 	
-	public Presence(String from, String status, List<Certificate> keys){
+	public Presence(String from, String status, List<Certificate> keys) throws Exception{
+		if(!status.equalsIgnoreCase("online") && !status.equalsIgnoreCase("offline"))
+			throw new Exception("Status must be online or offline");
+		
 		this.from = from;
 		this.status= status;
 		this.keys = keys;
+	}
+	
+	public Presence(String from, String status) throws Exception{
+		if(!status.equalsIgnoreCase("online") && !status.equalsIgnoreCase("offline"))
+			throw new Exception("Status must be online or offline");
+		
+		this.from = from;
+		this.status= status;
 	}
 	
 	public String getFrom(){
@@ -33,22 +51,30 @@ public class Presence extends Action implements JSON {
 		return this.keys;
 	}
 		
-	public Presence(JSONObject json)
+	public Presence(JSONObject json) throws Exception
 	{
 		super(json,"presence");
 		
 		try {
-			JSONArray keys = json.getJSONArray("keys");
+			this.from = json.getString("from");			
+			this.status = json.getString("status");	
+			if(!this.status.equalsIgnoreCase("online") && !this.status.equalsIgnoreCase("offline"))
+				throw new Exception("Status must be online or offline");
 			
-			if (keys != null) { 
-				   int len = keys.length();
-				   for (int i=0;i<len;i++){ 
-					   this.keys.add((Certificate) keys.get(i));
-				   } 
-			} 
-			
-			this.from = json.getString("from");
-			this.from = json.getString("status");			
+			if(json.has("keys"))
+			{
+				JSONArray keys = json.getJSONArray("keys");
+				this.keys = new ArrayList<Certificate>(keys.length());
+				
+				if (keys != null) 
+				{ 
+					   int len = keys.length();
+					   for (int i=0;i<len;i++)
+					   { 
+						   this.keys.add(new Certificate(keys.getJSONObject(i)));
+					   } 
+				} 
+			}
 
 		} catch (JSONException e) {
 			e.printStackTrace();
