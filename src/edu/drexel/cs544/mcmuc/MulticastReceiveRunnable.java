@@ -3,6 +3,9 @@ package edu.drexel.cs544.mcmuc;
 import java.io.IOException;
 import java.net.DatagramPacket;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class MulticastReceiveRunnable implements Runnable {
 
     Room room;
@@ -18,7 +21,16 @@ public class MulticastReceiveRunnable implements Runnable {
             try {
                 room.getMulticastSocket().receive(dp);
                 String s = new String(dp.getData(), 0, dp.getLength());
-                room.receive(s);
+                JSONObject jo = null;
+            	try {
+        			jo = new JSONObject(s);
+        		} catch (JSONException e) {
+        			System.err.println("Got bad string in MUC. Contents:\n" + s);
+        			e.printStackTrace();
+        		}
+        		if (jo != null) {
+        			room.receive(jo);
+        		}
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();

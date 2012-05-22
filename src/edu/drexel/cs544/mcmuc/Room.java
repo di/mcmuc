@@ -10,7 +10,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import edu.drexel.cs544.mcmuc.actions.Message;
@@ -82,18 +81,8 @@ public class Room {
         return this.multicastSocket;
     }
 
-    public void receive(String s) {
-    	JSONObject jo = null;
-    	Message m;
-    	try {
-			jo = new JSONObject(s);
-		} catch (JSONException e) {
-			System.err.println("Got bad string in MUC. Contents:\n" + s);
-			e.printStackTrace();
-		}
-		if (jo != null) {
-			m = new Message(jo);
-	        System.out.println("Got:\n" + m.getFrom() + ": " + m.getBody() + " (" + m.getUID() + ")");
-		}
+    public void receive(JSONObject jo) {
+		Message m = new Message(jo);
+        System.out.println("Got:\n" + m.getFrom() + ": " + m.getBody() + " (" + m.getUID() + ")");
     }
 }
