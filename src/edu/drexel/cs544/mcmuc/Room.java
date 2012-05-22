@@ -30,7 +30,8 @@ public class Room {
             e.printStackTrace();
         }
         MulticastReceiveRunnable runner = new MulticastReceiveRunnable(this);
-        runner.run();
+        Thread runnerThread = new Thread(runner);
+        runnerThread.start();
     }
 
     public int choosePort(String name, int portsInUse[]) {
@@ -62,6 +63,7 @@ public class Room {
     }
 
     public void send(String message) {
+        System.out.println("Sending: " + message);
         DatagramPacket dp = new DatagramPacket(message.getBytes(), message.length(), this.multicastAddress, this.multicastPort);
         try {
             this.multicastSocket.send(dp);
