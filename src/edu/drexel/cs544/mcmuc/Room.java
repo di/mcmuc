@@ -67,6 +67,7 @@ public class Room {
     }
 
     public void send(Message message) {
+    	DuplicateDetector.getInstance().add(message.getUID());
     	String msg = message.toJSON().toString();
         System.out.println("Sending: " + message);
         DatagramPacket dp = new DatagramPacket(msg.getBytes(), msg.length(), this.multicastAddress, this.multicastPort);
@@ -83,6 +84,9 @@ public class Room {
 
     public void receive(JSONObject jo) {
 		Message m = new Message(jo);
-        System.out.println("Got:\n" + m.getFrom() + ": " + m.getBody() + " (" + m.getUID() + ")");
+		if (!DuplicateDetector.getInstance().isDuplicate(m.getUID())){
+			System.out.println("Got:\n" + m.getFrom() + ": " + m.getBody() + " (" + m.getUID() + ")");
+			this.send(m);
+		}
     }
 }
