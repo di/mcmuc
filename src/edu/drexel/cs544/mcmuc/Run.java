@@ -3,11 +3,11 @@ package edu.drexel.cs544.mcmuc;
 import edu.drexel.cs544.mcmuc.actions.Message;
 
 public class Run {
+    public static final int CONTROL_PORT = 31941;
 
     public static void main(String[] args) {
-    	int[] portsInUse = {1,2,3};
-        Room room = new Room("testchannel", portsInUse);
-        Message message = new Message("dustin@testchannel", "Hello World");
-        room.send(message);
+        Controller controller = Controller.getInstance();
+        controller.createRoom("testchannel");
+        controller.sendToRoom("testchannel", new Message("dustin@testchannel", "Hello World"));
     }
 }

@@ -1,10 +1,18 @@
 package edu.drexel.cs544.mcmuc;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.json.JSONObject;
+
+import edu.drexel.cs544.mcmuc.actions.Action;
 
 public class Controller extends Channel {
 
     public static final int CONTROL_PORT = 31941;
+    public int[] portsInUse = { 1, 2, 3 };
+    private final Map<String, Room> rooms = Collections.synchronizedMap(new HashMap<String, Room>());
 
     Controller(int port) {
         super(port);
@@ -24,5 +32,19 @@ public class Controller extends Channel {
 
     public void display(String displayString) {
         System.out.println(displayString);
+    }
+
+    public void createRoom(String roomName) {
+        Room room = new Room(roomName, portsInUse);
+        rooms.put(roomName, room);
+    }
+
+    public void sendToRoom(String roomName, Action action) {
+        Room room = rooms.get(roomName);
+        if (room != null) {
+            room.send(action);
+        } else {
+            System.err.println("Room not found!");
+        }
     }
 }
