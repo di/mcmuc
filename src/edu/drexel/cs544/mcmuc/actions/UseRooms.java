@@ -20,11 +20,11 @@ public class UseRooms extends RoomAction {
     public static final String action = "userooms";
 
     public UseRooms(List<Integer> rooms) {
-        super(rooms, "use-rooms");
+        super(rooms, UseRooms.action);
     }
 
     public UseRooms(JSONObject json) {
-        super(json, "use-rooms");
+        super(json, UseRooms.action);
     }
 
     @Override
