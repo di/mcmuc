@@ -10,6 +10,7 @@ import org.json.JSONObject;
 
 import edu.drexel.cs544.mcmuc.Certificate;
 import edu.drexel.cs544.mcmuc.Channel;
+import edu.drexel.cs544.mcmuc.Controller;
 import edu.drexel.cs544.mcmuc.JSON;
 
 /**
@@ -160,7 +161,32 @@ public class Presence extends Action implements JSON {
 
     @Override
     public void process(Channel channel) {
-        // TODO Auto-generated method stub
+        class Runner implements Runnable {
+            Presence message;
+            Channel channel;
+
+            Runner(Presence m, Channel c) {
+                channel = c;
+                message = m;
+            }
+
+            public void run() {
+                Controller.getInstance().display("Presence from " + message.getFrom() + ": " + message.getStatus() + " (" + message.getUID() + ")");
+                List<Certificate> keys = message.getKeys();
+                if(keys != null)
+                {
+                	Iterator<Certificate> it = keys.iterator();
+                	while(it.hasNext())
+                	{
+                		Certificate c = it.next();
+                		Controller.getInstance().display("Advertised " + c.getFormat() + " public-key cert from " + message.getFrom() + ":\n\t" + c.getCertificate());
+                	}
+                }
+                channel.send(message);
+            }
+        }
+        Thread t = new Thread(new Runner(this, channel));
+        t.start();
 
     }
 
