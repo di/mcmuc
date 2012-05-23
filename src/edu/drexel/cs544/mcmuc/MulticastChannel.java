@@ -40,6 +40,14 @@ public class MulticastChannel {
         }
     }
 
+    public void send(DatagramPacket dp) {
+        try {
+            this.multicastSocket.send(dp);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public MulticastSocket getMulticastSocket() {
         return this.multicastSocket;
     }

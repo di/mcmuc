@@ -1,5 +1,6 @@
 package edu.drexel.cs544.mcmuc;
 
+import java.net.DatagramPacket;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,9 +29,8 @@ public class Controller extends Channel {
     }
 
     @Override
-    public void handleNewMessage(JSONObject jo) {
-        // TODO Auto-generated method stub
-
+    public void handleNewMessage(DatagramPacket dp) {
+        JSONObject jo = super.datagramToJSONObject(dp);
     }
 
     public void display(String displayString) {
