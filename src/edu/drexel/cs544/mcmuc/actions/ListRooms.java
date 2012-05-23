@@ -1,8 +1,7 @@
 package edu.drexel.cs544.mcmuc.actions;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.json.JSONObject;
 
@@ -47,21 +46,12 @@ public class ListRooms extends RoomAction {
             }
 
             public void run() {
-            	List<Integer> roomsInUse = new ArrayList<Integer>(Controller.getInstance().portsInUse);
-        		List<Integer> roomsAskedFor = message.getRooms();
-        		
-            	if(roomsAskedFor != null)
-            	{
-            		Iterator<Integer> it = roomsInUse.iterator();
-            		while(it.hasNext())
-            		{
-            			Integer i = it.next();
-            			if(!roomsAskedFor.contains(i))
-            				roomsInUse.remove(i);
-            		}
-            	}
-            	UseRooms useReply = new UseRooms(roomsInUse);
-            	Controller.getInstance().send(useReply);
+                Set<Integer> roomsInUse = (Set<Integer>) message.getRooms();
+                roomsInUse.retainAll(message.getRooms());
+                if (!roomsInUse.isEmpty()) {
+                    UseRooms useReply = new UseRooms((List<Integer>) roomsInUse);
+                    Controller.getInstance().send(useReply);
+                }
             }
         }
         Thread t = new Thread(new Runner(this));
