@@ -29,9 +29,21 @@ public class UseRooms extends RoomAction {
 
     @Override
     public void process(Channel channel) {
-        Controller controller = Controller.getInstance();
-        for (int room : this.getRooms()) {
-            controller.useRoom(room);
+        class Runner implements Runnable {
+            UseRooms message;
+
+            Runner(UseRooms m) {
+                message = m;
+            }
+
+            public void run() {
+                Controller controller = Controller.getInstance();
+                for (int room : message.getRooms()) {
+                    controller.useRoom(room);
+                }
+            }
         }
+        Thread t = new Thread(new Runner(this));
+        t.start();
     }
 }
