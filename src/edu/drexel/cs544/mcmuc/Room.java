@@ -3,7 +3,7 @@ package edu.drexel.cs544.mcmuc;
 import java.nio.ByteBuffer;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
+import java.util.Set;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -13,14 +13,14 @@ import edu.drexel.cs544.mcmuc.actions.Message;
 
 public class Room extends Channel {
 
-    public Room(String name, int portsInUse[]) {
+    public Room(String name, Set<Integer> portsInUse) {
         super(choosePort(name, portsInUse));
         MulticastReceiveRunnable runner = new MulticastReceiveRunnable(this);
         Thread runnerThread = new Thread(runner);
         runnerThread.start();
     }
 
-    public static int choosePort(String name, int portsInUse[]) {
+    public static int choosePort(String name, Set<Integer> portsInUse) {
         int f = -1;
 
         try {
@@ -37,7 +37,7 @@ public class Room extends Channel {
             do {
                 f = ((g + i * h) % 16382) + 49152;
                 i++;
-            } while (Arrays.asList(portsInUse).contains(f));
+            } while (portsInUse.contains(f));
 
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();

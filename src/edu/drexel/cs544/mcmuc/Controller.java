@@ -3,6 +3,8 @@ package edu.drexel.cs544.mcmuc;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.json.JSONObject;
 
@@ -11,11 +13,12 @@ import edu.drexel.cs544.mcmuc.actions.Action;
 public class Controller extends Channel {
 
     public static final int CONTROL_PORT = 31941;
-    public int[] portsInUse = { 1, 2, 3 };
+    public Set<Integer> portsInUse = new TreeSet<Integer>();
     private final Map<String, Room> rooms = Collections.synchronizedMap(new HashMap<String, Room>());
 
     Controller(int port) {
         super(port);
+        portsInUse.add(CONTROL_PORT);
     }
 
     private static final Controller instance = new Controller(CONTROL_PORT);
@@ -36,6 +39,7 @@ public class Controller extends Channel {
 
     public void createRoom(String roomName) {
         Room room = new Room(roomName, portsInUse);
+        portsInUse.add(room.getPort());
         rooms.put(roomName, room);
     }
 

@@ -24,4 +24,8 @@ public abstract class Channel {
         mcc.receive(dp);
     }
 
+    public int getPort() {
+        return mcc.multicastPort;
+    }
+
 }
