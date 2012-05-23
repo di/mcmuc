@@ -48,7 +48,7 @@ public class ListRooms extends RoomAction {
             }
 
             public void run() {
-                Set<Integer> roomsInUse = (Set<Integer>) message.getRooms();
+            	Set<Integer> roomsInUse = Controller.getInstance().portsInUse;
                 roomsInUse.retainAll(message.getRooms());
                 if (!roomsInUse.isEmpty()) {
                     UseRooms useReply = new UseRooms((List<Integer>) roomsInUse);
