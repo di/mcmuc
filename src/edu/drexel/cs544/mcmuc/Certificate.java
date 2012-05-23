@@ -17,6 +17,24 @@ public class Certificate implements JSON {
 	private String certificate;
 	
 	/**
+	 * Accessor for certificate's format
+	 * @return String format
+	 */
+	public String getFormat()
+	{
+		return format;
+	}
+	
+	/**
+	 * Accessor for certificiate
+	 * @return String certificate
+	 */
+	public String getCertificate()
+	{
+		return certificate;
+	}
+	
+	/**
 	 * A Certificate is the combination of a public-key certificate and the format it is
 	 * represented in
 	 * @param format type of certificate, such as X.509 or PGP
