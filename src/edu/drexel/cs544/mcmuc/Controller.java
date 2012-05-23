@@ -10,6 +10,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import edu.drexel.cs544.mcmuc.actions.Action;
+import edu.drexel.cs544.mcmuc.actions.ListRooms;
 import edu.drexel.cs544.mcmuc.actions.UseRooms;
 
 public class Controller extends Channel {
@@ -43,7 +44,11 @@ public class Controller extends Channel {
         if (actionString.equalsIgnoreCase(UseRooms.action)) {
             action = new UseRooms(jo);
             action.process(this);
+        } else if(actionString.equalsIgnoreCase("list-rooms")) {
+        	action = new ListRooms(jo);
+        	action.process(this);
         } else {
+        
             System.err.println("Message action type not supported: " + actionString);
         }
     }

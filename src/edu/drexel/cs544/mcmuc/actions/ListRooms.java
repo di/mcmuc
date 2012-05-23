@@ -1,10 +1,13 @@
 package edu.drexel.cs544.mcmuc.actions;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.json.JSONObject;
 
 import edu.drexel.cs544.mcmuc.Channel;
+import edu.drexel.cs544.mcmuc.Controller;
 
 /**
  * The list-rooms action is used by clients to update channel use information.
@@ -36,6 +39,32 @@ public class ListRooms extends RoomAction {
 
     @Override
     public void process(Channel channel) {
-        // TODO Auto-generated method stub
+        class Runner implements Runnable {
+            ListRooms message;
+
+            Runner(ListRooms m) {
+                message = m;
+            }
+
+            public void run() {
+            	List<Integer> roomsInUse = new ArrayList<Integer>(Controller.getInstance().portsInUse);
+        		List<Integer> roomsAskedFor = message.getRooms();
+        		
+            	if(roomsAskedFor != null)
+            	{
+            		Iterator<Integer> it = roomsInUse.iterator();
+            		while(it.hasNext())
+            		{
+            			Integer i = it.next();
+            			if(!roomsAskedFor.contains(i))
+            				roomsInUse.remove(i);
+            		}
+            	}
+            	UseRooms useReply = new UseRooms(roomsInUse);
+            	Controller.getInstance().send(useReply);
+            }
+        }
+        Thread t = new Thread(new Runner(this));
+        t.start();
     }
 }
