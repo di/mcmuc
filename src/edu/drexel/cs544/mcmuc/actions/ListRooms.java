@@ -20,8 +20,10 @@ import edu.drexel.cs544.mcmuc.Controller;
  */
 public class ListRooms extends RoomAction {
 
+    public static final String action = "list-rooms";
+
     public ListRooms(List<Integer> rooms) {
-        super(rooms, "list-rooms");
+        super(rooms, ListRooms.action);
     }
 
     /**
@@ -29,11 +31,11 @@ public class ListRooms extends RoomAction {
      * RoomAction child allowed to.
      */
     public ListRooms() {
-        super("list-rooms");
+        super(ListRooms.action);
     }
 
     public ListRooms(JSONObject json) {
-        super(json, "list-rooms");
+        super(json, ListRooms.action);
     }
 
     @Override

@@ -17,7 +17,7 @@ import edu.drexel.cs544.mcmuc.Controller;
  */
 public class UseRooms extends RoomAction {
 
-    public static final String action = "userooms";
+    public static final String action = "use-rooms";
 
     public UseRooms(List<Integer> rooms) {
         super(rooms, UseRooms.action);
