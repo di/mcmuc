@@ -7,9 +7,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import edu.drexel.cs544.mcmuc.actions.Action;
+import edu.drexel.cs544.mcmuc.actions.UseRooms;
 
 public class Controller extends Channel {
 
@@ -31,6 +33,20 @@ public class Controller extends Channel {
     @Override
     public void handleNewMessage(DatagramPacket dp) {
         JSONObject jo = super.datagramToJSONObject(dp);
+        Action action;
+        String actionString = "";
+        try {
+            actionString = jo.getString("action");
+        } catch (JSONException e) {
+            System.err.println("Message does not have action.");
+            e.printStackTrace();
+        }
+        if (actionString.equalsIgnoreCase(UseRooms.action)) {
+            action = new UseRooms(jo);
+            action.process(this);
+        } else {
+            System.err.println("Message action type not supported: " + actionString);
+        }
     }
 
     public void display(String displayString) {

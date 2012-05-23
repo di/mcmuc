@@ -51,17 +51,18 @@ public class Room extends Channel {
     public void handleNewMessage(DatagramPacket dp) {
         JSONObject jo = super.datagramToJSONObject(dp);
         Action action;
+        String actionString = "";
         try {
-            if (jo.getString("action").equalsIgnoreCase(Message.action)) {
-                action = new Message(jo);
-                action.process(this);
-            } else {
-                System.err.println("Message action type not supported: " + jo.getString("action"));
-
-            }
+            actionString = jo.getString("action");
         } catch (JSONException e) {
             System.err.println("Message does not have action.");
             e.printStackTrace();
+        }
+        if (actionString.equalsIgnoreCase(Message.action)) {
+            action = new Message(jo);
+            action.process(this);
+        } else {
+            System.err.println("Message action type not supported: " + actionString);
         }
     }
 }

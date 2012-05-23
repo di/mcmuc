@@ -5,6 +5,7 @@ import java.util.List;
 import org.json.JSONObject;
 
 import edu.drexel.cs544.mcmuc.Channel;
+import edu.drexel.cs544.mcmuc.Controller;
 
 /**
  * The use-rooms action is used to reply to a list-rooms action. Clients will either
@@ -16,6 +17,8 @@ import edu.drexel.cs544.mcmuc.Channel;
  */
 public class UseRooms extends RoomAction {
 
+    public static final String action = "userooms";
+
     public UseRooms(List<Integer> rooms) {
         super(rooms, "use-rooms");
     }
@@ -26,6 +29,9 @@ public class UseRooms extends RoomAction {
 
     @Override
     public void process(Channel channel) {
-        // TODO Auto-generated method stub
+        Controller controller = Controller.getInstance();
+        for (int room : this.getRooms()) {
+            // TODO
+        }
     }
 }
