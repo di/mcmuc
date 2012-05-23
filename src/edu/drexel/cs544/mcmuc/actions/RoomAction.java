@@ -23,7 +23,7 @@ import edu.drexel.cs544.mcmuc.JSON;
  * @see Preserve
  * @see Timeout
  */
-public class RoomAction extends Action implements JSON {
+public abstract class RoomAction extends Action implements JSON {
 
     private List<Integer> rooms;
     private String action;
@@ -116,9 +116,6 @@ public class RoomAction extends Action implements JSON {
     }
 
     @Override
-    public void process(Channel channel) {
-        // TODO Auto-generated method stub
-
-    }
+    public abstract void process(Channel channel);
 
 }

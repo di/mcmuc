@@ -37,7 +37,7 @@ public class Controller extends Channel {
         System.out.println(displayString);
     }
 
-    public void createRoom(String roomName) {
+    public void useRoom(String roomName) {
         Room room = new Room(roomName, portsInUse);
         portsInUse.add(room.getPort());
         rooms.put(roomName, room);

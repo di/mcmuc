@@ -7,7 +7,7 @@ public class Run {
 
     public static void main(String[] args) {
         Controller controller = Controller.getInstance();
-        controller.createRoom("testchannel");
+        controller.useRoom("testchannel");
         controller.sendToRoom("testchannel", new Message("dustin@testchannel", "Hello World"));
     }
 }
