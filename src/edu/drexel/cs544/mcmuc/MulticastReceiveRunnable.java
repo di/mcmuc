@@ -20,15 +20,15 @@ public class MulticastReceiveRunnable implements Runnable {
             channel.receive(dp);
             String s = new String(dp.getData(), 0, dp.getLength());
             JSONObject jo = null;
-        	try {
-    			jo = new JSONObject(s);
-    		} catch (JSONException e) {
-    			System.err.println("Got bad JSON data. Contents:\n" + s);
-    			e.printStackTrace();
-    		}
-    		if (jo != null) {
-    			channel.handleNewMessage(jo);
-    		}
+            try {
+                jo = new JSONObject(s);
+            } catch (JSONException e) {
+                System.err.println("Got bad JSON data. Contents:\n" + s);
+                e.printStackTrace();
+            }
+            if (jo != null) {
+                channel.handleNewMessage(jo);
+            }
         }
     }
 }

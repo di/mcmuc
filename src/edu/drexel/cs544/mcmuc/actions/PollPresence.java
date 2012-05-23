@@ -3,6 +3,7 @@ package edu.drexel.cs544.mcmuc.actions;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import edu.drexel.cs544.mcmuc.Channel;
 import edu.drexel.cs544.mcmuc.JSON;
 
 /**
@@ -12,39 +13,44 @@ import edu.drexel.cs544.mcmuc.JSON;
  * The JSON format of a PollPresence is {'uid':'<uid>','action':'poll-presence'}
  */
 public class PollPresence extends Action implements JSON {
-	
-	/**
-	 * No options are required for the construction of a PollPresence message
-	 */
-	public PollPresence()
-	{
-	}
-	
-	/**
-	 * Deserializes the JSON into a PollPresence object
-	 * is accepted.
-	 * @param json
-	 */
-	public PollPresence(JSONObject json)
-	{
-		super(json,"poll-presence");
-	}
-	
-	/**
-	 * Serializes the PollPresence object into JSON
-	 */
-	@Override
-	public JSONObject toJSON() {
-		JSONObject json = new JSONObject();
-		
-		try {
-			json.put("action", "poll-presence");
-			json.put("uid", uid);
-		} catch (JSONException e) {
 
-		}
-		
-		return json;
-	}
-	
+    /**
+     * No options are required for the construction of a PollPresence message
+     */
+    public PollPresence() {
+    }
+
+    /**
+     * Deserializes the JSON into a PollPresence object
+     * is accepted.
+     * 
+     * @param json
+     */
+    public PollPresence(JSONObject json) {
+        super(json, "poll-presence");
+    }
+
+    /**
+     * Serializes the PollPresence object into JSON
+     */
+    @Override
+    public JSONObject toJSON() {
+        JSONObject json = new JSONObject();
+
+        try {
+            json.put("action", "poll-presence");
+            json.put("uid", uid);
+        } catch (JSONException e) {
+
+        }
+
+        return json;
+    }
+
+    @Override
+    public void process(Channel channel) {
+        // TODO Auto-generated method stub
+
+    }
+
 }

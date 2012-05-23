@@ -4,28 +4,24 @@ import java.net.DatagramPacket;
 
 import org.json.JSONObject;
 
-import edu.drexel.cs544.mcmuc.actions.Message;
+import edu.drexel.cs544.mcmuc.actions.Action;
 
-abstract class Channel {
-	
-	private MulticastChannel mcc;
-		
-	Channel(int port) {
-		 mcc = new MulticastChannel(port);
-	}
-	
-	public void send(Message m) {
-		mcc.send(m);
-	}
-	
-	public MulticastChannel getMulticastChannel(){
-		return mcc;
-	}
+public abstract class Channel {
 
-	public abstract void handleNewMessage(JSONObject jo);
+    private MulticastChannel mcc;
 
-	public void receive(DatagramPacket dp) {
-		mcc.receive(dp);
-	}
+    Channel(int port) {
+        mcc = new MulticastChannel(port);
+    }
+
+    public void send(Action a) {
+        mcc.send(a);
+    }
+
+    public abstract void handleNewMessage(JSONObject jo);
+
+    public void receive(DatagramPacket dp) {
+        mcc.receive(dp);
+    }
 
 }
