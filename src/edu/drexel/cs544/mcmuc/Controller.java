@@ -1,6 +1,5 @@
 package edu.drexel.cs544.mcmuc;
 
-import java.net.DatagramPacket;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,6 +17,7 @@ public class Controller extends Channel {
     public static final int CONTROL_PORT = 31941;
     public Set<Integer> portsInUse = Collections.synchronizedSet(new TreeSet<Integer>());
     private final Map<String, Room> rooms = Collections.synchronizedMap(new HashMap<String, Room>());
+    private final Map<Integer, Forwarder> forwards = Collections.synchronizedMap(new HashMap<Integer, Forwarder>());
 
     Controller(int port) {
         super(port);
@@ -31,8 +31,7 @@ public class Controller extends Channel {
     }
 
     @Override
-    public void handleNewMessage(DatagramPacket dp) {
-        JSONObject jo = super.datagramToJSONObject(dp);
+    public void handleNewMessage(JSONObject jo) {
         Action action;
         String actionString = "";
         try {
@@ -51,6 +50,16 @@ public class Controller extends Channel {
 
     public void display(String displayString) {
         System.out.println(displayString);
+    }
+
+    public void useRoom(int roomPort) {
+        if (!portsInUse.contains(roomPort)) {
+            Forwarder fwd = new Forwarder(roomPort);
+            portsInUse.add(roomPort);
+            forwards.put(roomPort, fwd);
+        } else {
+            // This port is already in use, either by a Room or Forwarder
+        }
     }
 
     public void useRoom(String roomName) {

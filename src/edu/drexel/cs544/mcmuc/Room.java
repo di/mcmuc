@@ -1,6 +1,5 @@
 package edu.drexel.cs544.mcmuc;
 
-import java.net.DatagramPacket;
 import java.nio.ByteBuffer;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -48,8 +47,7 @@ public class Room extends Channel {
     }
 
     @Override
-    public void handleNewMessage(DatagramPacket dp) {
-        JSONObject jo = super.datagramToJSONObject(dp);
+    public void handleNewMessage(JSONObject jo) {
         Action action;
         String actionString = "";
         try {

@@ -45,6 +45,15 @@ public abstract class Action {
         }
     }
 
+    Action(JSONObject json) {
+        try {
+            uid = json.getString("uid");
+        } catch (JSONException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
     public String getUID() {
         return uid;
     }

@@ -6,7 +6,6 @@ import org.json.JSONObject;
 import edu.drexel.cs544.mcmuc.Certificate;
 import edu.drexel.cs544.mcmuc.Channel;
 import edu.drexel.cs544.mcmuc.Controller;
-import edu.drexel.cs544.mcmuc.DuplicateDetector;
 import edu.drexel.cs544.mcmuc.JSON;
 
 /**
@@ -220,10 +219,8 @@ public class Message extends Action implements JSON {
             }
 
             public void run() {
-                if (!DuplicateDetector.getInstance().isDuplicate(message.getUID())) {
-                    Controller.getInstance().display("Got:\n" + message.getFrom() + ": " + message.getBody() + " (" + message.getUID() + ")");
-                    channel.send(message);
-                }
+                Controller.getInstance().display("Got:\n" + message.getFrom() + ": " + message.getBody() + " (" + message.getUID() + ")");
+                channel.send(message);
             }
         }
         Thread t = new Thread(new Runner(this, channel));

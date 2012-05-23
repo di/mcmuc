@@ -31,7 +31,7 @@ public class UseRooms extends RoomAction {
     public void process(Channel channel) {
         Controller controller = Controller.getInstance();
         for (int room : this.getRooms()) {
-            // TODO
+            controller.useRoom(room);
         }
     }
 }

@@ -1,6 +1,6 @@
 package edu.drexel.cs544.mcmuc;
 
-import java.net.DatagramPacket;
+import org.json.JSONObject;
 
 public class Forwarder extends Channel {
 
@@ -12,7 +12,7 @@ public class Forwarder extends Channel {
     }
 
     @Override
-    public void handleNewMessage(DatagramPacket dp) {
-        this.send(dp);
+    public void handleNewMessage(JSONObject jo) {
+        this.send(jo);
     }
 }

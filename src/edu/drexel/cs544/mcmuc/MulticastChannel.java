@@ -6,6 +6,9 @@ import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.SocketException;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import edu.drexel.cs544.mcmuc.actions.Action;
 
 public class MulticastChannel {
@@ -28,10 +31,10 @@ public class MulticastChannel {
         }
     }
 
-    public void send(Action action) {
-        DuplicateDetector.getInstance().add(action.getUID());
-        String msg = action.toJSON().toString();
-        System.out.println("Sending: " + action.getUID());
+    public void send(JSONObject jo) {
+        DuplicateDetector.getInstance().add(getUID(jo));
+        String msg = jo.toString();
+        System.out.println("Sending: " + getUID(jo));
         DatagramPacket dp = new DatagramPacket(msg.getBytes(), msg.length(), this.multicastAddress, this.multicastPort);
         try {
             this.multicastSocket.send(dp);
@@ -40,7 +43,11 @@ public class MulticastChannel {
         }
     }
 
-    public void send(DatagramPacket dp) {
+    public void send(Action action) {
+        DuplicateDetector.getInstance().add(action.getUID());
+        String msg = action.toJSON().toString();
+        System.out.println("Sending: " + action.getUID());
+        DatagramPacket dp = new DatagramPacket(msg.getBytes(), msg.length(), this.multicastAddress, this.multicastPort);
         try {
             this.multicastSocket.send(dp);
         } catch (IOException e) {
@@ -58,5 +65,15 @@ public class MulticastChannel {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    // Probably shouldn't be here
+    private String getUID(JSONObject jo) {
+        try {
+            return jo.getString("uid");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

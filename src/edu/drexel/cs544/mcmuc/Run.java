@@ -7,7 +7,10 @@ public class Run {
 
     public static void main(String[] args) {
         Controller controller = Controller.getInstance();
+        System.out.println(controller.portsInUse);
         controller.useRoom("testchannel");
+        // controller.useRoom(52316);
+        System.out.println(controller.portsInUse);
         controller.sendToRoom("testchannel", new Message("dustin@testchannel", "Hello World"));
     }
 }

@@ -24,6 +24,10 @@ public class ConcurrentLimitedLinkedQueue<E> extends ConcurrentLinkedQueue<E> {
             super.remove();
         }
         // Add the object to be added
-        return super.add(o);
+        if (!super.contains(o)) {
+            return super.add(o);
+        } else {
+            return false;
+        }
     }
 }
