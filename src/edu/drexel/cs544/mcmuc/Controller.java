@@ -13,7 +13,7 @@ import edu.drexel.cs544.mcmuc.actions.Action;
 public class Controller extends Channel {
 
     public static final int CONTROL_PORT = 31941;
-    public Set<Integer> portsInUse = new TreeSet<Integer>();
+    public Set<Integer> portsInUse = Collections.synchronizedSet(new TreeSet<Integer>());
     private final Map<String, Room> rooms = Collections.synchronizedMap(new HashMap<String, Room>());
 
     Controller(int port) {
