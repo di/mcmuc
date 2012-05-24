@@ -112,7 +112,7 @@ public class Presence extends Action implements JSON {
             String rawStatus = json.getString("status");
             if(rawStatus.equalsIgnoreCase("online"))
             	this.status = Status.Online;
-            else if(rawStatus.equalsIgnoreCase("online"))
+            else if(rawStatus.equalsIgnoreCase("offline"))
             	this.status = Status.Offline;
             else
             	throw new Exception("Unsupported status");
