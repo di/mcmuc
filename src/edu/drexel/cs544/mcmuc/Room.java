@@ -15,7 +15,11 @@ import edu.drexel.cs544.mcmuc.actions.Presence;
 import edu.drexel.cs544.mcmuc.actions.Presence.Status;
 
 /**
- *
+ * A Room is a Channel tied to a specific port that users can exchange message actions on.
+ * The port is determined by a hash of the room name and the set of Channels already in use,
+ * both of which must be used to construct the Room. The Room carries the user's presence and nickname.
+ * The nickname is passed in at construction, the status is set to Online at construction but may
+ * be changed later.
  */
 public class Room extends Channel {
 	
@@ -23,8 +27,8 @@ public class Room extends Channel {
 	private String userName;
 	
 	/**
-	 * 
-	 * @param newPresence
+	 * Sets the user's per-room status
+	 * @param newPresence one of the enumerated Status values
 	 */
 	public void setStatus(Status newPresence)
 	{
@@ -32,8 +36,8 @@ public class Room extends Channel {
 	}
 	
 	/**
-	 * 
-	 * @return
+	 * Accessor for the user's per-room status
+	 * @return Status user's per-room status
 	 */
 	public Status getStatus()
 	{
@@ -41,8 +45,8 @@ public class Room extends Channel {
 	}
 	
 	/**
-	 * 
-	 * @return
+	 * Accessor for the user's per-room nickname
+	 * @return String the user's per-room nickname
 	 */
 	public String getUserName()
 	{
@@ -50,10 +54,12 @@ public class Room extends Channel {
 	}
 
 	/**
-	 * 
-	 * @param name
-	 * @param portsInUse
-	 * @param userName
+	 * Chooses a port for the room using the hash algorithm and the set of ports already in use,
+	 * sets the use's per-room status to Online, passes the userName to the room, and starts the
+	 * multicast thread for the room.
+	 * @param name String descriptive room name
+	 * @param portsInUse Set<Intenger> set of ports already in use (for hashing algorithm)
+	 * @param userName String user's per-room nickname
 	 */
     public Room(String name, Set<Integer> portsInUse, String userName) {
         super(choosePort(name, portsInUse));
@@ -105,9 +111,6 @@ public class Room extends Channel {
         return f;
     }
 
-    /**
-     * 
-     */
     @Override
     public void handleNewMessage(JSONObject jo) {
         Action action;
