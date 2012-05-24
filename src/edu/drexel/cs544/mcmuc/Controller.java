@@ -20,6 +20,7 @@ public class Controller extends Channel {
 
     public static final int CONTROL_PORT = 31941;
     public Set<Integer> portsInUse = Collections.synchronizedSet(new TreeSet<Integer>());
+    public Set<Integer> roomPortsInUse = Collections.synchronizedSet(new TreeSet<Integer>());
     private final Map<String, Room> rooms = Collections.synchronizedMap(new HashMap<String, Room>());
     private final Map<Integer, Forwarder> forwards = Collections.synchronizedMap(new HashMap<Integer, Forwarder>());
 
@@ -78,13 +79,15 @@ public class Controller extends Channel {
     
     public void leaveRoom(String roomName)
     {
-    	rooms.remove(roomName);
+    	Room r = rooms.remove(roomName);
+    	roomPortsInUse.remove(r.getPort());
     }
 
     public void useRoom(String roomName, String userName) {
         Room room = new Room(roomName, portsInUse, userName);
         portsInUse.add(room.getPort());
         rooms.put(roomName, room);
+        roomPortsInUse.add(room.getPort());
     }
     
     public void setRoomStatus(String roomName, Status presence)

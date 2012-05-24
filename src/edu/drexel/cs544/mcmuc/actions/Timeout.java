@@ -1,10 +1,13 @@
 package edu.drexel.cs544.mcmuc.actions;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.json.JSONObject;
 
 import edu.drexel.cs544.mcmuc.Channel;
+import edu.drexel.cs544.mcmuc.Controller;
 
 /**
  * The timeout action is used by clients to find channels clients are no longer
@@ -28,6 +31,23 @@ public class Timeout extends RoomAction {
 
     @Override
     public void process(Channel channel) {
-        // TODO Auto-generated method stub
+        class Runner implements Runnable {
+            Timeout message;
+
+            Runner(Timeout m) {
+                message = m;
+            }
+
+            public void run() {
+            	Set<Integer> roomPortsInUse = Controller.getInstance().roomPortsInUse;
+            	roomPortsInUse.retainAll(message.getRooms());
+                if (!roomPortsInUse.isEmpty()) {
+                    Preserve reply = new Preserve(new ArrayList<Integer>(roomPortsInUse));
+                    Controller.getInstance().send(reply);
+                }
+            }
+        }
+        Thread t = new Thread(new Runner(this));
+        t.start();
     }
 }
