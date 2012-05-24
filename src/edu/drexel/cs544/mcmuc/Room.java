@@ -64,8 +64,8 @@ public class Room extends Channel {
 	 */
     public Room(String name, Set<Integer> portsInUse, String userName) {
         super(choosePort(name, portsInUse));
-        setStatus(Status.Online);
         this.userName = userName;
+        setStatus(Status.Online);
         MulticastReceiveRunnable runner = new MulticastReceiveRunnable(this);
         Thread runnerThread = new Thread(runner);
         runnerThread.start();
