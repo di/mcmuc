@@ -100,7 +100,7 @@ public class Presence extends Action implements JSON {
      * Deserializes JSON into a Presence object. The status key must have 'offline' or 'online' as its value.
      * The keys key/value pair is optional.
      * 
-     * @param json
+     * @param json the JSON to deserialize
      * @throws Exception thrown if status is not 'online' or 'offline'
      */
     public Presence(JSONObject json) throws Exception {

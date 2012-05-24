@@ -19,10 +19,19 @@ public class UseRooms extends RoomAction {
 
     public static final String action = "use-rooms";
 
+    /**
+     * The use-rooms action must carry a list of rooms that receiving clients should
+     * begin or continue forwarding traffic for.
+     * @param rooms List<Integer> the list of the rooms
+     */
     public UseRooms(List<Integer> rooms) {
         super(rooms, UseRooms.action);
     }
 
+    /**
+     * Deserializes JSON into a UseRooms object
+     * @param json the JSON to deserialize
+     */
     public UseRooms(JSONObject json) {
         super(json, UseRooms.action);
     }
