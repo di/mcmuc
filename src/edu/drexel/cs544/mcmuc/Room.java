@@ -33,6 +33,7 @@ public class Room extends Channel {
 	public void setStatus(Status newPresence)
 	{
 		roomPresence = newPresence;
+    	this.send(new Presence(this.getUserName(), roomPresence));
 	}
 	
 	/**

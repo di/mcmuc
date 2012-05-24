@@ -80,8 +80,8 @@ public class Controller extends Channel {
     
     public void leaveRoom(String roomName)
     {
+    	setRoomStatus(roomName, Presence.Status.Offline);
     	Room r = rooms.remove(roomName);
-    	r.send(new Presence(roomName, Presence.Status.Offline));
     	roomPortsInUse.remove(r.getPort());
     }
 
