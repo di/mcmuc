@@ -37,7 +37,7 @@ public class Presence extends Action implements JSON {
      * @param keys
      * @throws Exception thrown if status is not 'online' or 'offline'
      */
-    private void init(String from, Status status, List<Certificate> keys) throws Exception {
+    private void init(String from, Status status, List<Certificate> keys) {
         this.from = from;
         this.status = status;
         this.keys = keys;
@@ -52,7 +52,7 @@ public class Presence extends Action implements JSON {
      * @param keys
      * @throws Exception
      */
-    public Presence(String from, Status status, List<Certificate> keys) throws Exception {
+    public Presence(String from, Status status, List<Certificate> keys) {
         init(from, status, keys);
     }
 
@@ -64,7 +64,7 @@ public class Presence extends Action implements JSON {
      * @param status
      * @throws Exception
      */
-    public Presence(String from, Status status) throws Exception {
+    public Presence(String from, Status status) {
         init(from, status, null);
     }
 
