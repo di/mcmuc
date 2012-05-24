@@ -11,6 +11,7 @@ import org.json.JSONObject;
 
 import edu.drexel.cs544.mcmuc.actions.Action;
 import edu.drexel.cs544.mcmuc.actions.ListRooms;
+import edu.drexel.cs544.mcmuc.actions.Presence.Status;
 import edu.drexel.cs544.mcmuc.actions.UseRooms;
 
 public class Controller extends Channel {
@@ -67,10 +68,20 @@ public class Controller extends Channel {
         }
     }
 
-    public void useRoom(String roomName) {
-        Room room = new Room(roomName, portsInUse);
+    public void useRoom(String roomName, String userName) {
+        Room room = new Room(roomName, portsInUse, userName);
         portsInUse.add(room.getPort());
         rooms.put(roomName, room);
+    }
+    
+    public void setRoomStatus(String roomName, Status presence)
+    {
+        Room room = rooms.get(roomName);
+        if (room != null) {
+            room.setStatus(presence);
+        } else {
+            System.err.println("Room not found!");
+        }
     }
 
     public void sendToRoom(String roomName, Action action) {

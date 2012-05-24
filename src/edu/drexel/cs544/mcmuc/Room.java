@@ -10,11 +10,32 @@ import org.json.JSONObject;
 
 import edu.drexel.cs544.mcmuc.actions.Action;
 import edu.drexel.cs544.mcmuc.actions.Message;
+import edu.drexel.cs544.mcmuc.actions.Presence.Status;
 
 public class Room extends Channel {
+	
+	private Status roomPresence;
+	private String userName;
+	
+	public void setStatus(Status newPresence)
+	{
+		roomPresence = newPresence;
+	}
+	
+	public Status getStatus()
+	{
+		return roomPresence;
+	}
+	
+	public String getUserName()
+	{
+		return userName;
+	}
 
-    public Room(String name, Set<Integer> portsInUse) {
+    public Room(String name, Set<Integer> portsInUse, String userName) {
         super(choosePort(name, portsInUse));
+        roomPresence = Status.Online;
+        this.userName = userName;
         MulticastReceiveRunnable runner = new MulticastReceiveRunnable(this);
         Thread runnerThread = new Thread(runner);
         runnerThread.start();

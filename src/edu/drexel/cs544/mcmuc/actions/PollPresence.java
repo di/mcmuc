@@ -5,6 +5,7 @@ import org.json.JSONObject;
 
 import edu.drexel.cs544.mcmuc.Channel;
 import edu.drexel.cs544.mcmuc.JSON;
+import edu.drexel.cs544.mcmuc.Room;
 
 /**
  * PollPresence is used to query the other clients in a chat room about their online/offline status.
@@ -49,7 +50,21 @@ public class PollPresence extends Action implements JSON {
 
     @Override
     public void process(Channel channel) {
-        // TODO Auto-generated method stub
+        class Runner implements Runnable {
+            Channel channel;
+
+            Runner(Channel c) {
+                channel = c;
+            }
+
+            public void run() {
+            	Room r = (Room)channel;
+            	Presence p = new Presence(r.getUserName(),r.getStatus());
+                channel.send(p);
+            }
+        }
+        Thread t = new Thread(new Runner(channel));
+        t.start();
 
     }
 
