@@ -23,9 +23,11 @@ import edu.drexel.cs544.mcmuc.JSON;
 public class Presence extends Action implements JSON {
 
     private String from;
-    private String status;
+    private Status status;
     private List<Certificate> keys;
 
+    public enum Status { Online, Offline }
+    
     /**
      * Initializes the from, status, and keys attributes of the Presence class. Status must be either:
      * 'online' or 'offline'
@@ -35,10 +37,7 @@ public class Presence extends Action implements JSON {
      * @param keys
      * @throws Exception thrown if status is not 'online' or 'offline'
      */
-    private void init(String from, String status, List<Certificate> keys) throws Exception {
-        if (!status.equalsIgnoreCase("online") && !status.equalsIgnoreCase("offline"))
-            throw new Exception("Status must be online or offline");
-
+    private void init(String from, Status status, List<Certificate> keys) throws Exception {
         this.from = from;
         this.status = status;
         this.keys = keys;
@@ -53,7 +52,7 @@ public class Presence extends Action implements JSON {
      * @param keys
      * @throws Exception
      */
-    public Presence(String from, String status, List<Certificate> keys) throws Exception {
+    public Presence(String from, Status status, List<Certificate> keys) throws Exception {
         init(from, status, keys);
     }
 
@@ -65,7 +64,7 @@ public class Presence extends Action implements JSON {
      * @param status
      * @throws Exception
      */
-    public Presence(String from, String status) throws Exception {
+    public Presence(String from, Status status) throws Exception {
         init(from, status, null);
     }
 
@@ -83,7 +82,7 @@ public class Presence extends Action implements JSON {
      * 
      * @return
      */
-    public String getStatus() {
+    public Status getStatus() {
         return this.status;
     }
 
@@ -108,9 +107,14 @@ public class Presence extends Action implements JSON {
 
         try {
             this.from = json.getString("from");
-            this.status = json.getString("status");
-            if (!this.status.equalsIgnoreCase("online") && !this.status.equalsIgnoreCase("offline"))
-                throw new Exception("Status must be online or offline");
+            
+            String rawStatus = json.getString("status");
+            if(rawStatus.equalsIgnoreCase("online"))
+            	this.status = Status.Online;
+            else if(rawStatus.equalsIgnoreCase("online"))
+            	this.status = Status.Offline;
+            else
+            	throw new Exception("Unsupported status");
 
             if (json.has("keys")) {
                 JSONArray keys = json.getJSONArray("keys");
@@ -143,7 +147,12 @@ public class Presence extends Action implements JSON {
             json.put("action", "presence");
             json.put("uid", uid);
             json.put("from", from);
-            json.put("status", status);
+            
+            if(status == Status.Offline)
+            	json.put("status", "offline");
+            else if(status == Status.Online)
+            	json.put("status","online");
+            
             if (keys != null) {
                 Iterator<Certificate> itr = keys.iterator();
                 while (itr.hasNext()) {
@@ -171,8 +180,12 @@ public class Presence extends Action implements JSON {
             }
 
             public void run() {
-                Controller.getInstance().display("Presence from " + message.getFrom() + ": " + message.getStatus() + " (" + message.getUID() + ")");
-                List<Certificate> keys = message.getKeys();
+            	if(message.getStatus() == Status.Online)
+            		Controller.getInstance().display(message.getFrom() + " is online " + " (" + message.getUID() + ")");
+            	else if (message.getStatus() == Status.Offline)
+            		Controller.getInstance().display(message.getFrom() + " is offline " + " (" + message.getUID() + ")");
+            	
+            	List<Certificate> keys = message.getKeys();
                 if(keys != null)
                 {
                 	Iterator<Certificate> it = keys.iterator();
