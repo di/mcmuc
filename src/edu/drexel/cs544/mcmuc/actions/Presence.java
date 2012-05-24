@@ -21,7 +21,8 @@ import edu.drexel.cs544.mcmuc.JSON;
  * {'action':'presence','from':'<from>','status':'<status>','keys':[<keys>]} if they are.
  */
 public class Presence extends Action implements JSON {
-
+	public static final String action = "presence";
+	
     private String from;
     private Status status;
     private List<Certificate> keys;
@@ -103,7 +104,7 @@ public class Presence extends Action implements JSON {
      * @throws Exception thrown if status is not 'online' or 'offline'
      */
     public Presence(JSONObject json) throws Exception {
-        super(json, "presence");
+        super(json, Presence.action);
 
         try {
             this.from = json.getString("from");
@@ -144,7 +145,7 @@ public class Presence extends Action implements JSON {
         JSONArray list = new JSONArray();
 
         try {
-            json.put("action", "presence");
+            json.put("action", Presence.action);
             json.put("uid", uid);
             json.put("from", from);
             

@@ -13,13 +13,14 @@ import edu.drexel.cs544.mcmuc.Channel;
  * The JSON format of a Preserve is {'uid':'<uid>','action':'preserve','rooms':'<rooms>'}
  */
 public class Preserve extends RoomAction {
-
+	public static final String action = "preserve";
+	
     public Preserve(List<Integer> rooms) {
-        super(rooms, "preserve");
+        super(rooms, Preserve.action);
     }
 
     public Preserve(JSONObject json) {
-        super(json, "preserve");
+        super(json, Preserve.action);
     }
 
     @Override

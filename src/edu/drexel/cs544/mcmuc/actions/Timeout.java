@@ -16,13 +16,14 @@ import edu.drexel.cs544.mcmuc.Channel;
  * 
  */
 public class Timeout extends RoomAction {
-
+	public static final String action = "timeout";
+	
     public Timeout(List<Integer> rooms) {
-        super(rooms, "timeout");
+        super(rooms, Timeout.action);
     }
 
     public Timeout(JSONObject json) {
-        super(json, "timeout");
+        super(json, Timeout.action);
     }
 
     @Override

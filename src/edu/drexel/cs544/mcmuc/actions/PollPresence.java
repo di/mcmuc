@@ -14,7 +14,8 @@ import edu.drexel.cs544.mcmuc.Room;
  * The JSON format of a PollPresence is {'uid':'<uid>','action':'poll-presence'}
  */
 public class PollPresence extends Action implements JSON {
-
+	public static final String action = "poll-presence";
+	
     /**
      * No options are required for the construction of a PollPresence message
      */
@@ -28,7 +29,7 @@ public class PollPresence extends Action implements JSON {
      * @param json
      */
     public PollPresence(JSONObject json) {
-        super(json, "poll-presence");
+        super(json, PollPresence.action);
     }
 
     /**
@@ -39,7 +40,7 @@ public class PollPresence extends Action implements JSON {
         JSONObject json = new JSONObject();
 
         try {
-            json.put("action", "poll-presence");
+            json.put("action", PollPresence.action);
             json.put("uid", uid);
         } catch (JSONException e) {
 
