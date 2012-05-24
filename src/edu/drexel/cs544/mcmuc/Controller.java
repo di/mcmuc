@@ -75,6 +75,11 @@ public class Controller extends Channel {
             // This port is already in use, either by a Room or Forwarder
         }
     }
+    
+    public void leaveRoom(String roomName)
+    {
+    	rooms.remove(roomName);
+    }
 
     public void useRoom(String roomName, String userName) {
         Room room = new Room(roomName, portsInUse, userName);
