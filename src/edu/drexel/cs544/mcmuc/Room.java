@@ -14,26 +14,47 @@ import edu.drexel.cs544.mcmuc.actions.PollPresence;
 import edu.drexel.cs544.mcmuc.actions.Presence;
 import edu.drexel.cs544.mcmuc.actions.Presence.Status;
 
+/**
+ *
+ */
 public class Room extends Channel {
 	
 	private Status roomPresence;
 	private String userName;
 	
+	/**
+	 * 
+	 * @param newPresence
+	 */
 	public void setStatus(Status newPresence)
 	{
 		roomPresence = newPresence;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public Status getStatus()
 	{
 		return roomPresence;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public String getUserName()
 	{
 		return userName;
 	}
 
+	/**
+	 * 
+	 * @param name
+	 * @param portsInUse
+	 * @param userName
+	 */
     public Room(String name, Set<Integer> portsInUse, String userName) {
         super(choosePort(name, portsInUse));
         roomPresence = Status.Online;
@@ -43,6 +64,21 @@ public class Room extends Channel {
         runnerThread.start();
     }
 
+    /**
+     * The protocol uses a double hashing algorithm: it uses one hash value as a starting 
+     * point and repeatedly steps forward an interval determined by second hash function 
+     * until an unused port is found. A good hash function will map inputs evenly over the
+     * output range, as the computational cost of hashing increases with the number of 
+     * collisions. Double hashing minimizes collisions more effectively than linear or 
+     * quadratic probing strategies. The i-th position of given value x, in a range of
+     * size n is then F(x, i) = G(x) + i * H(x) mod n. Here, G and H should each produce 
+     * a 32-bit signed two's complement integer (twice the range of dynamic ports) using 
+     * the concatenated first four bytes of the MD5 cryptographic hash for G and SHA-1 for H.
+     *   
+     * @param name String descriptive name of room
+     * @param portsInUse Set<Integer> ports of rooms already being used (to avoid collisions)
+     * @return int the port to use for the given room
+     */
     public static int choosePort(String name, Set<Integer> portsInUse) {
         int f = -1;
 
@@ -69,6 +105,9 @@ public class Room extends Channel {
         return f;
     }
 
+    /**
+     * 
+     */
     @Override
     public void handleNewMessage(JSONObject jo) {
         Action action;
