@@ -10,6 +10,8 @@ import org.json.JSONObject;
 
 import edu.drexel.cs544.mcmuc.actions.Action;
 import edu.drexel.cs544.mcmuc.actions.Message;
+import edu.drexel.cs544.mcmuc.actions.PollPresence;
+import edu.drexel.cs544.mcmuc.actions.Presence;
 import edu.drexel.cs544.mcmuc.actions.Presence.Status;
 
 public class Room extends Channel {
@@ -71,15 +73,27 @@ public class Room extends Channel {
     public void handleNewMessage(JSONObject jo) {
         Action action;
         String actionString = "";
+        
         try {
             actionString = jo.getString("action");
         } catch (JSONException e) {
             System.err.println("Message does not have action.");
             e.printStackTrace();
         }
+        
         if (actionString.equalsIgnoreCase(Message.action)) {
             action = new Message(jo);
             action.process(this);
+        } else if(actionString.equalsIgnoreCase(Presence.action)) {
+        	try {
+				action = new Presence(jo);
+				action.process(this);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+        } else if(actionString.equalsIgnoreCase(PollPresence.action)){
+        	action = new PollPresence(jo);
+        	action.process(this);
         } else {
             System.err.println("Message action type not supported: " + actionString);
         }

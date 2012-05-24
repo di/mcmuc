@@ -12,6 +12,8 @@ import org.json.JSONObject;
 import edu.drexel.cs544.mcmuc.actions.Action;
 import edu.drexel.cs544.mcmuc.actions.ListRooms;
 import edu.drexel.cs544.mcmuc.actions.Presence.Status;
+import edu.drexel.cs544.mcmuc.actions.Preserve;
+import edu.drexel.cs544.mcmuc.actions.Timeout;
 import edu.drexel.cs544.mcmuc.actions.UseRooms;
 
 public class Controller extends Channel {
@@ -45,8 +47,14 @@ public class Controller extends Channel {
         if (actionString.equalsIgnoreCase(UseRooms.action)) {
             action = new UseRooms(jo);
             action.process(this);
-        } else if(actionString.equalsIgnoreCase("list-rooms")) {
+        } else if(actionString.equalsIgnoreCase(ListRooms.action)) {
         	action = new ListRooms(jo);
+        	action.process(this);
+        } else if(actionString.equalsIgnoreCase(Timeout.action)) {
+        	action = new Timeout(jo);
+        	action.process(this);
+        } else if(actionString.equalsIgnoreCase(Preserve.action)) {
+        	action = new Preserve(jo);
         	action.process(this);
         } else {
         
