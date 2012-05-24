@@ -21,10 +21,19 @@ import edu.drexel.cs544.mcmuc.Controller;
 public class Timeout extends RoomAction {
 	public static final String action = "timeout";
 	
+    /**
+     * The timeout action must carry a list of rooms that receiving clients may
+     * reply with a preserve action to indicate continuing use of the room
+     * @param rooms List<Integer> the list of the rooms
+     */
     public Timeout(List<Integer> rooms) {
         super(rooms, Timeout.action);
     }
 
+    /**
+     * Deserializes JSON into a Timeout object
+     * @param json the JSON to deserialize
+     */
     public Timeout(JSONObject json) {
         super(json, Timeout.action);
     }

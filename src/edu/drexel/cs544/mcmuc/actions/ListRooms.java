@@ -35,6 +35,10 @@ public class ListRooms extends RoomAction {
         super(ListRooms.action);
     }
 
+    /**
+     * Deserializes JSON into a ListRooms object
+     * @param json the JSON to deserialize
+     */
     public ListRooms(JSONObject json) {
         super(json, ListRooms.action);
     }

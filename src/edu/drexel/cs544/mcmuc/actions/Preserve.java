@@ -14,11 +14,19 @@ import edu.drexel.cs544.mcmuc.Channel;
  */
 public class Preserve extends RoomAction {
 	public static final String action = "preserve";
-	
+    /**
+     * The preserve action must carry a list of rooms that clients should
+     * send as a response to a timeout action
+     * @param rooms List<Integer> the list of the rooms
+     */
     public Preserve(List<Integer> rooms) {
         super(rooms, Preserve.action);
     }
 
+    /**
+     * Deserializes JSON into a Preserve object
+     * @param json the JSON to deserialize
+     */
     public Preserve(JSONObject json) {
         super(json, Preserve.action);
     }
