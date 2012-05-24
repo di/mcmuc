@@ -6,11 +6,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * ActionBase is the base class for all message types. All messages must have an unique identifier,
- * which is automatically assigned for new Actions, and restored for Actions created through JSON
- * deserialization. If an Action is created by deserializing JSON, an expected action type that
- * is compared against the found type must be passed in.
- * 
+ * ActionBase is the top-level base class for all action types. All actions must have an unique 
+ * identifier,  which is automatically assigned for new messages, and restored for actions 
+ * created through JSON deserialization. If an action is created by deserializing JSON, 
+ * an expected action type that is compared against the found type must be passed in.
  */
 public class ActionBase {
     String uid;
@@ -46,7 +45,7 @@ public class ActionBase {
     /**
      * Does not check against the action type and does not perform any
      * additional deserialization - this is left to the child classes to implement.
-     * @param json the serialized JSON representation of the Action
+     * @param json the serialized JSON representation of the action
      */
     public ActionBase(JSONObject json) {
         try {

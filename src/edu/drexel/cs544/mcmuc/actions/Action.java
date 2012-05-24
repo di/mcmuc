@@ -5,25 +5,39 @@ import org.json.JSONObject;
 import edu.drexel.cs544.mcmuc.Channel;
 
 /**
- * Action is the base class for all message types. All messages must have an unique identifier,
- * which is automatically assigned for new Actions, and restored for Actions created through JSON
- * deserialization. If an Action is created by deserializing JSON, an expected action type that
- * is compared against the found type must be passed in.
- * 
+ * Action extends ActionBase and is the direct parent class for the various action types.
+ * All child classes are concrete actions that represent a message and must provide their
+ * processing and JSON serialization
  */
 public abstract class Action extends ActionBase {
 
+	/**
+	 * Uses ActionBase to assign an UID
+	 */
 	public Action()
 	{
 		super();
 	}
 	
+	/**
+	 * Uses ActionBases to deserialize the JSON, checking the expection action type
+	 * @param json
+	 * @param expectedAction
+	 */
 	public Action(JSONObject json, String expectedAction)
 	{
 		super(json,expectedAction);
 	}
 	
+	/**
+	 * Process the action and send any necessary replies - implementation left to child classes
+	 * @param channel
+	 */
     public abstract void process(Channel channel);
 
+    /**
+     * Serializes the Action to JSON - implementation left to child classes
+     * @return
+     */
     public abstract JSONObject toJSON();
 }
