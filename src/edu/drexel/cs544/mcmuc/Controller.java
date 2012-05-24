@@ -11,7 +11,6 @@ import org.json.JSONObject;
 
 import edu.drexel.cs544.mcmuc.actions.Action;
 import edu.drexel.cs544.mcmuc.actions.ListRooms;
-import edu.drexel.cs544.mcmuc.actions.Presence;
 import edu.drexel.cs544.mcmuc.actions.Presence.Status;
 import edu.drexel.cs544.mcmuc.actions.Preserve;
 import edu.drexel.cs544.mcmuc.actions.Timeout;
@@ -80,8 +79,8 @@ public class Controller extends Channel {
     
     public void leaveRoom(String roomName)
     {
-    	setRoomStatus(roomName, Presence.Status.Offline);
     	Room r = rooms.remove(roomName);
+    	r.setStatus(Status.Offline);
     	roomPortsInUse.remove(r.getPort());
     }
 
