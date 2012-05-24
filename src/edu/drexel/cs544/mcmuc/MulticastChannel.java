@@ -10,6 +10,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import edu.drexel.cs544.mcmuc.actions.Action;
+import edu.drexel.cs544.mcmuc.actions.ActionBase;
 
 public class MulticastChannel {
 
@@ -32,9 +33,10 @@ public class MulticastChannel {
     }
 
     public void send(JSONObject jo) {
-        DuplicateDetector.getInstance().add(getUID(jo));
+    	ActionBase a = new ActionBase(jo);
+        DuplicateDetector.getInstance().add(a.getUID());
         String msg = jo.toString();
-        System.out.println("Sending: " + getUID(jo));
+        System.out.println("Sending: " + a.getUID());
         DatagramPacket dp = new DatagramPacket(msg.getBytes(), msg.length(), this.multicastAddress, this.multicastPort);
         try {
             this.multicastSocket.send(dp);
@@ -65,15 +67,5 @@ public class MulticastChannel {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    // Probably shouldn't be here
-    private String getUID(JSONObject jo) {
-        try {
-            return jo.getString("uid");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 }
