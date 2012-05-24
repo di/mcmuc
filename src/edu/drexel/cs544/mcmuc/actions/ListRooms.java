@@ -1,5 +1,6 @@
 package edu.drexel.cs544.mcmuc.actions;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -51,7 +52,7 @@ public class ListRooms extends RoomAction {
             	Set<Integer> roomsInUse = Controller.getInstance().portsInUse;
                 roomsInUse.retainAll(message.getRooms());
                 if (!roomsInUse.isEmpty()) {
-                    UseRooms useReply = new UseRooms((List<Integer>) roomsInUse);
+                    UseRooms useReply = new UseRooms(new ArrayList<Integer>(roomsInUse));
                     Controller.getInstance().send(useReply);
                 }
             }
