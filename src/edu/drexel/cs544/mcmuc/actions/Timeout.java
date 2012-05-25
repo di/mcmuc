@@ -50,7 +50,7 @@ public class Timeout extends RoomAction {
             public void run() {
             	Set<Integer> roomPortsInUse = Controller.getInstance().roomPortsInUse;
             	roomPortsInUse.retainAll(message.getRooms());
-            	//TODO Stop each room's primary timer and start secondary timer
+            	//TODO Reset secondary timer for each room in roomPortsInUse
                 if (!roomPortsInUse.isEmpty()) {
                     Preserve reply = new Preserve(new ArrayList<Integer>(roomPortsInUse));
                     Controller.getInstance().send(reply);
