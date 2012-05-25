@@ -53,20 +53,48 @@ public abstract class Channel {
         }
     }
 
+    /**
+     * Passes the action to the multicast channel for sending
+     * @param a Action action to send
+     * @see MulticastChannel
+     */
     public void send(Action a) {
         mcc.send(a);
     }
 
+    /**
+     * Passes the action to the multicast channel for sending
+     * @param jo a JSON serialization of an action to send
+     * @see MulticastChannel
+     */
     public void send(JSONObject jo) {
         mcc.send(jo);
     }
 
+    /**
+     * Coordinates the processing of a newly received action (serialized as JSON).
+     * Implementation is left to the child classes, who will determine the action type
+     * and typically let that action handle its own processing
+     * @param jo a JSON serialization of a newly received action
+     * @see Action
+     * @see Controller
+     * @see Room
+     */
     public abstract void handleNewMessage(JSONObject jo);
 
+    /**
+     * Passes the datagram packet to the multicast channel for receival
+     * @param dp a datagram packet
+     * @see MulticastChannel
+     */
     public void receive(DatagramPacket dp) {
         mcc.receive(dp);
     }
 
+    /**
+     * Gets the port used by the underlying multicast channel
+     * @return int the multicast port
+     */
     public int getPort() {
         return mcc.multicastPort;
     }
