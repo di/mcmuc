@@ -1,16 +1,19 @@
 package edu.drexel.cs544.mcmuc;
 
-import java.util.List;
-
 public class PrimaryTimer implements Runnable {
 
-	List<Integer> ports;
+	int port;
 
-    public PrimaryTimer(List<Integer> ports) {
-        this.ports = ports;
+    public PrimaryTimer(int port) {
+        this.port = port;
+    }
+    
+    public PrimaryTimer(Integer port)
+    {
+    	this.port = port;
     }
 
     public void run() {
-    	//TODO create a Timeout action for the rooms on ports and send it through Controller
+    	//TODO create a Timeout action for the room on port and send it through Controller
     }
 }

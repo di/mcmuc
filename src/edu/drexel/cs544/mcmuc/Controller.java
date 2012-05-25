@@ -2,6 +2,7 @@ package edu.drexel.cs544.mcmuc;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -66,6 +67,16 @@ public class Controller extends Channel {
     public void display(String displayString) {
         System.out.println(displayString);
     }
+    
+    public void resetPrimaryTimer(int roomPort)
+    {
+    	//TODO implement
+    }
+    
+    public void resetSecondaryTimer(int roomPort)
+    {
+    	//TODO implement
+    }
 
     public void useRoom(int roomPort) {
         if (!portsInUse.contains(roomPort)) {
@@ -75,6 +86,29 @@ public class Controller extends Channel {
         } else {
             // This port is already in use, either by a Room or Forwarder
         }
+    }
+    
+    public void leaveRoom(int roomPort){
+    	if(portsInUse.contains(roomPort))
+    	{
+    		portsInUse.remove(roomPort);
+    		if(forwards.containsKey(roomPort))
+    			forwards.remove(roomPort);
+    		else
+    		{
+    			roomPortsInUse.remove(roomPort);
+    			Iterator<Room> it = rooms.values().iterator();
+    			while(it.hasNext())
+    			{
+    				Room r = it.next();
+    				if(r.getPort() == roomPort)
+    				{
+    					r.setStatus(Status.Offline);
+    					it.remove();
+    				}
+    			}
+    		}
+    	}
     }
     
     public void leaveRoom(String roomName)

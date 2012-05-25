@@ -1,6 +1,10 @@
 package edu.drexel.cs544.mcmuc;
 
 import java.net.DatagramPacket;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 import org.json.JSONObject;
 
@@ -9,9 +13,27 @@ import edu.drexel.cs544.mcmuc.actions.Action;
 public abstract class Channel {
 
     private MulticastChannel mcc;
+    
+	private PrimaryTimer primary;
+	private SecondaryTimer secondary;
+	
+	private ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
+	
+	@SuppressWarnings("unused")
+	private ScheduledFuture<?> primaryHandler;
+	@SuppressWarnings("unused")
+	private ScheduledFuture<?> secondaryHandler;
+	
+	private static int maxDelay = 30;
+	private static int minDelay = 10;
 
     Channel(int port) {
         mcc = new MulticastChannel(port);
+        if(port != Controller.CONTROL_PORT)
+        {
+	        primary = new PrimaryTimer(port);
+	        resetPrimaryTimer();
+        }
     }
 
     public void send(Action a) {
@@ -30,5 +52,20 @@ public abstract class Channel {
 
     public int getPort() {
         return mcc.multicastPort;
+    }
+    
+    public void resetPrimaryTimer()
+    {
+    	if(getPort() != Controller.CONTROL_PORT)
+    	{
+    		int delay = minDelay + (int)(Math.random() * ((maxDelay - minDelay) + 1));
+    		primaryHandler = scheduler.schedule(primary, delay, TimeUnit.SECONDS);
+    	}
+    }
+    
+    public void resetSecondaryTimer()
+    {
+    	if(getPort() != Controller.CONTROL_PORT)
+    		secondaryHandler = scheduler.schedule(secondary, 1, TimeUnit.SECONDS);
     }
 }

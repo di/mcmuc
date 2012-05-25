@@ -4,7 +4,6 @@ import java.nio.ByteBuffer;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Set;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -59,7 +58,7 @@ public class Room extends Channel {
 	 * sets the use's per-room status to Online, passes the userName to the room, and starts the
 	 * multicast thread for the room.
 	 * @param name String descriptive room name
-	 * @param portsInUse Set<Intenger> set of ports already in use (for hashing algorithm)
+	 * @param portsInUse Set<Integer> set of ports already in use (for hashing algorithm)
 	 * @param userName String user's per-room nickname
 	 */
     public Room(String name, Set<Integer> portsInUse, String userName) {
@@ -70,7 +69,7 @@ public class Room extends Channel {
         Thread runnerThread = new Thread(runner);
         runnerThread.start();
     }
-
+    
     /**
      * The protocol uses a double hashing algorithm: it uses one hash value as a starting 
      * point and repeatedly steps forward an interval determined by second hash function 
