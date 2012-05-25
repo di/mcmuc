@@ -19,13 +19,11 @@ public abstract class Channel {
 	
 	private ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
 	
-	@SuppressWarnings("unused")
 	private ScheduledFuture<?> primaryHandler;
-	@SuppressWarnings("unused")
 	private ScheduledFuture<?> secondaryHandler;
 	
-	private static int maxDelay = 10;
-	private static int minDelay = 5;
+	private static int maxDelay = 1;
+	private static int minDelay = 0;
 	private static int secondDelay = 1;
 
     Channel(int port) {
@@ -60,6 +58,8 @@ public abstract class Channel {
     	if(getPort() != Controller.CONTROL_PORT)
     	{
     		int delay = minDelay + (int)(Math.random() * ((maxDelay - minDelay) + 1));
+    		if(primaryHandler != null)
+    			primaryHandler.cancel(true);
     		primaryHandler = scheduler.schedule(primary, delay, TimeUnit.MINUTES);
     	}
     }
@@ -67,6 +67,10 @@ public abstract class Channel {
     public void resetSecondaryTimer()
     {
     	if(getPort() != Controller.CONTROL_PORT)
+    	{
+    		if(secondaryHandler != null)
+    			secondaryHandler.cancel(true);
     		secondaryHandler = scheduler.schedule(secondary, secondDelay, TimeUnit.MINUTES);
+    	}
     }
 }
