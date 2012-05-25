@@ -1,10 +1,13 @@
 package edu.drexel.cs544.mcmuc.actions;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.json.JSONObject;
 
 import edu.drexel.cs544.mcmuc.Channel;
+import edu.drexel.cs544.mcmuc.Controller;
 
 /**
  * The preserve action is used to reply to a timeout action, indicating that
@@ -33,6 +36,18 @@ public class Preserve extends RoomAction {
 
     @Override
     public void process(Channel channel) {
-        // TODO Auto-generated method stub
+        class Runner implements Runnable {
+            Preserve message;
+
+            Runner(Preserve m) {
+                message = m;
+            }
+
+            public void run() {
+            	//TODO Loop through each room in message.getRooms() and reset the primary timer
+            }
+        }
+        Thread t = new Thread(new Runner(this));
+        t.start();
     }
 }
