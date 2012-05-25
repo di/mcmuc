@@ -24,8 +24,9 @@ public abstract class Channel {
 	@SuppressWarnings("unused")
 	private ScheduledFuture<?> secondaryHandler;
 	
-	private static int maxDelay = 30;
-	private static int minDelay = 10;
+	private static int maxDelay = 10;
+	private static int minDelay = 5;
+	private static int secondDelay = 1;
 
     Channel(int port) {
         mcc = new MulticastChannel(port);
@@ -59,13 +60,13 @@ public abstract class Channel {
     	if(getPort() != Controller.CONTROL_PORT)
     	{
     		int delay = minDelay + (int)(Math.random() * ((maxDelay - minDelay) + 1));
-    		primaryHandler = scheduler.schedule(primary, delay, TimeUnit.SECONDS);
+    		primaryHandler = scheduler.schedule(primary, delay, TimeUnit.MINUTES);
     	}
     }
     
     public void resetSecondaryTimer()
     {
     	if(getPort() != Controller.CONTROL_PORT)
-    		secondaryHandler = scheduler.schedule(secondary, 1, TimeUnit.SECONDS);
+    		secondaryHandler = scheduler.schedule(secondary, secondDelay, TimeUnit.MINUTES);
     }
 }
