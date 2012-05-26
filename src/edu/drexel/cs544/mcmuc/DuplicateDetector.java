@@ -34,6 +34,12 @@ public class DuplicateDetector {
         q = new ConcurrentLimitedLinkedQueue<String>(size);
     }
     
+    /**
+     * A message's hash is the concatenation of its unique identifer (uid) and the MD5
+     * hash of its JSON serialization
+     * @param jo Action serialized into JSON to be hashed
+     * @return String the hash
+     */
     private String getMessageHash(JSONObject jo)
     {
     	String hash = "";
