@@ -42,9 +42,11 @@ public class Timeout extends RoomAction {
     public void process(Channel channel) {
         class Runner implements Runnable {
             Timeout message;
+            Channel channel;
 
-            Runner(Timeout m) {
+            Runner(Timeout m, Channel c) {
                 message = m;
+                channel = c;
             }
 
             public void run() {
@@ -55,9 +57,10 @@ public class Timeout extends RoomAction {
                     Preserve reply = new Preserve(new ArrayList<Integer>(roomPortsInUse));
                     Controller.getInstance().send(reply);
                 }
+                channel.send(message);
             }
         }
-        Thread t = new Thread(new Runner(this));
+        Thread t = new Thread(new Runner(this,channel));
         t.start();
     }
 }

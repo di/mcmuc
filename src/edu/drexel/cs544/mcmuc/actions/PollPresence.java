@@ -53,18 +53,21 @@ public class PollPresence extends Action implements JSON {
     public void process(Channel channel) {
         class Runner implements Runnable {
             Channel channel;
+            PollPresence message;
 
-            Runner(Channel c) {
+            Runner(PollPresence m, Channel c) {
                 channel = c;
+                message = m;
             }
 
             public void run() {
             	Room r = (Room)channel;
             	Presence p = new Presence(r.getUserName(),r.getStatus());
                 channel.send(p);
+                channel.send(message);
             }
         }
-        Thread t = new Thread(new Runner(channel));
+        Thread t = new Thread(new Runner(this,channel));
         t.start();
 
     }
