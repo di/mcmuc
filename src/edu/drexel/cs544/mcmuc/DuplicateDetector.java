@@ -1,5 +1,11 @@
 package edu.drexel.cs544.mcmuc;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * DuplicateDetector is a ConcurrentLimitedLinkedQueue (CLLQ) of string-based unique identifiers,
  * limited in size to 200 members
@@ -27,6 +33,21 @@ public class DuplicateDetector {
     private DuplicateDetector() {
         q = new ConcurrentLimitedLinkedQueue<String>(size);
     }
+    
+    private String getMessageHash(JSONObject jo)
+    {
+    	String hash = "";
+    	try {
+    		MessageDigest md5 = MessageDigest.getInstance("MD5");
+    		byte[] md5_hash = md5.digest(jo.toString().getBytes());
+    		hash = jo.getString("uid") + md5_hash.toString();
+		} catch (JSONException e) {
+			e.printStackTrace();
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+    	return hash;
+    }
 
     /**
      * If the uid is already in the CLLQ then the message is a duplicate that has already been
@@ -34,8 +55,8 @@ public class DuplicateDetector {
      * @param uid String unique identifier
      * @return true if previously unseen uid, false otherwise
      */
-    public boolean isDuplicate(String uid) {
-        if (q.contains(uid)) {
+    public boolean isDuplicate(JSONObject jo) {
+        if (q.contains(getMessageHash(jo))) {
             return true;
         } else {
             return false;
@@ -47,8 +68,8 @@ public class DuplicateDetector {
      * @param uid String unique identifier
      * @return true if uid was added to the CLLQ, false otherwise
      */
-    public boolean add(String uid) {
-        return q.add(uid);
+    public boolean add(JSONObject jo) {
+        return q.add(getMessageHash(jo));
     }
 
     public static DuplicateDetector getInstance() {

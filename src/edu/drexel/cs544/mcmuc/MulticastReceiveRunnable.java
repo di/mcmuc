@@ -5,8 +5,6 @@ import java.net.DatagramPacket;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import edu.drexel.cs544.mcmuc.actions.ActionBase;
-
 public class MulticastReceiveRunnable implements Runnable {
 
     Channel channel;
@@ -28,9 +26,8 @@ public class MulticastReceiveRunnable implements Runnable {
                 System.err.println("Got bad JSON data. Contents:\n" + s);
                 e.printStackTrace();
             }
-            ActionBase a = new ActionBase(jo);
-            
-            if (DuplicateDetector.getInstance().add(a.getUID())) {
+
+            if (DuplicateDetector.getInstance().add(jo)) {
                 channel.handleNewMessage(jo);
             } else {
                 // Duplicate message

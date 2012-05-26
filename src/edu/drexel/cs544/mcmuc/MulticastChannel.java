@@ -33,7 +33,7 @@ public class MulticastChannel {
 
     public void send(JSONObject jo) {
     	ActionBase a = new ActionBase(jo);
-        DuplicateDetector.getInstance().add(a.getUID());
+        DuplicateDetector.getInstance().add(jo);
         String msg = jo.toString();
         System.out.println("Sending: " + a.getUID());
         DatagramPacket dp = new DatagramPacket(msg.getBytes(), msg.length(), this.multicastAddress, this.multicastPort);
@@ -45,9 +45,10 @@ public class MulticastChannel {
     }
 
     public void send(Action action) {
-        DuplicateDetector.getInstance().add(action.getUID());
+        DuplicateDetector.getInstance().add(action.toJSON());
         String msg = action.toJSON().toString();
         System.out.println("Sending: " + action.getUID());
+        System.out.println("\tJSON: " + action.toJSON().toString());
         DatagramPacket dp = new DatagramPacket(msg.getBytes(), msg.length(), this.multicastAddress, this.multicastPort);
         try {
             this.multicastSocket.send(dp);

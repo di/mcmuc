@@ -65,7 +65,7 @@ public class PollPresence extends Action implements JSON {
             	Room r = (Room)channel;
             	Presence p = new Presence(r.getUserName(),r.getStatus());
                 channel.send(p);
-                if(DuplicateDetector.getInstance().isDuplicate(message.getUID()))
+                if(DuplicateDetector.getInstance().isDuplicate(message.toJSON()))
                 	channel.send(message);
             }
         }
