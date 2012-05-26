@@ -13,6 +13,7 @@ public class Forwarder extends Channel {
 
     @Override
     public void handleNewMessage(JSONObject jo) {
-        this.send(jo);
+    	if(!DuplicateDetector.getInstance().isDuplicate(jo))
+    		this.send(jo);
     }
 }
