@@ -50,10 +50,10 @@ public class DuplicateDetector {
     }
 
     /**
-     * If the uid is already in the CLLQ then the message is a duplicate that has already been
+     * If the hash is already in the CLLQ then the message is a duplicate that has already been
      * forwarded, and must not be forwarded further
      * @param uid String unique identifier
-     * @return true if previously unseen uid, false otherwise
+     * @return true if previously unseen hash, false otherwise
      */
     public boolean isDuplicate(JSONObject jo) {
         if (q.contains(getMessageHash(jo))) {
@@ -64,9 +64,9 @@ public class DuplicateDetector {
     }
 
     /**
-     * Add a seen unique identifier
-     * @param uid String unique identifier
-     * @return true if uid was added to the CLLQ, false otherwise
+     * Add a seen message's hash
+     * @param uid String hash
+     * @return true if hash was added to the CLLQ, false otherwise
      */
     public boolean add(JSONObject jo) {
         return q.add(getMessageHash(jo));
