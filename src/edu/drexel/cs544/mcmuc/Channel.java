@@ -108,17 +108,25 @@ public abstract class Channel {
     	if(getPort() != Controller.CONTROL_PORT)
     	{
     		int delay = minDelay + (int)(Math.random() * ((maxDelay - minDelay) + 1));
-    		if(primaryHandler != null)
-    			primaryHandler.cancel(true);
+    		stopPrimaryTimer();
     		primaryHandler = scheduler.schedule(primary, delay, TimeUnit.SECONDS);
     	}
+    }
+    
+    /**
+     * Stop primary timer
+     */
+    public void stopPrimaryTimer()
+    {
+    	if(primaryHandler != null)
+    		primaryHandler.cancel(true);
     }
     
     /**
      * If the secondary timer is already running, stop it. Then, set the timer for
      * 60 seconds.
      */
-    public void resetSecondaryTimer()
+    public void startSecondaryTimer()
     {
     	if(getPort() != Controller.CONTROL_PORT)
     	{
