@@ -197,7 +197,7 @@ public class Presence extends Action implements JSON {
                 		Controller.getInstance().display("Advertised " + c.getFormat() + " public-key cert from " + message.getFrom() + ":\n\t" + c.getCertificate());
                 	}
                 }
-                if(DuplicateDetector.getInstance().isDuplicate(message.toJSON()))
+                if(!DuplicateDetector.getInstance().isDuplicate(message.toJSON()))
                 	channel.send(message);
             }
         }
