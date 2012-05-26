@@ -38,6 +38,11 @@ public class Timeout extends RoomAction {
         super(json, Timeout.action);
     }
 
+    /**
+     * Upon receiving a Timeout action on the control channel, respond with a Preserve action
+     * containing the intersection of the rooms in use and the rooms queried about in the
+     * Timeout action.
+     */
     @Override
     public void process(Channel channel) {
         class Runner implements Runnable {
@@ -57,7 +62,6 @@ public class Timeout extends RoomAction {
                     Preserve reply = new Preserve(new ArrayList<Integer>(roomPortsInUse));
                     Controller.getInstance().send(reply);
                 }
-                channel.send(message);
             }
         }
         Thread t = new Thread(new Runner(this,channel));

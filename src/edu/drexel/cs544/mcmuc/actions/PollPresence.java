@@ -50,6 +50,11 @@ public class PollPresence extends Action implements JSON {
         return json;
     }
 
+    /**
+     * Upon receiving a PollPresence, respond with a Presence action indicating the
+     * user's current status for the room on the channel (online or offline). If the
+     * message is not a duplicate, forward it on the channel.
+     */
     @Override
     public void process(Channel channel) {
         class Runner implements Runnable {

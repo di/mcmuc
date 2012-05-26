@@ -36,6 +36,11 @@ public class UseRooms extends RoomAction {
         super(json, UseRooms.action);
     }
 
+    /**
+     * Upon receiving a UseRooms action, iterate through the list of rooms, and pass the port
+     * to Controller to reserve resources for the room.
+     * @see Controller
+     */
     @Override
     public void process(Channel channel) {
         class Runner implements Runnable {

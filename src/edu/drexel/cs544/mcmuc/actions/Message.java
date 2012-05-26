@@ -209,6 +209,10 @@ public class Message extends Action implements JSON {
         return json;
     }
 
+    /**
+     * Display the message to the user and if it is not a duplicate (that is, already forwarded)
+     * forward it on the channel
+     */
     public void process(Channel channel) {
         class Runner implements Runnable {
             Message message;

@@ -170,6 +170,11 @@ public class Presence extends Action implements JSON {
         return json;
     }
 
+    /**
+     * Upon receiving a Presence from another client, display it to the user. If any keys are 
+     * included, also display those to the user. If the message is not a duplicate, forward it 
+     * on the channel.
+     */
     @Override
     public void process(Channel channel) {
         class Runner implements Runnable {
