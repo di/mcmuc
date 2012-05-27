@@ -1,5 +1,13 @@
 package edu.drexel.cs544.mcmuc;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import edu.drexel.cs544.mcmuc.actions.Timeout;
+
 /**
  * PrimaryTimer implements the following part of the protocol channel timeout algorithm:
  * All channels (except the control channel) follow the following timeout algorithm: 
@@ -21,6 +29,30 @@ public class PrimaryTimer implements Runnable {
     }
 
     public void run() {
-    	//TODO create a Timeout action for the room on port and send it through Controller
+    	Controller controller = Controller.getInstance();
+		
+		// if this client IS NOT in the room
+    	if (controller.roomPortsInUse.contains(port)) {
+    		List<Integer> lPort = new ArrayList<Integer>();
+    		lPort.add(port);
+    		
+    		// create a timeout message
+    		Timeout timeout = new Timeout(lPort);
+    		JSONObject json = new JSONObject();
+    		try {
+    			json.put("action", "timeout");
+    			json.put("uid", timeout.getUID());
+    			json.put("rooms", lPort);
+    		} catch (JSONException e) {
+    			
+    		}
+    		// send a timeout message 
+    		controller.send(json);
+    		System.out.println("primary timout msg:\n"+json);
+    	} 
+    	// if this client IS in the room
+    	else {
+    		// do nothing
+    	}
     }
 }
