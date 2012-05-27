@@ -1,11 +1,6 @@
 package edu.drexel.cs544.mcmuc;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
+import java.util.Arrays;
 import edu.drexel.cs544.mcmuc.actions.Timeout;
 
 /**
@@ -30,29 +25,10 @@ public class PrimaryTimer implements Runnable {
 
     public void run() {
     	Controller controller = Controller.getInstance();
-		
-		// if this client IS NOT in the room
-    	if (controller.roomPortsInUse.contains(port)) {
-    		List<Integer> lPort = new ArrayList<Integer>();
-    		lPort.add(port);
-    		
-    		// create a timeout message
-    		Timeout timeout = new Timeout(lPort);
-    		JSONObject json = new JSONObject();
-    		try {
-    			json.put("action", "timeout");
-    			json.put("uid", timeout.getUID());
-    			json.put("rooms", lPort);
-    		} catch (JSONException e) {
-    			
-    		}
-    		// send a timeout message 
-    		controller.send(json);
-    		System.out.println("primary timout msg:\n"+json);
+
+    	if (!controller.roomPortsInUse.contains(port)) {
+    		Timeout timeout = new Timeout(Arrays.asList(port));
+    		controller.send(timeout);
     	} 
-    	// if this client IS in the room
-    	else {
-    		// do nothing
-    	}
     }
 }
