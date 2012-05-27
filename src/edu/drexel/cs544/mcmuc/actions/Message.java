@@ -224,7 +224,7 @@ public class Message extends Action implements JSON {
             }
 
             public void run() {
-            	//TODO Reset room's primary timer
+            	channel.resetPrimaryTimer();
                 Controller.getInstance().display("Got:\n" + message.getFrom() + ": " + message.getBody() + " (" + message.getUID() + ")");
                 if(!DuplicateDetector.getInstance().isDuplicate(message.toJSON()))
                 	channel.send(message);
