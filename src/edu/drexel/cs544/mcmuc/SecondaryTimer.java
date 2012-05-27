@@ -20,6 +20,6 @@ public class SecondaryTimer implements Runnable {
     }
 
     public void run() {
-    	//TODO Remove the room on port through Controller.leaveRoom()
+    	Controller.getInstance().leaveRoom(port);
     }
 }
