@@ -73,7 +73,12 @@ public class Controller extends Channel {
     	//TODO implement
     }
     
-    public void resetSecondaryTimer(int roomPort)
+    public void stopPrimaryTimer(int roomPort)
+    {
+    	//TODO implement
+    }
+    
+    public void startSecondaryTimer(int roomPort)
     {
     	//TODO implement
     }
