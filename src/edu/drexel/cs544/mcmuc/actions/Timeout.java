@@ -43,6 +43,9 @@ public class Timeout extends RoomAction {
      * Upon receiving a Timeout action on the control channel, respond with a Preserve action
      * containing the intersection of the rooms in use and the rooms queried about in the
      * Timeout action.
+     * 
+     * For each room listed in the Timeout action, if the client is in the room, reset the
+     * primary timer; else, stop the primary timer and start the secondary timer.
      */
     @Override
     public void process(Channel channel) {

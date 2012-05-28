@@ -32,6 +32,9 @@ public class Preserve extends RoomAction {
         super(json, Preserve.action);
     }
 
+    /**
+     * For each room in the Preserve action, reset the primary timer
+     */
     @Override
     public void process(Channel channel) {
         class Runner implements Runnable {

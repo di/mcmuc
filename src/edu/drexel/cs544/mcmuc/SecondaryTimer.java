@@ -19,6 +19,10 @@ public class SecondaryTimer implements Runnable {
         this.port = port;
     }
 
+    /**
+     * If the secondary timer for a room expires, no client on the network is actively using it, 
+     * so leave the room (freeing allocated resources)
+     */
     public void run() {
     	Controller.getInstance().leaveRoom(port);
     }

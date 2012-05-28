@@ -23,6 +23,10 @@ public class PrimaryTimer implements Runnable {
         this.port = port;
     }
 
+    /**
+     * When the primary timer for a room expires, and the client is not actively using the room,
+     * send a Timeout action on the control channel for the room.
+     */
     public void run() {
     	Controller controller = Controller.getInstance();
 
