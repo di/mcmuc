@@ -1,6 +1,7 @@
 package edu.drexel.cs544.mcmuc.actions;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -47,24 +48,36 @@ public class Timeout extends RoomAction {
     public void process(Channel channel) {
         class Runner implements Runnable {
             Timeout message;
-            Channel channel;
 
-            Runner(Timeout m, Channel c) {
+            Runner(Timeout m) {
                 message = m;
-                channel = c;
             }
 
             public void run() {
             	Set<Integer> roomPortsInUse = Controller.getInstance().roomPortsInUse;
             	roomPortsInUse.retainAll(message.getRooms());
-            	//TODO Stop primary timer and start secondary timer for each room in roomPortsInUse
+            	
                 if (!roomPortsInUse.isEmpty()) {
                     Preserve reply = new Preserve(new ArrayList<Integer>(roomPortsInUse));
                     Controller.getInstance().send(reply);
                 }
+            	
+            	Iterator<Integer> it = message.getRooms().iterator();
+            	while(it.hasNext())
+            	{
+            		Integer i = it.next();
+            		if(roomPortsInUse.contains(i))
+            			Controller.getInstance().resetPrimaryTimer(i);
+            		else
+            		{
+            			Controller.getInstance().stopPrimaryTimer(i);
+            			Controller.getInstance().startSecondaryTimer(i);
+            		}
+            	}
+
             }
         }
-        Thread t = new Thread(new Runner(this,channel));
+        Thread t = new Thread(new Runner(this));
         t.start();
     }
 }
