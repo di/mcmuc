@@ -1,9 +1,11 @@
 package edu.drexel.cs544.mcmuc.actions;
 
+import java.util.Iterator;
 import java.util.List;
 import org.json.JSONObject;
 
 import edu.drexel.cs544.mcmuc.Channel;
+import edu.drexel.cs544.mcmuc.Controller;
 
 /**
  * The preserve action is used to reply to a timeout action, indicating that
@@ -40,7 +42,9 @@ public class Preserve extends RoomAction {
             }
 
             public void run() {
-            	//TODO Loop through each room in message.getRooms() and reset the primary timer
+            	Iterator<Integer> it = message.getRooms().iterator();
+            	while(it.hasNext())
+            		Controller.getInstance().resetPrimaryTimer(it.next());
             }
         }
         Thread t = new Thread(new Runner(this));
