@@ -2,7 +2,6 @@ package edu.drexel.cs544.mcmuc;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -22,7 +21,8 @@ public class Controller extends Channel {
     public static final int CONTROL_PORT = 31941;
     public Set<Integer> portsInUse = Collections.synchronizedSet(new TreeSet<Integer>());
     public Set<Integer> roomPortsInUse = Collections.synchronizedSet(new TreeSet<Integer>());
-    private final Map<String, Room> rooms = Collections.synchronizedMap(new HashMap<String, Room>());
+    private final Map<String, Integer> roomNames = Collections.synchronizedMap(new HashMap<String, Integer>());
+    private final Map<Integer, Room> rooms = Collections.synchronizedMap(new HashMap<Integer, Room>());
     private final Map<Integer, Forwarder> forwards = Collections.synchronizedMap(new HashMap<Integer, Forwarder>());
 
     Controller(int port) {
@@ -70,17 +70,17 @@ public class Controller extends Channel {
     
     public void resetPrimaryTimer(int roomPort)
     {
-    	//TODO implement
+    	rooms.get(roomPort).resetPrimaryTimer();
     }
     
     public void stopPrimaryTimer(int roomPort)
     {
-    	//TODO implement
+    	rooms.get(roomPort).stopPrimaryTimer();
     }
     
     public void startSecondaryTimer(int roomPort)
     {
-    	//TODO implement
+    	rooms.get(roomPort).startSecondaryTimer();
     }
 
     public void useRoom(int roomPort) {
@@ -99,26 +99,22 @@ public class Controller extends Channel {
     		portsInUse.remove(roomPort);
     		if(forwards.containsKey(roomPort))
     			forwards.remove(roomPort);
-    		else
+    		else if(roomPortsInUse.contains(roomPort))
     		{
     			roomPortsInUse.remove(roomPort);
-    			Iterator<Room> it = rooms.values().iterator();
-    			while(it.hasNext())
-    			{
-    				Room r = it.next();
-    				if(r.getPort() == roomPort)
-    				{
-    					r.setStatus(Status.Offline);
-    					it.remove();
-    				}
-    			}
+    			if(rooms.containsKey(roomPort))
+				{
+    				Room r = rooms.remove(roomPort);
+    				r.setStatus(Status.Offline);
+				}
     		}
     	}
     }
     
     public void leaveRoom(String roomName)
     {
-    	Room r = rooms.remove(roomName);
+    	Integer p = roomNames.remove(roomName);
+    	Room r = rooms.remove(p);
     	r.setStatus(Status.Offline);
     	roomPortsInUse.remove(r.getPort());
     }
@@ -126,13 +122,15 @@ public class Controller extends Channel {
     public void useRoom(String roomName, String userName) {
         Room room = new Room(roomName, portsInUse, userName);
         portsInUse.add(room.getPort());
-        rooms.put(roomName, room);
         roomPortsInUse.add(room.getPort());
+        rooms.put(room.getPort(), room);
+        roomNames.put(roomName, room.getPort());
+        
     }
     
     public void setRoomStatus(String roomName, Status presence)
     {
-        Room room = rooms.get(roomName);
+        Room room = rooms.get(roomNames.get(roomName));
         if (room != null) {
             room.setStatus(presence);
         } else {
@@ -141,7 +139,7 @@ public class Controller extends Channel {
     }
 
     public void sendToRoom(String roomName, Action action) {
-        Room room = rooms.get(roomName);
+    	Room room = rooms.get(roomNames.get(roomName));
         if (room != null) {
             room.send(action);
         } else {
