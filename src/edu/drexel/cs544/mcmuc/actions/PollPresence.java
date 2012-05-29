@@ -67,11 +67,13 @@ public class PollPresence extends Action implements JSON {
             }
 
             public void run() {
-            	Room r = (Room)channel;
-            	Presence p = new Presence(r.getUserName(),r.getStatus());
-                channel.send(p);
-                if(!DuplicateDetector.getInstance().isDuplicate(message.toJSON()))
-                	channel.send(message);
+            	if(!DuplicateDetector.getInstance().isDuplicate(message.toJSON()))
+            	{
+	            	Room r = (Room)channel;
+	            	Presence p = new Presence(r.getUserName(),r.getStatus());
+	                channel.send(p);
+	                channel.send(message);
+                }
             }
         }
         Thread t = new Thread(new Runner(this,channel));

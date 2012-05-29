@@ -187,23 +187,26 @@ public class Presence extends Action implements JSON {
             }
 
             public void run() {
-            	if(message.getStatus() == Status.Online)
-            		Controller.getInstance().display("[" + channel.getPort() + "] " + message.getFrom() + " is online " + " (" + message.getUID() + ")");
-            	else if (message.getStatus() == Status.Offline)
-            		Controller.getInstance().display("[" + channel.getPort() + "] " + message.getFrom() + " is offline " + " (" + message.getUID() + ")");
-            	
-            	List<Certificate> keys = message.getKeys();
-                if(keys != null)
-                {
-                	Iterator<Certificate> it = keys.iterator();
-                	while(it.hasNext())
-                	{
-                		Certificate c = it.next();
-                		Controller.getInstance().display("Advertised " + c.getFormat() + " public-key cert from " + message.getFrom() + ":\n\t" + c.getCertificate());
-                	}
-                }
-                if(!DuplicateDetector.getInstance().isDuplicate(message.toJSON()))
-                	channel.send(message);
+            	if(!DuplicateDetector.getInstance().isDuplicate(message.toJSON()))
+            	{
+            		if(message.getStatus() == Status.Online)
+            			Controller.getInstance().display("[" + channel.getPort() + "] " + message.getFrom() + " is online " + " (" + message.getUID() + ")");
+            		else if (message.getStatus() == Status.Offline)
+            			Controller.getInstance().display("[" + channel.getPort() + "] " + message.getFrom() + " is offline " + " (" + message.getUID() + ")");
+
+            		List<Certificate> keys = message.getKeys();
+            		if(keys != null)
+            		{
+            			Iterator<Certificate> it = keys.iterator();
+            			while(it.hasNext())
+            			{
+            				Certificate c = it.next();
+            				Controller.getInstance().display("Advertised " + c.getFormat() + " public-key cert from " + message.getFrom() + ":\n\t" + c.getCertificate());
+            			}
+            		}
+
+            		channel.send(message);
+            	}
             }
         }
         Thread t = new Thread(new Runner(this, channel));
