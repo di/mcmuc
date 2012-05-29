@@ -30,6 +30,7 @@ public class Controller extends Channel {
     private final Map<String, Integer> roomNames = Collections.synchronizedMap(new HashMap<String, Integer>());
     private final Map<Integer, Room> rooms = Collections.synchronizedMap(new HashMap<Integer, Room>());
     private final Map<Integer, Forwarder> forwards = Collections.synchronizedMap(new HashMap<Integer, Forwarder>());
+    private UI ui;
 
     /**
      * Creates the controller channel on the given port and adds it to the portsInUse set
@@ -82,7 +83,6 @@ public class Controller extends Channel {
             action = new Preserve(jo);
             action.process(this);
         } else {
-
             System.err.println("Message action type not supported: " + actionString);
         }
     }
@@ -93,7 +93,12 @@ public class Controller extends Channel {
      * @param displayString String to display
      */
     public void display(String displayString) {
-        System.out.println(displayString);
+        if (this.ui != null) {
+            this.ui.output(displayString);
+        } else {
+            // Poor man's UI
+            System.out.println(displayString);
+        }
     }
 
     /**
@@ -188,7 +193,6 @@ public class Controller extends Channel {
         roomPortsInUse.add(room.getPort());
         rooms.put(room.getPort(), room);
         roomNames.put(roomName, room.getPort());
-
     }
 
     /**
@@ -220,5 +224,9 @@ public class Controller extends Channel {
         } else {
             System.err.println("Room not found!");
         }
+    }
+
+    public void setUI(UI ui) {
+        this.ui = ui;
     }
 }
