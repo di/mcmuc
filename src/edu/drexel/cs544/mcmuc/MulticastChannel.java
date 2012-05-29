@@ -11,12 +11,22 @@ import org.json.JSONObject;
 import edu.drexel.cs544.mcmuc.actions.Action;
 import edu.drexel.cs544.mcmuc.actions.ActionBase;
 
+/**
+ * A MulticastChannel is the combination of a multicast socket, address, and port that together
+ * represent a multicast group. Multicast is the delivery of a message to a group of associated
+ * clients at same time, using only a single transmission at the source.
+ */
 public class MulticastChannel {
 
     MulticastSocket multicastSocket;
     InetAddress multicastAddress;
     int multicastPort;
 
+    /**
+     * Joins the multicast group using the address 224.5.4.4 and the given port. An error is
+     * displayed if the multicast route does not exist (and remediation steps are displayed).
+     * @param port int port of multicast group to join on 224.5.4.4
+     */
     public MulticastChannel(int port) {
         try {
             this.multicastPort = port;
@@ -31,6 +41,11 @@ public class MulticastChannel {
         }
     }
 
+    /**
+     * Sends a JSON payload to the joined multicast group, recording it with the duplicate detector.
+     * @param jo JSON to send to multicast group
+     * @see DuplicateDetector
+     */
     public void send(JSONObject jo) {
     	ActionBase a = new ActionBase(jo);
         DuplicateDetector.getInstance().add(jo);
@@ -44,6 +59,12 @@ public class MulticastChannel {
         }
     }
 
+    /**
+     * Sends an Action payload to the joined multicast group (serializing to JSON first),
+     * recording it with the duplicate detector.
+     * @param action Action to send to multicast group
+     * @see DuplicateDetector
+     */
     public void send(Action action) {
         DuplicateDetector.getInstance().add(action.toJSON());
         String msg = action.toJSON().toString();
@@ -57,10 +78,20 @@ public class MulticastChannel {
         }
     }
 
+    /**
+     * Returns the multicast socket in use
+     * @return MulticastSocket in use
+     */
     public MulticastSocket getMulticastSocket() {
         return this.multicastSocket;
     }
 
+    /**
+     * Upon receipt of a datagram packet, passes the packet to the instance of MulticastSocket
+     * for processing
+     * @param dp DatagramPacket received
+     * @see MulticastSocket
+     */
     public void receive(DatagramPacket dp) {
         try {
             multicastSocket.receive(dp);
