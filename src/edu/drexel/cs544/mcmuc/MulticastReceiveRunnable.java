@@ -10,6 +10,7 @@ import org.json.JSONObject;
  * A given MRR is tied to a specific channel and executes the code in run() while the thread
  * is active. MRR receives datagrams on the channel and gets the JSON data payload. MRR records
  * the received JSON in the duplicate detector and passes it to the channel for further handling.
+ * 
  * @see DuplicateDetector
  * @see Channel
  */
@@ -19,6 +20,7 @@ public class MulticastReceiveRunnable implements Runnable {
 
     /**
      * The only necessary parameter to create a MulticastReceiveRunnable object is the channel
+     * 
      * @param channel Channel to receive data on
      */
     public MulticastReceiveRunnable(Channel channel) {
@@ -26,8 +28,8 @@ public class MulticastReceiveRunnable implements Runnable {
     }
 
     /**
-     * MRR receives datagrams on the channel and gets the JSON data payload. 
-     * MRR records the received JSON in the duplicate detector and passes it to 
+     * MRR receives datagrams on the channel and gets the JSON data payload.
+     * MRR records the received JSON in the duplicate detector and passes it to
      * the channel for further handling. The length of the datagram packet cannot
      * exceed 1000 bytes.
      */

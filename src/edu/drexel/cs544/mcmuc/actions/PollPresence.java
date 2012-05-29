@@ -15,8 +15,8 @@ import edu.drexel.cs544.mcmuc.Room;
  * The JSON format of a PollPresence is {'uid':'<uid>','action':'poll-presence'}
  */
 public class PollPresence extends Action implements JSON {
-	public static final String action = "poll-presence";
-	
+    public static final String action = "poll-presence";
+
     /**
      * No options are required for the construction of a PollPresence message
      */
@@ -67,16 +67,15 @@ public class PollPresence extends Action implements JSON {
             }
 
             public void run() {
-            	if(!DuplicateDetector.getInstance().isDuplicate(message.toJSON()))
-            	{
-	            	Room r = (Room)channel;
-	            	Presence p = new Presence(r.getUserName(),r.getStatus());
-	                channel.send(p);
-	                channel.send(message);
+                if (!DuplicateDetector.getInstance().isDuplicate(message.toJSON())) {
+                    Room r = (Room) channel;
+                    Presence p = new Presence(r.getUserName(), r.getStatus());
+                    channel.send(p);
+                    channel.send(message);
                 }
             }
         }
-        Thread t = new Thread(new Runner(this,channel));
+        Thread t = new Thread(new Runner(this, channel));
         t.start();
 
     }

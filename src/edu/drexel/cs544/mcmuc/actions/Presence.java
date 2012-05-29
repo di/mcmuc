@@ -22,14 +22,16 @@ import edu.drexel.cs544.mcmuc.JSON;
  * {'action':'presence','from':'<from>','status':'<status>','keys':[<keys>]} if they are.
  */
 public class Presence extends Action implements JSON {
-	public static final String action = "presence";
-	
+    public static final String action = "presence";
+
     private String from;
     private Status status;
     private List<Certificate> keys;
 
-    public enum Status { Online, Offline }
-    
+    public enum Status {
+        Online, Offline
+    }
+
     /**
      * Initializes the from, status, and keys attributes of the Presence class. Status must be either:
      * 'online' or 'offline'
@@ -109,14 +111,14 @@ public class Presence extends Action implements JSON {
 
         try {
             this.from = json.getString("from");
-            
+
             String rawStatus = json.getString("status");
-            if(rawStatus.equalsIgnoreCase("online"))
-            	this.status = Status.Online;
-            else if(rawStatus.equalsIgnoreCase("offline"))
-            	this.status = Status.Offline;
+            if (rawStatus.equalsIgnoreCase("online"))
+                this.status = Status.Online;
+            else if (rawStatus.equalsIgnoreCase("offline"))
+                this.status = Status.Offline;
             else
-            	throw new Exception("Unsupported status");
+                throw new Exception("Unsupported status");
 
             if (json.has("keys")) {
                 JSONArray keys = json.getJSONArray("keys");
@@ -149,12 +151,12 @@ public class Presence extends Action implements JSON {
             json.put("action", Presence.action);
             json.put("uid", uid);
             json.put("from", from);
-            
-            if(status == Status.Offline)
-            	json.put("status", "offline");
-            else if(status == Status.Online)
-            	json.put("status","online");
-            
+
+            if (status == Status.Offline)
+                json.put("status", "offline");
+            else if (status == Status.Online)
+                json.put("status", "online");
+
             if (keys != null) {
                 Iterator<Certificate> itr = keys.iterator();
                 while (itr.hasNext()) {
@@ -171,8 +173,8 @@ public class Presence extends Action implements JSON {
     }
 
     /**
-     * Upon receiving a Presence from another client, display it to the user. If any keys are 
-     * included, also display those to the user. If the message is not a duplicate, forward it 
+     * Upon receiving a Presence from another client, display it to the user. If any keys are
+     * included, also display those to the user. If the message is not a duplicate, forward it
      * on the channel.
      */
     @Override
@@ -187,26 +189,23 @@ public class Presence extends Action implements JSON {
             }
 
             public void run() {
-            	if(!DuplicateDetector.getInstance().isDuplicate(message.toJSON()))
-            	{
-            		if(message.getStatus() == Status.Online)
-            			Controller.getInstance().display("[" + channel.getPort() + "] " + message.getFrom() + " is online " + " (" + message.getUID() + ")");
-            		else if (message.getStatus() == Status.Offline)
-            			Controller.getInstance().display("[" + channel.getPort() + "] " + message.getFrom() + " is offline " + " (" + message.getUID() + ")");
+                if (!DuplicateDetector.getInstance().isDuplicate(message.toJSON())) {
+                    if (message.getStatus() == Status.Online)
+                        Controller.getInstance().display("[" + channel.getPort() + "] " + message.getFrom() + " is online " + " (" + message.getUID() + ")");
+                    else if (message.getStatus() == Status.Offline)
+                        Controller.getInstance().display("[" + channel.getPort() + "] " + message.getFrom() + " is offline " + " (" + message.getUID() + ")");
 
-            		List<Certificate> keys = message.getKeys();
-            		if(keys != null)
-            		{
-            			Iterator<Certificate> it = keys.iterator();
-            			while(it.hasNext())
-            			{
-            				Certificate c = it.next();
-            				Controller.getInstance().display("Advertised " + c.getFormat() + " public-key cert from " + message.getFrom() + ":\n\t" + c.getCertificate());
-            			}
-            		}
+                    List<Certificate> keys = message.getKeys();
+                    if (keys != null) {
+                        Iterator<Certificate> it = keys.iterator();
+                        while (it.hasNext()) {
+                            Certificate c = it.next();
+                            Controller.getInstance().display("Advertised " + c.getFormat() + " public-key cert from " + message.getFrom() + ":\n\t" + c.getCertificate());
+                        }
+                    }
 
-            		channel.send(message);
-            	}
+                    channel.send(message);
+                }
             }
         }
         Thread t = new Thread(new Runner(this, channel));

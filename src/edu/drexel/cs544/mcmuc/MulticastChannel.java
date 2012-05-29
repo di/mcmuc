@@ -25,6 +25,7 @@ public class MulticastChannel {
     /**
      * Joins the multicast group using the address 224.5.4.4 and the given port. An error is
      * displayed if the multicast route does not exist (and remediation steps are displayed).
+     * 
      * @param port int port of multicast group to join on 224.5.4.4
      */
     public MulticastChannel(int port) {
@@ -43,11 +44,12 @@ public class MulticastChannel {
 
     /**
      * Sends a JSON payload to the joined multicast group, recording it with the duplicate detector.
+     * 
      * @param jo JSON to send to multicast group
      * @see DuplicateDetector
      */
     public void send(JSONObject jo) {
-    	ActionBase a = new ActionBase(jo);
+        ActionBase a = new ActionBase(jo);
         DuplicateDetector.getInstance().add(jo);
         String msg = jo.toString();
         System.out.println("Sending: " + a.getUID());
@@ -62,6 +64,7 @@ public class MulticastChannel {
     /**
      * Sends an Action payload to the joined multicast group (serializing to JSON first),
      * recording it with the duplicate detector.
+     * 
      * @param action Action to send to multicast group
      * @see DuplicateDetector
      */
@@ -80,6 +83,7 @@ public class MulticastChannel {
 
     /**
      * Returns the multicast socket in use
+     * 
      * @return MulticastSocket in use
      */
     public MulticastSocket getMulticastSocket() {
@@ -89,6 +93,7 @@ public class MulticastChannel {
     /**
      * Upon receipt of a datagram packet, passes the packet to the instance of MulticastSocket
      * for processing
+     * 
      * @param dp DatagramPacket received
      * @see MulticastSocket
      */

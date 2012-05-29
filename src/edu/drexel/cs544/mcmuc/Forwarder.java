@@ -8,10 +8,11 @@ import org.json.JSONObject;
  */
 public class Forwarder extends Channel {
 
-	/**
-	 * Creates a channel on the given port and starts the multicast thread for the room
-	 * @param port int port to forward traffic on
-	 */
+    /**
+     * Creates a channel on the given port and starts the multicast thread for the room
+     * 
+     * @param port int port to forward traffic on
+     */
     Forwarder(int port) {
         super(port);
         MulticastReceiveRunnable runner = new MulticastReceiveRunnable(this);
@@ -24,7 +25,7 @@ public class Forwarder extends Channel {
      */
     @Override
     public void handleNewMessage(JSONObject jo) {
-    	if(!DuplicateDetector.getInstance().isDuplicate(jo))
-    		this.send(jo);
+        if (!DuplicateDetector.getInstance().isDuplicate(jo))
+            this.send(jo);
     }
 }

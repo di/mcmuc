@@ -224,12 +224,11 @@ public class Message extends Action implements JSON {
             }
 
             public void run() {
-            	if(!DuplicateDetector.getInstance().isDuplicate(message.toJSON()))
-            	{
-	            	channel.resetPrimaryTimer();
-	                Controller.getInstance().display("Got:\n" + message.getFrom() + ": " + message.getBody() + " (" + message.getUID() + ")");
-	                channel.send(message);
-            	}
+                if (!DuplicateDetector.getInstance().isDuplicate(message.toJSON())) {
+                    channel.resetPrimaryTimer();
+                    Controller.getInstance().display("Got:\n" + message.getFrom() + ": " + message.getBody() + " (" + message.getUID() + ")");
+                    channel.send(message);
+                }
             }
         }
         Thread t = new Thread(new Runner(this, channel));
