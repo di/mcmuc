@@ -115,6 +115,10 @@ public abstract class RoomAction extends Action implements JSON {
         return json;
     }
 
+    /**
+     * Method responsible for processing of actions received on the given channel - implementation
+     * is left to child classes.
+     */
     @Override
     public abstract void process(Channel channel);
 

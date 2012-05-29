@@ -94,6 +94,11 @@ public class DuplicateDetector {
         return q.add(getMessageHash(jo));
     }
 
+    /**
+     * Restricts the instantiation of the DuplicateDectector class to one object (the Singleton
+     * design pattern)
+     * @return DuplicateDetector singleton
+     */
     public static DuplicateDetector getInstance() {
         return instance;
     }

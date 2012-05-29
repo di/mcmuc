@@ -111,6 +111,12 @@ public class Room extends Channel {
         return f;
     }
 
+    /**
+     * Supports the processing of Message, Presence, and PollPresence actions. Checks
+     * the action key of the JSON received and uses that to pass processing to the
+     * correct type. Errors are display if the message does not have an action or the
+     * type is not supported (not message, presence, or poll-presence).
+     */
     @Override
     public void handleNewMessage(JSONObject jo) {
         Action action;
