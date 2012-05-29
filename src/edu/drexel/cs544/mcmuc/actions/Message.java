@@ -224,7 +224,7 @@ public class Message extends Action implements JSON {
 
             public void run() {
                 channel.resetPrimaryTimer();
-                Controller.getInstance().display(message.getFrom() + ": " + message.getBody() + " (" + message.getUID() + ")");
+                Controller.getInstance().output(message.getFrom() + ": " + message.getBody() + " (" + message.getUID() + ")");
                 channel.send(message);
             }
         }

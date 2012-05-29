@@ -88,16 +88,16 @@ public class Controller extends Channel {
     }
 
     /**
-     * Takes the given displayString and sends it to System.out
+     * Takes the given String and outputs it, either through a UI or System.out
      * 
-     * @param displayString String to display
+     * @param outputString String to display
      */
-    public void display(String displayString) {
+    public void output(String outputString) {
         if (this.ui != null) {
-            this.ui.output(displayString);
+            this.ui.output(outputString);
         } else {
             // Poor man's UI
-            System.out.println(displayString);
+            System.out.println(outputString);
         }
     }
 
