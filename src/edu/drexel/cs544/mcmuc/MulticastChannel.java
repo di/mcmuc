@@ -9,7 +9,7 @@ import java.net.SocketException;
 import org.json.JSONObject;
 
 import edu.drexel.cs544.mcmuc.actions.Action;
-import edu.drexel.cs544.mcmuc.actions.ActionBase;
+//import edu.drexel.cs544.mcmuc.actions.ActionBase;
 
 /**
  * A MulticastChannel is the combination of a multicast socket, address, and port that together
@@ -49,7 +49,7 @@ public class MulticastChannel {
      * @see DuplicateDetector
      */
     public void send(JSONObject jo) {
-        ActionBase a = new ActionBase(jo);
+        // ActionBase a = new ActionBase(jo);
         DuplicateDetector.getInstance().add(jo);
         String msg = jo.toString();
         // System.out.println("Sending: " + a.getUID());
