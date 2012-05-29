@@ -4,7 +4,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import edu.drexel.cs544.mcmuc.Channel;
-import edu.drexel.cs544.mcmuc.DuplicateDetector;
 import edu.drexel.cs544.mcmuc.JSON;
 import edu.drexel.cs544.mcmuc.Room;
 
@@ -67,17 +66,13 @@ public class PollPresence extends Action implements JSON {
             }
 
             public void run() {
-                if (!DuplicateDetector.getInstance().isDuplicate(message.toJSON())) {
-                    Room r = (Room) channel;
-                    Presence p = new Presence(r.getUserName(), r.getStatus());
-                    channel.send(p);
-                    channel.send(message);
-                }
+                Room r = (Room) channel;
+                Presence p = new Presence(r.getUserName(), r.getStatus());
+                channel.send(p);
+                channel.send(message);
             }
         }
         Thread t = new Thread(new Runner(this, channel));
         t.start();
-
     }
-
 }

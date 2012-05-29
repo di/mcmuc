@@ -11,7 +11,6 @@ import org.json.JSONObject;
 import edu.drexel.cs544.mcmuc.Certificate;
 import edu.drexel.cs544.mcmuc.Channel;
 import edu.drexel.cs544.mcmuc.Controller;
-import edu.drexel.cs544.mcmuc.DuplicateDetector;
 import edu.drexel.cs544.mcmuc.JSON;
 
 /**
@@ -131,11 +130,9 @@ public class Presence extends Action implements JSON {
                     }
                 }
             }
-
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
     }
 
     /**
@@ -164,11 +161,9 @@ public class Presence extends Action implements JSON {
                 }
                 json.put("keys", list);
             }
-
         } catch (JSONException e) {
-
+            e.printStackTrace();
         }
-
         return json;
     }
 
@@ -189,28 +184,24 @@ public class Presence extends Action implements JSON {
             }
 
             public void run() {
-                if (!DuplicateDetector.getInstance().isDuplicate(message.toJSON())) {
-                    if (message.getStatus() == Status.Online)
-                        Controller.getInstance().display("[" + channel.getPort() + "] " + message.getFrom() + " is online " + " (" + message.getUID() + ")");
-                    else if (message.getStatus() == Status.Offline)
-                        Controller.getInstance().display("[" + channel.getPort() + "] " + message.getFrom() + " is offline " + " (" + message.getUID() + ")");
+                if (message.getStatus() == Status.Online)
+                    Controller.getInstance().display("[" + channel.getPort() + "] " + message.getFrom() + " is online " + " (" + message.getUID() + ")");
+                else if (message.getStatus() == Status.Offline)
+                    Controller.getInstance().display("[" + channel.getPort() + "] " + message.getFrom() + " is offline " + " (" + message.getUID() + ")");
 
-                    List<Certificate> keys = message.getKeys();
-                    if (keys != null) {
-                        Iterator<Certificate> it = keys.iterator();
-                        while (it.hasNext()) {
-                            Certificate c = it.next();
-                            Controller.getInstance().display("Advertised " + c.getFormat() + " public-key cert from " + message.getFrom() + ":\n\t" + c.getCertificate());
-                        }
+                List<Certificate> keys = message.getKeys();
+                if (keys != null) {
+                    Iterator<Certificate> it = keys.iterator();
+                    while (it.hasNext()) {
+                        Certificate c = it.next();
+                        Controller.getInstance().display("Advertised " + c.getFormat() + " public-key cert from " + message.getFrom() + ":\n\t" + c.getCertificate());
                     }
-
-                    channel.send(message);
                 }
+
+                channel.send(message);
             }
         }
         Thread t = new Thread(new Runner(this, channel));
         t.start();
-
     }
-
 }

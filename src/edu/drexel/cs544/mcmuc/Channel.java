@@ -11,7 +11,7 @@ import org.json.JSONObject;
 import edu.drexel.cs544.mcmuc.actions.Action;
 
 /**
- * A channel is a a dynamic port that is actively being used for chat by one or more
+ * A channel is a dynamic port that is actively being used for chat by one or more
  * clients, and which all clients are aware they must forward traffic for.
  * 
  * All channels (except the control channel) follow the following timeout algorithm:

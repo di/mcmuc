@@ -73,6 +73,7 @@ public class MulticastChannel {
         String msg = action.toJSON().toString();
         System.out.println("Sending: " + action.getUID());
         System.out.println("\tJSON: " + action.toJSON().toString());
+
         DatagramPacket dp = new DatagramPacket(msg.getBytes(), msg.length(), this.multicastAddress, this.multicastPort);
         try {
             this.multicastSocket.send(dp);
