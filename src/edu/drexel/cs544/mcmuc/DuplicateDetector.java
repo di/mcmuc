@@ -1,8 +1,7 @@
 package edu.drexel.cs544.mcmuc;
 
+import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -39,21 +38,33 @@ public class DuplicateDetector {
      * hash of its JSON serialization
      * @param jo Action serialized into JSON to be hashed
      * @return String the hash
+     * @throws UnsupportedEncodingException 
      */
-    private String getMessageHash(JSONObject jo)
+    private String getMessageHash(JSONObject jo) throws UnsupportedEncodingException
     {
-    	String hash = "";
+    	String hash = null;
     	try {
-    		MessageDigest md5 = MessageDigest.getInstance("MD5");
-    		byte[] md5_hash = md5.digest(jo.toString().getBytes());
-    		hash = jo.getString("uid") + md5_hash.toString();
+    		hash = jo.getString("uid") + MD5(jo.toString());
 		} catch (JSONException e) {
-			e.printStackTrace();
-		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
 		}
     	return hash;
     }
+    
+    private String MD5(String md5) {
+    	   try {
+    	        MessageDigest md = MessageDigest.getInstance("MD5");
+    	        byte[] array = md.digest(md5.getBytes());
+    	        StringBuffer sb = new StringBuffer();
+    	        for (int i = 0; i < array.length; ++i) {
+    	          sb.append(Integer.toHexString((array[i] & 0xFF) | 0x100).substring(1,3));
+    	       }
+    	        return sb.toString();
+    	    } catch (java.security.NoSuchAlgorithmException e) {
+    	    	e.printStackTrace();
+    	    }
+    	    return null;
+    	}
 
     /**
      * If the hash is already in the CLLQ then the message is a duplicate that has already been
@@ -62,11 +73,17 @@ public class DuplicateDetector {
      * @return true if previously unseen hash, false otherwise
      */
     public boolean isDuplicate(JSONObject jo) {
-        if (q.contains(getMessageHash(jo))) {
-            return true;
-        } else {
-            return false;
-        }
+        try {
+			if (q.contains(getMessageHash(jo))) {
+			    return true;
+			} else {
+			    return false;
+			}
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+        
+        return true;
     }
 
     /**
@@ -75,7 +92,13 @@ public class DuplicateDetector {
      * @return true if hash was added to the CLLQ, false otherwise
      */
     public boolean add(JSONObject jo) {
-        return q.add(getMessageHash(jo));
+        try {
+			return q.add(getMessageHash(jo));
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+        
+        return false;
     }
 
     public static DuplicateDetector getInstance() {
