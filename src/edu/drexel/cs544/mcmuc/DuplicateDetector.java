@@ -40,7 +40,7 @@ public class DuplicateDetector {
      * @return String the hash
      * @throws UnsupportedEncodingException 
      */
-    private String getMessageHash(JSONObject jo) throws UnsupportedEncodingException
+    private String getMessageHash(JSONObject jo)
     {
     	String hash = null;
     	try {
@@ -51,6 +51,11 @@ public class DuplicateDetector {
     	return hash;
     }
     
+    /**
+     * Gets the hex representation of a MD5 hash of a given string
+     * @param md5 String to hash
+     * @return the hash as string of hex characters (0-9,A-F)
+     */
     private String MD5(String md5) {
     	   try {
     	        MessageDigest md = MessageDigest.getInstance("MD5");
@@ -73,17 +78,11 @@ public class DuplicateDetector {
      * @return true if previously unseen hash, false otherwise
      */
     public boolean isDuplicate(JSONObject jo) {
-        try {
-			if (q.contains(getMessageHash(jo))) {
-			    return true;
-			} else {
-			    return false;
-			}
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
+        if (q.contains(getMessageHash(jo))) {
+		    return true;
+		} else {
+		    return false;
 		}
-        
-        return true;
     }
 
     /**
@@ -92,13 +91,7 @@ public class DuplicateDetector {
      * @return true if hash was added to the CLLQ, false otherwise
      */
     public boolean add(JSONObject jo) {
-        try {
-			return q.add(getMessageHash(jo));
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
-        
-        return false;
+        return q.add(getMessageHash(jo));
     }
 
     public static DuplicateDetector getInstance() {
