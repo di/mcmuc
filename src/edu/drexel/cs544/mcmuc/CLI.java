@@ -79,10 +79,7 @@ public class CLI extends Thread implements UI {
     }
 
     /**
-     * 
-     * Send a command to XOP. Need to modify this if more than one command is
-     * ever sent.
-     * 
+     * Send a command.
      */
     protected synchronized void sendCommand(Command c) {
         command = c;
@@ -91,9 +88,7 @@ public class CLI extends Thread implements UI {
     }
 
     /**
-     * 
      * This function blocks until a command is received.
-     * 
      */
     public synchronized void await() throws InterruptedException {
         while (!command_is_ready.get()) {
