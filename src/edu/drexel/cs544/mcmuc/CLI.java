@@ -18,7 +18,7 @@ public class CLI extends Thread implements UI {
     }
 
     public enum Command {
-        EXIT;
+        MESSAGE, PRESENCE, USEROOM, EXIT;
     }
 
     /**
