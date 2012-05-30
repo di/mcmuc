@@ -20,11 +20,12 @@ import edu.drexel.cs544.mcmuc.Controller;
  * 
  */
 public class Timeout extends RoomAction {
-	public static final String action = "timeout";
-	
+    public static final String action = "timeout";
+
     /**
      * The timeout action must carry a list of rooms that receiving clients may
      * reply with a preserve action to indicate continuing use of the room
+     * 
      * @param rooms List<Integer> the list of the rooms
      */
     public Timeout(List<Integer> rooms) {
@@ -33,6 +34,7 @@ public class Timeout extends RoomAction {
 
     /**
      * Deserializes JSON into a Timeout object
+     * 
      * @param json the JSON to deserialize
      */
     public Timeout(JSONObject json) {
@@ -57,26 +59,24 @@ public class Timeout extends RoomAction {
             }
 
             public void run() {
-            	Set<Integer> roomPortsInUse = Controller.getInstance().roomPortsInUse;
-            	roomPortsInUse.retainAll(message.getRooms());
-            	
+                Set<Integer> roomPortsInUse = Controller.getInstance().channels.keySet();
+                roomPortsInUse.retainAll(message.getRooms());
+
                 if (!roomPortsInUse.isEmpty()) {
                     Preserve reply = new Preserve(new ArrayList<Integer>(roomPortsInUse));
                     Controller.getInstance().send(reply);
                 }
-            	
-            	Iterator<Integer> it = message.getRooms().iterator();
-            	while(it.hasNext())
-            	{
-            		Integer i = it.next();
-            		if(roomPortsInUse.contains(i))
-            			Controller.getInstance().resetPrimaryTimer(i);
-            		else
-            		{
-            			Controller.getInstance().stopPrimaryTimer(i);
-            			Controller.getInstance().startSecondaryTimer(i);
-            		}
-            	}
+
+                Iterator<Integer> it = message.getRooms().iterator();
+                while (it.hasNext()) {
+                    Integer i = it.next();
+                    if (roomPortsInUse.contains(i))
+                        Controller.getInstance().resetPrimaryTimer(i);
+                    else {
+                        Controller.getInstance().stopPrimaryTimer(i);
+                        Controller.getInstance().startSecondaryTimer(i);
+                    }
+                }
 
             }
         }

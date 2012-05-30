@@ -3,18 +3,16 @@ package edu.drexel.cs544.mcmuc;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import edu.drexel.cs544.mcmuc.actions.Action;
 import edu.drexel.cs544.mcmuc.actions.ListRooms;
-import edu.drexel.cs544.mcmuc.actions.Presence.Status;
 import edu.drexel.cs544.mcmuc.actions.Preserve;
 import edu.drexel.cs544.mcmuc.actions.Timeout;
 import edu.drexel.cs544.mcmuc.actions.UseRooms;
+import edu.drexel.cs544.mcmuc.actions.Presence.Status;
 
 /**
  * Controller represents a control channel, which is a fixed port for the sending of
@@ -25,21 +23,18 @@ import edu.drexel.cs544.mcmuc.actions.UseRooms;
 public class Controller extends Channel {
 
     public static final int CONTROL_PORT = 31941;
-    public Set<Integer> portsInUse = Collections.synchronizedSet(new TreeSet<Integer>());
-    public Set<Integer> roomPortsInUse = Collections.synchronizedSet(new TreeSet<Integer>());
     private final Map<String, Integer> roomNames = Collections.synchronizedMap(new HashMap<String, Integer>());
-    private final Map<Integer, Room> rooms = Collections.synchronizedMap(new HashMap<Integer, Room>());
-    private final Map<Integer, Forwarder> forwards = Collections.synchronizedMap(new HashMap<Integer, Forwarder>());
+    public final Map<Integer, Channel> channels = Collections.synchronizedMap(new HashMap<Integer, Channel>());
     private UI ui;
 
     /**
-     * Creates the controller channel on the given port and adds it to the portsInUse set
+     * Creates the controller channel on the given port and adds it to the set of Channels
      * 
      * @param port int port to use (will always be CONTROL_PORT)
      */
     private Controller(int port) {
         super(port);
-        portsInUse.add(port);
+        channels.put(port, this);
     }
 
     private static final Controller instance = new Controller(CONTROL_PORT);
@@ -107,7 +102,7 @@ public class Controller extends Channel {
      * @param roomPort int port of room to reset primary timer for
      */
     public void resetPrimaryTimer(int roomPort) {
-        rooms.get(roomPort).resetPrimaryTimer();
+        channels.get(roomPort).resetPrimaryTimer();
     }
 
     /**
@@ -116,7 +111,7 @@ public class Controller extends Channel {
      * @param roomPort int port of room to stop primary timer for
      */
     public void stopPrimaryTimer(int roomPort) {
-        rooms.get(roomPort).stopPrimaryTimer();
+        channels.get(roomPort).stopPrimaryTimer();
     }
 
     /**
@@ -125,73 +120,61 @@ public class Controller extends Channel {
      * @param roomPort int port of room to start secondary timer for
      */
     public void startSecondaryTimer(int roomPort) {
-        rooms.get(roomPort).startSecondaryTimer();
+        channels.get(roomPort).startSecondaryTimer();
     }
 
     /**
-     * If the set portsInUse does not contain roomPort, create a new Forwarder on that port,
-     * and add the port to portsInUse.
+     * If the set of Channels does not contain roomPort, create a new Forwarder on that port,
+     * and add the port to the set of Channels.
      * 
      * @param roomPort int
      */
     public void useRoom(int roomPort) {
-        if (!portsInUse.contains(roomPort)) {
+        if (!channels.keySet().contains(roomPort)) {
             Forwarder fwd = new Forwarder(roomPort);
-            portsInUse.add(roomPort);
-            forwards.put(roomPort, fwd);
+            channels.put(roomPort, fwd);
         } else {
             // This port is already in use, either by a Room or Forwarder
         }
     }
 
     /**
-     * If the set portsInUse contains roomPort, remove it. If there is a forwarder on the
-     * port, remove it. Otherwise, if there is a room on the port, remove it and remove the
-     * port from roomPortsInUse. If there was a room, set the client's presence to Offline.
+     * If the set of Channels contains roomPort, remove it. If the channel is a room, set the
+     * client's presence to Offline.
      * 
      * @param roomPort int port to leave
      */
     public void leaveRoom(int roomPort) {
-        if (portsInUse.contains(roomPort)) {
-            portsInUse.remove(roomPort);
-            if (forwards.containsKey(roomPort))
-                forwards.remove(roomPort);
-            else if (roomPortsInUse.contains(roomPort)) {
-                roomPortsInUse.remove(roomPort);
-                if (rooms.containsKey(roomPort)) {
-                    Room r = rooms.remove(roomPort);
-                    r.setStatus(Status.Offline);
-                }
-            }
+        Channel c = channels.remove(roomPort);
+        if (c != null && c instanceof Room) {
+            Room r = (Room) c;
+            r.setStatus(Status.Offline);
         }
     }
 
     /**
      * Remove the room that corresponds to the name given by roomName, set that client's status
-     * to Offline, and remove the port from rooomPortsInUse.
+     * to Offline, and remove the port from the set of Channels.
      * 
      * @param roomName String name of room to leave
      */
     public void leaveRoom(String roomName) {
         Integer p = roomNames.remove(roomName);
-        Room r = rooms.remove(p);
-        r.setStatus(Status.Offline);
-        roomPortsInUse.remove(r.getPort());
+        if (p != null) {
+            leaveRoom(p);
+        }
     }
 
     /**
      * Create a new room on the port chosen by the hash algorithm given the roomName and portsInUse.
-     * Set the user's name in the room to userName. Add the room and add the port to both
-     * portsInUse and roomPortsInUse.
+     * Set the user's name in the room to userName. Add the room and add the port to the set of Channels.
      * 
      * @param roomName String name of room to use
      * @param userName String name to associate with user in the room
      */
     public void useRoom(String roomName, String userName) {
-        Room room = new Room(roomName, portsInUse, userName);
-        portsInUse.add(room.getPort());
-        roomPortsInUse.add(room.getPort());
-        rooms.put(room.getPort(), room);
+        Room room = new Room(roomName, channels.keySet(), userName);
+        channels.put(room.getPort(), room);
         roomNames.put(roomName, room.getPort());
     }
 
@@ -203,7 +186,7 @@ public class Controller extends Channel {
      * @see Status
      */
     public void setRoomStatus(String roomName, Status presence) {
-        Room room = rooms.get(roomNames.get(roomName));
+        Room room = (Room) channels.get(roomNames.get(roomName));
         if (room != null) {
             room.setStatus(presence);
         } else {
@@ -218,7 +201,7 @@ public class Controller extends Channel {
      * @param action Action to send
      */
     public void sendToRoom(String roomName, Action action) {
-        Room room = rooms.get(roomNames.get(roomName));
+        Room room = (Room) channels.get(roomNames.get(roomName));
         if (room != null) {
             room.send(action);
         } else {

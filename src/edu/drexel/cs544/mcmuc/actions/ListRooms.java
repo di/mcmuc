@@ -25,6 +25,7 @@ public class ListRooms extends RoomAction {
 
     /**
      * Allows ListRooms to be created with a list of rooms to query about
+     * 
      * @param rooms List<Integer> set of rooms to query about
      */
     public ListRooms(List<Integer> rooms) {
@@ -41,6 +42,7 @@ public class ListRooms extends RoomAction {
 
     /**
      * Deserializes JSON into a ListRooms object
+     * 
      * @param json the JSON to deserialize
      */
     public ListRooms(JSONObject json) {
@@ -63,11 +65,11 @@ public class ListRooms extends RoomAction {
             }
 
             public void run() {
-            	Set<Integer> roomsInUse = Controller.getInstance().portsInUse;
-            	
-            	if(message.getRooms() != null)
-	                roomsInUse.retainAll(message.getRooms());
-            	
+                Set<Integer> roomsInUse = Controller.getInstance().channels.keySet();
+
+                if (message.getRooms() != null)
+                    roomsInUse.retainAll(message.getRooms());
+
                 if (!roomsInUse.isEmpty()) {
                     UseRooms useReply = new UseRooms(new ArrayList<Integer>(roomsInUse));
                     Controller.getInstance().send(useReply);
