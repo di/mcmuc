@@ -9,10 +9,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * A very basic Command-Line Interface
  */
 public class CLI extends Thread implements UI {
-	
+
     AtomicBoolean command_is_ready = new AtomicBoolean();
     Command command = null;
-	
+
     public CLI() {
         command_is_ready.set(false);
     }
@@ -43,7 +43,7 @@ public class CLI extends Thread implements UI {
             System.out.println(rval);
         }
     }
-    
+
     /**
      * Output a string to the UI
      * 
