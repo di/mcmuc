@@ -2,6 +2,8 @@ package edu.drexel.cs544.mcmuc;
 
 public interface UI {
 
-    void output(String displayString);
+    void input(String inputString);
+	
+    void output(String outputString);
 
 }

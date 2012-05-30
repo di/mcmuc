@@ -20,25 +20,13 @@ public class Run {
         controller.setRoomStatus("testchannel", Status.Offline);
 
         while (true) {
-            CLI.Command command = getNextCommand(cli);
-            // Stop and kill this program
-            if (command == CLI.Command.EXIT) {
+            CLI.Command command = cli.getNextCommand();
+            if (command == CLI.Command.EXIT) { // Stop and kill this program
                 System.err.println("Exit command received, shutting down...");
                 System.exit(0);
                 // } else if (command == TUI.Command.SOMETHING) {
                 // Do something
             }
         }
-    }
-
-    private static CLI.Command getNextCommand(CLI cli) {
-        // wait for a command
-        try {
-            cli.output("McMUC TUI waiting for a command");
-            cli.await();
-        } catch (InterruptedException e) {
-            System.err.println("Interrupted while waiting for a command!");
-        }
-        return cli.getCommand();
     }
 }

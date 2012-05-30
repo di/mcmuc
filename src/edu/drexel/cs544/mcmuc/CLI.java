@@ -9,6 +9,46 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * A very basic Command-Line Interface
  */
 public class CLI extends Thread implements UI {
+	
+    AtomicBoolean command_is_ready = new AtomicBoolean();
+    Command command = null;
+	
+    public CLI() {
+        command_is_ready.set(false);
+    }
+
+    public enum Command {
+        EXIT;
+    }
+
+    /**
+     * sends the Controller command to exit
+     * 
+     * @param s
+     */
+    public synchronized void input(String s) {
+        if (s == null) {
+            // do nothing
+        } else if (s.equalsIgnoreCase("exit")) {
+            sendCommand(Command.EXIT);
+        } else {
+            System.err.println("Received an unknown command: " + s);
+            String rval = "Available commands: [";
+            String delim = "";
+            for (Command cmd : Command.values()) {
+                rval += delim + cmd;
+                delim = ", ";
+            }
+            rval += "]\n";
+            System.out.println(rval);
+        }
+    }
+    
+    /**
+     * Output a string to the UI
+     * 
+     * @param s
+     */
     public void output(String s) {
         System.out.print('\r' + s + "\n> ");
     }
@@ -29,52 +69,10 @@ public class CLI extends Thread implements UI {
                 System.err.println("IOException while waiting for command input");
                 return;
             }
-            sendRawCommand(s);
+            input(s);
             if (command_is_ready.get() && (command.equals(Command.EXIT))) {
-                System.err.println("Exiting...");
                 return;
             }
-        }
-    }
-
-    AtomicBoolean command_is_ready = new AtomicBoolean();
-    Command command = null;
-
-    public enum Command {
-        EXIT;
-    }
-
-    public CLI() {
-        command_is_ready.set(false);
-    }
-
-    /**
-     * @return the last command received.
-     */
-    public Command getCommand() {
-        return command;
-    }
-
-    /**
-     * sends the Controller command to exit
-     * 
-     * @param s
-     */
-    public synchronized void sendRawCommand(String s) {
-        if (s == null) {
-            // do nothing
-        } else if (s.equalsIgnoreCase("exit")) {
-            sendCommand(Command.EXIT);
-        } else {
-            System.err.println("Received an unknown command: " + s);
-            String rval = "Available commands: [";
-            String delim = "";
-            for (Command cmd : Command.values()) {
-                rval += delim + cmd;
-                delim = ", ";
-            }
-            rval += "]\n";
-            System.out.println(rval);
         }
     }
 
@@ -82,18 +80,21 @@ public class CLI extends Thread implements UI {
      * Send a command.
      */
     protected synchronized void sendCommand(Command c) {
-        command = c;
+        this.command = c;
         command_is_ready.set(true);
         notifyAll();
     }
 
-    /**
-     * This function blocks until a command is received.
-     */
-    public synchronized void await() throws InterruptedException {
-        while (!command_is_ready.get()) {
-            wait();
+    public synchronized CLI.Command getNextCommand() {
+        try {
+            this.output("McMUC TUI waiting for a command");
+            while (!command_is_ready.get()) {
+                wait(); // wait for a command
+            }
+            command_is_ready.set(false);
+        } catch (InterruptedException e) {
+            System.err.println("Interrupted while waiting for a command!");
         }
-        command_is_ready.set(false);
+        return this.command;
     }
 }
