@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * A very basic Command-Line Interface
@@ -12,6 +14,10 @@ public class CLI extends Thread implements UI {
 
     AtomicBoolean command_is_ready = new AtomicBoolean();
     Command command = null;
+    String userName = "";
+    String roomName = "";
+    private String useRoomRegex = "(?i)use-room (.+?)@(.+?)";
+
 
     public CLI() {
         command_is_ready.set(false);
@@ -27,10 +33,17 @@ public class CLI extends Thread implements UI {
      * @param s
      */
     public synchronized void input(String s) {
-        if (s == null) {
+    	Matcher matcher = Pattern.compile(useRoomRegex).matcher(s);
+    	matcher.find();
+
+    	if (s == null) {
             // do nothing
         } else if (s.equalsIgnoreCase("exit")) {
             sendCommand(Command.EXIT);
+        } else if (s.matches(useRoomRegex)) {
+        	userName = matcher.group(1);
+        	roomName = matcher.group(2);
+            sendCommand(Command.USEROOM);
         } else {
             System.err.println("Received an unknown command: " + s);
             String rval = "Available commands: [";

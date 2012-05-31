@@ -27,6 +27,10 @@ public class Run {
                 // } else if (command == TUI.Command.SOMETHING) {
                 // Do something
             }
+            else if (command == CLI.Command.USEROOM) {
+            	controller.useRoom(cli.roomName, cli.userName);
+            	controller.setRoomStatus(cli.roomName, Status.Online);
+            }
         }
     }
 }
