@@ -20,16 +20,15 @@ public class Run {
         controller.setRoomStatus("testchannel", Status.Offline);
 
         while (true) {
-            CLI.Command command = cli.getNextCommand();
-            if (command == CLI.Command.EXIT) { // Stop and kill this program
+            CLICommand command = cli.getNextCommand();
+            if (command.getCommand() == CLICommand.Command.EXIT) { // Stop and kill this program
                 System.err.println("Exit command received, shutting down...");
                 System.exit(0);
                 // } else if (command == TUI.Command.SOMETHING) {
                 // Do something
-            }
-            else if (command == CLI.Command.USEROOM) {
-            	controller.useRoom(cli.roomName, cli.userName);
-            	controller.setRoomStatus(cli.roomName, Status.Online);
+            } else if (command.getCommand() == CLICommand.Command.USEROOM) {
+                controller.useRoom(command.getArg(1), command.getArg(0));
+                controller.setRoomStatus(command.getArg(1), Status.Online);
             }
         }
     }

@@ -7,24 +7,19 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import edu.drexel.cs544.mcmuc.CLICommand.Command;
+
 /**
  * A very basic Command-Line Interface
  */
 public class CLI extends Thread implements UI {
 
     AtomicBoolean command_is_ready = new AtomicBoolean();
-    Command command = null;
-    String userName = "";
-    String roomName = "";
+    CLICommand command = null;
     private String useRoomRegex = "(?i)use-room (.+?)@(.+?)";
-
 
     public CLI() {
         command_is_ready.set(false);
-    }
-
-    public enum Command {
-        MESSAGE, PRESENCE, USEROOM, EXIT;
     }
 
     /**
@@ -33,22 +28,21 @@ public class CLI extends Thread implements UI {
      * @param s
      */
     public synchronized void input(String s) {
-    	Matcher matcher = Pattern.compile(useRoomRegex).matcher(s);
-    	matcher.find();
+        Matcher matcher = Pattern.compile(useRoomRegex).matcher(s);
+        matcher.find();
 
-    	if (s == null) {
+        if (s == null) {
             // do nothing
         } else if (s.equalsIgnoreCase("exit")) {
-            sendCommand(Command.EXIT);
+            sendCommand(new CLICommand(CLICommand.Command.EXIT, null));
         } else if (s.matches(useRoomRegex)) {
-        	userName = matcher.group(1);
-        	roomName = matcher.group(2);
-            sendCommand(Command.USEROOM);
+            String[] args = { matcher.group(1), matcher.group(2) };
+            sendCommand(new CLICommand(CLICommand.Command.USEROOM, args));
         } else {
             System.err.println("Received an unknown command: " + s);
             String rval = "Available commands: [";
             String delim = "";
-            for (Command cmd : Command.values()) {
+            for (CLICommand.Command cmd : CLICommand.Command.values()) {
                 rval += delim + cmd;
                 delim = ", ";
             }
@@ -91,14 +85,16 @@ public class CLI extends Thread implements UI {
 
     /**
      * Send a command.
+     * 
+     * @param c
      */
-    protected synchronized void sendCommand(Command c) {
+    protected synchronized void sendCommand(CLICommand c) {
         this.command = c;
         command_is_ready.set(true);
         notifyAll();
     }
 
-    public synchronized CLI.Command getNextCommand() {
+    public synchronized CLICommand getNextCommand() {
         try {
             this.output("McMUC TUI waiting for a command");
             while (!command_is_ready.get()) {

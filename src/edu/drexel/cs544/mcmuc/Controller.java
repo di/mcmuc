@@ -9,10 +9,10 @@ import org.json.JSONObject;
 
 import edu.drexel.cs544.mcmuc.actions.Action;
 import edu.drexel.cs544.mcmuc.actions.ListRooms;
+import edu.drexel.cs544.mcmuc.actions.Presence.Status;
 import edu.drexel.cs544.mcmuc.actions.Preserve;
 import edu.drexel.cs544.mcmuc.actions.Timeout;
 import edu.drexel.cs544.mcmuc.actions.UseRooms;
-import edu.drexel.cs544.mcmuc.actions.Presence.Status;
 
 /**
  * Controller represents a control channel, which is a fixed port for the sending of
@@ -173,6 +173,7 @@ public class Controller extends Channel {
      * @param userName String name to associate with user in the room
      */
     public void useRoom(String roomName, String userName) {
+        System.out.println("Room name: " + roomName + ", username: " + userName);
         Room room = new Room(roomName, channels.keySet(), userName);
         channels.put(room.getPort(), room);
         roomNames.put(roomName, room.getPort());
