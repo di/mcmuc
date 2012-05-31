@@ -16,7 +16,7 @@ public class CLI extends Thread implements UI {
 
     AtomicBoolean command_is_ready = new AtomicBoolean();
     CLICommand command = null;
-    private String useRoomRegex = "(?i)use-room (.+?)@(.+?)";
+    private String useRoomRegex = "(?i)use-room (\\w+)@(\\w+)";
 
     public CLI() {
         command_is_ready.set(false);
