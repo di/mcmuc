@@ -22,6 +22,7 @@ public class UseRooms extends RoomAction {
     /**
      * The use-rooms action must carry a list of rooms that receiving clients should
      * begin or continue forwarding traffic for.
+     * 
      * @param rooms List<Integer> the list of the rooms
      */
     public UseRooms(List<Integer> rooms) {
@@ -30,6 +31,7 @@ public class UseRooms extends RoomAction {
 
     /**
      * Deserializes JSON into a UseRooms object
+     * 
      * @param json the JSON to deserialize
      */
     public UseRooms(JSONObject json) {
@@ -39,6 +41,7 @@ public class UseRooms extends RoomAction {
     /**
      * Upon receiving a UseRooms action, iterate through the list of rooms, and pass the port
      * to Controller to reserve resources for the room.
+     * 
      * @see Controller
      */
     @Override
