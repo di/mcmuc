@@ -14,9 +14,9 @@ public class Run {
         Controller controller = Controller.getInstance();
         controller.setUI(cli);
 
-        controller.useRoom("testchannel", "dustin@testchannel");
+        controller.useRoom("testchannel", "dustin");
         // controller.useRoom(52316);
-        controller.sendToRoom("testchannel", new Message("dustin@testchannel", "Hello World"));
+        controller.sendToRoom("testchannel", new Message("dustin", "Hello World"));
         controller.setRoomStatus("testchannel", Status.Offline);
 
         while (true) {
@@ -28,7 +28,6 @@ public class Run {
                 // Do something
             } else if (command.getCommand() == CLICommand.Command.USEROOM) {
                 controller.useRoom(command.getArg(1), command.getArg(0));
-                controller.setRoomStatus(command.getArg(1), Status.Online);
             }
         }
     }
