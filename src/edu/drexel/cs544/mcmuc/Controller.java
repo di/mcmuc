@@ -1,5 +1,6 @@
 package edu.drexel.cs544.mcmuc;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -173,10 +174,10 @@ public class Controller extends Channel {
      * @param userName String name to associate with user in the room
      */
     public void useRoom(String roomName, String userName) {
-        System.out.println("Room name: " + roomName + ", username: " + userName);
         Room room = new Room(roomName, channels.keySet(), userName);
         channels.put(room.getPort(), room);
         roomNames.put(roomName, room.getPort());
+        this.send(new UseRooms(Arrays.asList(room.getPort())));
     }
 
     /**
