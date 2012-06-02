@@ -185,8 +185,7 @@ public class Controller extends Channel {
      * @param roomName String room to return the user name for
      * @return String the user's name in that room
      */
-    public String getUserName(String roomName)
-    {
+    public String getUserName(String roomName){
     	Room room = (Room) channels.get(roomNames.get(roomName));
         if (room != null) {
             return room.getUserName();

@@ -10,7 +10,12 @@ import java.util.regex.Pattern;
 import edu.drexel.cs544.mcmuc.CLICommand.Command;
 
 /**
- * A very basic Command-Line Interface
+ * A very basic Command-line interface - possible commands are:
+ * message 				@	<room-name>	<message>
+ * message 	<user-name>	@	<room-name>	<message>
+ * presence 			@	<room-name>	<status>
+ * use-room <user-name>	@	<room-name>
+ * exit
  */
 public class CLI extends Thread implements UI {
 
@@ -26,9 +31,10 @@ public class CLI extends Thread implements UI {
     }
 
     /**
-     * sends the Controller command to exit
-     * 
-     * @param s
+     * Matches a given input string against a regular expression representing each possible command type.
+     * If a match is found the string is separated into a command and its arguments. If no match is found,
+     * an error and the set of available commands is displayed.
+     * @param s String to parse into a command and its arguments
      */
     public synchronized void input(String s) {
         Matcher matcher = null;
@@ -59,26 +65,27 @@ public class CLI extends Thread implements UI {
             sendCommand(new CLICommand(CLICommand.Command.PVTMESSAGE, args));
         } else {
             System.err.println("Received an unknown command: " + s);	
-            String rval = "Available commands: [";
-            String delim = "";
-            for (CLICommand.Command cmd : CLICommand.Command.values()) {
-                rval += delim + cmd;
-                delim = ", ";
-            }
-            rval += "]\n";
-            System.out.println(rval);
+            String cmds = "Available commands:\n" +
+            "message @<room-name> <message>\n" +
+            "message <user-name>@<room-name> <message>\n" + 
+            "presence @<room-name> <status>\n" + 
+            "use-room <user-name>@<room-name>\n" + 
+            "exit\n";
+            System.out.println(cmds);
         }
     }
 
     /**
      * Output a string to the UI
-     * 
-     * @param s
+     * @param s String to output
      */
     public void output(String s) {
         System.out.print('\r' + s + "\n> ");
     }
 
+    /**
+     * Reads input from System.in and sends it to input() for parsing. Repeat until the command is 'exit'.
+     */
     public void run() {
         System.out.println("(Type 'exit' to quit.)");
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
@@ -103,9 +110,9 @@ public class CLI extends Thread implements UI {
     }
 
     /**
-     * Send a command.
-     * 
-     * @param c
+     * Sets the thread's command and sets the commandy_is_ready flag to true. Resumes the thread from a
+     * previous call to wait().
+     * @param c CLICommand to set
      */
     protected synchronized void sendCommand(CLICommand c) {
         this.command = c;
@@ -113,6 +120,10 @@ public class CLI extends Thread implements UI {
         notifyAll();
     }
 
+    /**
+     * Waits the thread until the command_is_ready flag is set, then resets the flag and returns the command.
+     * @return CLICommand command that was set.
+     */
     public synchronized CLICommand getNextCommand() {
         try {
             this.output("McMUC TUI waiting for a command");

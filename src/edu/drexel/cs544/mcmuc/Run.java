@@ -49,8 +49,7 @@ public class Run {
             		s = Status.Online;
             	else if(command.getArg(1).equalsIgnoreCase("Offline"))
             		s = Status.Offline;
-            	else
-            	{
+            	else{
             		System.err.println("Unknown status");
             		continue;
             	}

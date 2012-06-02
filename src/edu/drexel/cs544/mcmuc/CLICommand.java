@@ -2,12 +2,7 @@ package edu.drexel.cs544.mcmuc;
 
 /**
  * Represents a command and the associated arguments issued by the user at the interactive command-line
- * interface. Possible commands are:
- * message 				@	<room-name>	<message>
- * message 	<user-name>	@	<room-name>	<message>
- * presence 			@	<room-name>	<status>
- * use-room <user-name>	@	<room-name>
- * exit
+ * interface. 
  */
 public class CLICommand {
 
