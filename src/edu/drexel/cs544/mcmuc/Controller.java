@@ -24,7 +24,7 @@ import edu.drexel.cs544.mcmuc.actions.UseRooms;
 public class Controller extends Channel {
 
     public static final int CONTROL_PORT = 31941;
-    private final Map<String, Integer> roomNames = Collections.synchronizedMap(new HashMap<String, Integer>());
+    public final Map<String, Integer> roomNames = Collections.synchronizedMap(new HashMap<String, Integer>());
     public final Map<Integer, Channel> channels = Collections.synchronizedMap(new HashMap<Integer, Channel>());
     private UI ui;
 

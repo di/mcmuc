@@ -14,7 +14,7 @@ public class CLICommand {
     private String[] args;
 
     public enum Command {
-        MESSAGE, PRESENCE, USEROOM, EXIT;
+        MESSAGE, PVTMESSAGE, PRESENCE, USEROOM, EXIT;
     }
 
     /**

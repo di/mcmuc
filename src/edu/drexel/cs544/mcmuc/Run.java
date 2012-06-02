@@ -1,5 +1,6 @@
 package edu.drexel.cs544.mcmuc;
 
+import edu.drexel.cs544.mcmuc.actions.Action;
 import edu.drexel.cs544.mcmuc.actions.Message;
 import edu.drexel.cs544.mcmuc.actions.Presence.Status;
 
@@ -24,10 +25,18 @@ public class Run {
             if (command.getCommand() == CLICommand.Command.EXIT) { // Stop and kill this program
                 System.err.println("Exit command received, shutting down...");
                 System.exit(0);
-                // } else if (command == TUI.Command.SOMETHING) {
-                // Do something
             } else if (command.getCommand() == CLICommand.Command.USEROOM) {
                 controller.useRoom(command.getArg(1), command.getArg(0));
+            } else if (command.getCommand() == CLICommand.Command.PRESENCE) {
+                controller.setRoomStatus(command.getArg(0), Status.valueOf(command.getArg(1))); 
+            } else if (command.getCommand() == CLICommand.Command.MESSAGE) {
+            	Integer roomPort = controller.roomNames.get(command.getArg(0));
+            	Room room = (Room)controller.channels.get(roomPort);
+            	controller.sendToRoom(command.getArg(0), new Message(room.getUserName(), command.getArg(1)));
+            } else if (command.getCommand() == CLICommand.Command.PVTMESSAGE) {
+            	Integer roomPort = controller.roomNames.get(command.getArg(1));
+            	Room room = (Room)controller.channels.get(roomPort);
+            	controller.sendToRoom(command.getArg(1), new Message(room.getUserName(), command.getArg(2), command.getArg(0)));
             }
         }
     }
