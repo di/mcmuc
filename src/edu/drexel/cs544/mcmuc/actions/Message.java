@@ -7,6 +7,7 @@ import edu.drexel.cs544.mcmuc.Certificate;
 import edu.drexel.cs544.mcmuc.Channel;
 import edu.drexel.cs544.mcmuc.Controller;
 import edu.drexel.cs544.mcmuc.JSON;
+import edu.drexel.cs544.mcmuc.Room;
 
 /**
  * A chat room message action must carry a "from" field, which is a nickname that identifies
@@ -224,7 +225,14 @@ public class Message extends Action implements JSON {
 
             public void run() {
                 channel.resetPrimaryTimer();
-                Controller.getInstance().output(message.getFrom() + ": " + message.getBody() + " (" + message.getUID() + ")");
+                if(message.hasTo())
+                {
+                	Room r = (Room)channel;
+                	if(r.getUserName().equals(message.getTo()))
+                		Controller.getInstance().output("Private: " + message.getFrom() + ": " + message.getBody() + " (" + message.getUID() + ")");
+                }
+                else
+                	Controller.getInstance().output(message.getFrom() + ": " + message.getBody() + " (" + message.getUID() + ")");
                 channel.send(message);
             }
         }
