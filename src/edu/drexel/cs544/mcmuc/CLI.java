@@ -18,8 +18,8 @@ public class CLI extends Thread implements UI {
     CLICommand command = null;
     private String useRoomRegex = "(?i)use-room (\\w+)@(\\w+)";
     private String presenceRegex = "(?i)presence @(\\w+) (\\w+)";
-    private String messageRegex = "(?i)message @(\\w+): (.+)";
-    private String privateMessageRegex = "(?i)message (\\w+)@(\\w+): (.+)";
+    private String messageRegex = "(?i)message @(\\w+) (.+)";
+    private String privateMessageRegex = "(?i)message (\\w+)@(\\w+) (.+)";
 
     public CLI() {
         command_is_ready.set(false);
@@ -45,8 +45,7 @@ public class CLI extends Thread implements UI {
         } else if (s.matches(presenceRegex)) {
             matcher = Pattern.compile(presenceRegex).matcher(s);
             matcher.find();
-            String presenceStatus = matcher.group(2).substring(0, 1).toUpperCase() + matcher.group(2).substring(1).toLowerCase();
-            String[] args = { matcher.group(1), presenceStatus };
+            String[] args = { matcher.group(1), matcher.group(2) };
             sendCommand(new CLICommand(CLICommand.Command.PRESENCE, args));
         } else if (s.matches(messageRegex)) {
             matcher = Pattern.compile(messageRegex).matcher(s);

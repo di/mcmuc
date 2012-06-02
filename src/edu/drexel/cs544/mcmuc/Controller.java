@@ -179,6 +179,22 @@ public class Controller extends Channel {
         roomNames.put(roomName, room.getPort());
         this.send(new UseRooms(Arrays.asList(room.getPort())));
     }
+    
+    /**
+     * Gets the user's name in a given room (identified by the room name)
+     * @param roomName String room to return the user name for
+     * @return String the user's name in that room
+     */
+    public String getUserName(String roomName)
+    {
+    	Room room = (Room) channels.get(roomNames.get(roomName));
+        if (room != null) {
+            return room.getUserName();
+        } else {
+            System.err.println("Room not found!");
+            return "";
+        }
+    }
 
     /**
      * Set that user's presence in the room associated with roomName to the given presence
