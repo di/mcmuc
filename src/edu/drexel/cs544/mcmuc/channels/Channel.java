@@ -1,4 +1,4 @@
-package edu.drexel.cs544.mcmuc;
+package edu.drexel.cs544.mcmuc.channels;
 
 import java.net.DatagramPacket;
 import java.util.concurrent.Executors;
@@ -9,6 +9,9 @@ import java.util.concurrent.TimeUnit;
 import org.json.JSONObject;
 
 import edu.drexel.cs544.mcmuc.actions.Action;
+import edu.drexel.cs544.mcmuc.util.MulticastChannel;
+import edu.drexel.cs544.mcmuc.util.PrimaryTimer;
+import edu.drexel.cs544.mcmuc.util.SecondaryTimer;
 
 /**
  * A channel is a dynamic port that is actively being used for chat by one or more
@@ -101,7 +104,7 @@ public abstract class Channel {
      * @return int the multicast port
      */
     public int getPort() {
-        return mcc.multicastPort;
+        return mcc.getPort();
     }
 
     /**

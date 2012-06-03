@@ -1,6 +1,8 @@
-package edu.drexel.cs544.mcmuc;
+package edu.drexel.cs544.mcmuc.channels;
 
 import org.json.JSONObject;
+
+import edu.drexel.cs544.mcmuc.util.MulticastReceiveRunnable;
 
 /**
  * Forwarder is a channel for the client simply forwards messages to other clients on

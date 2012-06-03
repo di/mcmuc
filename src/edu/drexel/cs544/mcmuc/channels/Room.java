@@ -1,4 +1,4 @@
-package edu.drexel.cs544.mcmuc;
+package edu.drexel.cs544.mcmuc.channels;
 
 import java.nio.ByteBuffer;
 import java.security.MessageDigest;
@@ -13,6 +13,7 @@ import edu.drexel.cs544.mcmuc.actions.Message;
 import edu.drexel.cs544.mcmuc.actions.PollPresence;
 import edu.drexel.cs544.mcmuc.actions.Presence;
 import edu.drexel.cs544.mcmuc.actions.Presence.Status;
+import edu.drexel.cs544.mcmuc.util.MulticastReceiveRunnable;
 
 /**
  * A Room is a Channel tied to a specific port that users can exchange message actions on.

@@ -3,11 +3,11 @@ package edu.drexel.cs544.mcmuc.actions;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import edu.drexel.cs544.mcmuc.Certificate;
-import edu.drexel.cs544.mcmuc.Channel;
-import edu.drexel.cs544.mcmuc.Controller;
-import edu.drexel.cs544.mcmuc.JSON;
-import edu.drexel.cs544.mcmuc.Room;
+import edu.drexel.cs544.mcmuc.channels.Channel;
+import edu.drexel.cs544.mcmuc.channels.Controller;
+import edu.drexel.cs544.mcmuc.channels.Room;
+import edu.drexel.cs544.mcmuc.util.Certificate;
+import edu.drexel.cs544.mcmuc.util.JSON;
 
 /**
  * A chat room message action must carry a "from" field, which is a nickname that identifies
@@ -225,14 +225,12 @@ public class Message extends Action implements JSON {
 
             public void run() {
                 channel.resetPrimaryTimer();
-                if(message.hasTo())
-                {
-                	Room r = (Room)channel;
-                	if(r.getUserName().equals(message.getTo()))
-                		Controller.getInstance().output("Private: " + message.getFrom() + ": " + message.getBody() + " (" + message.getUID() + ")");
-                }
-                else
-                	Controller.getInstance().output(message.getFrom() + ": " + message.getBody() + " (" + message.getUID() + ")");
+                if (message.hasTo()) {
+                    Room r = (Room) channel;
+                    if (r.getUserName().equals(message.getTo()))
+                        Controller.getInstance().output(message.getFrom() + " (private): " + message.getBody() + " (" + message.getUID() + ")");
+                } else
+                    Controller.getInstance().output(message.getFrom() + ": " + message.getBody() + " (" + message.getUID() + ")");
                 channel.send(message);
             }
         }

@@ -1,8 +1,9 @@
-package edu.drexel.cs544.mcmuc;
+package edu.drexel.cs544.mcmuc.util;
 
 import java.util.Arrays;
 
 import edu.drexel.cs544.mcmuc.actions.Timeout;
+import edu.drexel.cs544.mcmuc.channels.Controller;
 
 /**
  * PrimaryTimer implements the following part of the protocol channel timeout algorithm:

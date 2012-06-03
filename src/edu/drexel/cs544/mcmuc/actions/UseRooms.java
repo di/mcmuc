@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.json.JSONObject;
 
-import edu.drexel.cs544.mcmuc.Channel;
-import edu.drexel.cs544.mcmuc.Controller;
+import edu.drexel.cs544.mcmuc.channels.Channel;
+import edu.drexel.cs544.mcmuc.channels.Controller;
 
 /**
  * The use-rooms action is used to reply to a list-rooms action. Clients will either

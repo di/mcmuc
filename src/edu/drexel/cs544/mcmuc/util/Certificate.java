@@ -1,4 +1,4 @@
-package edu.drexel.cs544.mcmuc;
+package edu.drexel.cs544.mcmuc.util;
 
 import org.json.JSONException;
 import org.json.JSONObject;

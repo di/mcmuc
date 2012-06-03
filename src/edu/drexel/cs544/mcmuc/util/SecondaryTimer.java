@@ -1,4 +1,6 @@
-package edu.drexel.cs544.mcmuc;
+package edu.drexel.cs544.mcmuc.util;
+
+import edu.drexel.cs544.mcmuc.channels.Controller;
 
 /**
  * SecondaryTimer implements the following part of the protocol channel timeout algorithm:

@@ -7,8 +7,8 @@ import java.util.Set;
 
 import org.json.JSONObject;
 
-import edu.drexel.cs544.mcmuc.Channel;
-import edu.drexel.cs544.mcmuc.Controller;
+import edu.drexel.cs544.mcmuc.channels.Channel;
+import edu.drexel.cs544.mcmuc.channels.Controller;
 
 /**
  * The timeout action is used by clients to find channels clients are no longer

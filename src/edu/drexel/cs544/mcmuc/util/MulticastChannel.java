@@ -1,4 +1,4 @@
-package edu.drexel.cs544.mcmuc;
+package edu.drexel.cs544.mcmuc.util;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -9,7 +9,6 @@ import java.net.SocketException;
 import org.json.JSONObject;
 
 import edu.drexel.cs544.mcmuc.actions.Action;
-//import edu.drexel.cs544.mcmuc.actions.ActionBase;
 
 /**
  * A MulticastChannel is the combination of a multicast socket, address, and port that together
@@ -104,5 +103,9 @@ public class MulticastChannel {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public int getPort() {
+        return this.multicastPort;
     }
 }

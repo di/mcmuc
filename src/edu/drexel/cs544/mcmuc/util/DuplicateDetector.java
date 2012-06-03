@@ -1,4 +1,4 @@
-package edu.drexel.cs544.mcmuc;
+package edu.drexel.cs544.mcmuc.util;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;

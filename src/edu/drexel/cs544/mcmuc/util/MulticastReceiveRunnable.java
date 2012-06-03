@@ -1,9 +1,11 @@
-package edu.drexel.cs544.mcmuc;
+package edu.drexel.cs544.mcmuc.util;
 
 import java.net.DatagramPacket;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import edu.drexel.cs544.mcmuc.channels.Channel;
 
 /**
  * MulticastReceiveRunnable (MRR) implements Runnable so that any instances can be executed by a thread.
