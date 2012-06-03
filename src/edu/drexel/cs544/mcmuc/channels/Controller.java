@@ -10,11 +10,12 @@ import org.json.JSONObject;
 
 import edu.drexel.cs544.mcmuc.actions.Action;
 import edu.drexel.cs544.mcmuc.actions.ListRooms;
-import edu.drexel.cs544.mcmuc.actions.Presence.Status;
 import edu.drexel.cs544.mcmuc.actions.Preserve;
 import edu.drexel.cs544.mcmuc.actions.Timeout;
 import edu.drexel.cs544.mcmuc.actions.UseRooms;
+import edu.drexel.cs544.mcmuc.actions.Presence.Status;
 import edu.drexel.cs544.mcmuc.ui.UI;
+import edu.drexel.cs544.mcmuc.util.MulticastReceiveRunnable;
 
 /**
  * Controller represents a control channel, which is a fixed port for the sending of
@@ -37,6 +38,9 @@ public class Controller extends Channel {
     private Controller(int port) {
         super(port);
         channels.put(port, this);
+        MulticastReceiveRunnable runner = new MulticastReceiveRunnable(this);
+        Thread runnerThread = new Thread(runner);
+        runnerThread.start();
     }
 
     private static final Controller instance = new Controller(CONTROL_PORT);
@@ -179,15 +183,17 @@ public class Controller extends Channel {
         channels.put(room.getPort(), room);
         roomNames.put(roomName, room.getPort());
         this.send(new UseRooms(Arrays.asList(room.getPort())));
+        this.output("* Created new room: \"" + roomName + "\" with user \"" + userName + "\"");
     }
-    
+
     /**
      * Gets the user's name in a given room (identified by the room name)
+     * 
      * @param roomName String room to return the user name for
      * @return String the user's name in that room
      */
-    public String getUserName(String roomName){
-    	Room room = (Room) channels.get(roomNames.get(roomName));
+    public String getUserName(String roomName) {
+        Room room = (Room) channels.get(roomNames.get(roomName));
         if (room != null) {
             return room.getUserName();
         } else {
