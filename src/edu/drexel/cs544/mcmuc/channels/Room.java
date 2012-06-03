@@ -26,6 +26,7 @@ public class Room extends Channel {
 
     private Status roomPresence;
     private String userName;
+    private String name;
 
     /**
      * Sets the user's per-room status
@@ -36,6 +37,15 @@ public class Room extends Channel {
         roomPresence = newPresence;
         this.send(new Presence(this.getUserName(), roomPresence));
         this.send(new PollPresence());
+    }
+
+    /**
+     * Accessor for the room's name
+     * 
+     * @return String the room's name
+     */
+    public String getName() {
+        return name;
     }
 
     /**
@@ -67,6 +77,7 @@ public class Room extends Channel {
      */
     public Room(String name, Set<Integer> portsInUse, String userName) {
         super(choosePort(name, portsInUse));
+        this.name = name;
         this.userName = userName;
         setStatus(Status.Online);
         MulticastReceiveRunnable runner = new MulticastReceiveRunnable(this);
