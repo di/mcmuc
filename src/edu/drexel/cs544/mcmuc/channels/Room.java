@@ -36,7 +36,6 @@ public class Room extends Channel {
     public void setStatus(Status newPresence) {
         roomPresence = newPresence;
         this.send(new Presence(this.getUserName(), roomPresence));
-        this.send(new PollPresence());
     }
 
     /**
@@ -79,10 +78,13 @@ public class Room extends Channel {
         super(choosePort(name, portsInUse));
         this.name = name;
         this.userName = userName;
-        setStatus(Status.Online);
         MulticastReceiveRunnable runner = new MulticastReceiveRunnable(this);
         Thread runnerThread = new Thread(runner);
         runnerThread.start();
+
+        // Send the necessary initial messages
+        setStatus(Status.Online);
+        this.send(new PollPresence());
     }
 
     /**
