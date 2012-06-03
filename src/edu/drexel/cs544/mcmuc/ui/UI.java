@@ -1,4 +1,4 @@
-package edu.drexel.cs544.mcmuc.UI;
+package edu.drexel.cs544.mcmuc.ui;
 
 public interface UI {
 

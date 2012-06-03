@@ -1,10 +1,10 @@
 package edu.drexel.cs544.mcmuc;
 
-import edu.drexel.cs544.mcmuc.UI.CLI;
-import edu.drexel.cs544.mcmuc.UI.CLICommand;
 import edu.drexel.cs544.mcmuc.actions.Message;
 import edu.drexel.cs544.mcmuc.actions.Presence.Status;
 import edu.drexel.cs544.mcmuc.channels.Controller;
+import edu.drexel.cs544.mcmuc.ui.CLI;
+import edu.drexel.cs544.mcmuc.ui.CLICommand;
 
 /**
  * Run exists to exercise a simple command-line interface to the Multicast Multi-User Chat protocol.

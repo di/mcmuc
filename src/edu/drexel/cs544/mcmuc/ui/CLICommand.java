@@ -1,4 +1,4 @@
-package edu.drexel.cs544.mcmuc.UI;
+package edu.drexel.cs544.mcmuc.ui;
 
 /**
  * Represents a command and the associated arguments issued by the user at the interactive command-line

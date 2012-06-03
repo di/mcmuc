@@ -1,4 +1,4 @@
-package edu.drexel.cs544.mcmuc.UI;
+package edu.drexel.cs544.mcmuc.ui;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,7 +7,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import edu.drexel.cs544.mcmuc.UI.CLICommand.Command;
+import edu.drexel.cs544.mcmuc.ui.CLICommand.Command;
 
 /**
  * A very basic Command-line interface - possible commands are:
