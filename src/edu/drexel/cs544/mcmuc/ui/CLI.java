@@ -11,10 +11,10 @@ import edu.drexel.cs544.mcmuc.ui.CLICommand.Command;
 
 /**
  * A very basic Command-line interface - possible commands are:
- * message 				@	<room-name>	<message>
- * message 	<user-name>	@	<room-name>	<message>
- * presence 			@	<room-name>	<status>
- * use-room <user-name>	@	<room-name>
+ * message @ <room-name> <message>
+ * message <user-name> @ <room-name> <message>
+ * presence @ <room-name> <status>
+ * use-room <user-name> @ <room-name>
  * exit
  */
 public class CLI extends Thread implements UI {
@@ -34,6 +34,7 @@ public class CLI extends Thread implements UI {
      * Matches a given input string against a regular expression representing each possible command type.
      * If a match is found the string is separated into a command and its arguments. If no match is found,
      * an error and the set of available commands is displayed.
+     * 
      * @param s String to parse into a command and its arguments
      */
     public synchronized void input(String s) {
@@ -64,19 +65,15 @@ public class CLI extends Thread implements UI {
             String[] args = { matcher.group(1), matcher.group(2), matcher.group(3) };
             sendCommand(new CLICommand(CLICommand.Command.PVTMESSAGE, args));
         } else {
-            System.err.println("Received an unknown command: " + s);	
-            String cmds = "Available commands:\n" +
-            "message @<room-name> <message>\n" +
-            "message <user-name>@<room-name> <message>\n" + 
-            "presence @<room-name> <status>\n" + 
-            "use-room <user-name>@<room-name>\n" + 
-            "exit\n";
-            System.out.println(cmds);
+            output("Received an unknown command: \"" + s + "\"");
+            String cmds = "Available commands:\n" + "\t message @<room-name> <message>\n" + "\t message <user-name>@<room-name> <message>\n" + "\t presence @<room-name> <status>\n" + "\t use-room <user-name>@<room-name>\n" + "\t exit\n";
+            output(cmds);
         }
     }
 
     /**
      * Output a string to the UI
+     * 
      * @param s String to output
      */
     public void output(String s) {
@@ -87,12 +84,11 @@ public class CLI extends Thread implements UI {
      * Reads input from System.in and sends it to input() for parsing. Repeat until the command is 'exit'.
      */
     public void run() {
-        System.out.println("(Type 'exit' to quit.)");
+        this.output("McMUC CLI waiting for a command. (Type 'exit' or CTRL-C to quit)");
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         while (true) {
             String s = null;
             try {
-                System.out.print(">");
                 s = reader.readLine();
                 if (s == null) {
                     System.err.println("STDIN is closed or set to null. Use Ctrl-C to close.");
@@ -112,6 +108,7 @@ public class CLI extends Thread implements UI {
     /**
      * Sets the thread's command and sets the commandy_is_ready flag to true. Resumes the thread from a
      * previous call to wait().
+     * 
      * @param c CLICommand to set
      */
     protected synchronized void sendCommand(CLICommand c) {
@@ -122,11 +119,11 @@ public class CLI extends Thread implements UI {
 
     /**
      * Waits the thread until the command_is_ready flag is set, then resets the flag and returns the command.
+     * 
      * @return CLICommand command that was set.
      */
     public synchronized CLICommand getNextCommand() {
         try {
-            this.output("McMUC TUI waiting for a command");
             while (!command_is_ready.get()) {
                 wait(); // wait for a command
             }
