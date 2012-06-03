@@ -2,6 +2,7 @@ package edu.drexel.cs544.mcmuc.util;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -45,32 +46,15 @@ public class DuplicateDetector {
     private String getMessageHash(JSONObject jo) {
         String hash = null;
         try {
-            hash = jo.getString("uid") + MD5(jo.toString());
+        	MessageDigest md = MessageDigest.getInstance("MD5");
+            byte[] array = md.digest(jo.toString().getBytes());
+            hash = jo.getString("uid") + Certificate.bytesToString(array);
         } catch (JSONException e) {
             e.printStackTrace();
-        }
+        } catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
         return hash;
-    }
-
-    /**
-     * Gets the hex representation of a MD5 hash of a given string
-     * 
-     * @param md5 String to hash
-     * @return the hash as string of hex characters (0-9,A-F)
-     */
-    private String MD5(String md5) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            byte[] array = md.digest(md5.getBytes());
-            StringBuffer sb = new StringBuffer();
-            for (int i = 0; i < array.length; ++i) {
-                sb.append(Integer.toHexString((array[i] & 0xFF) | 0x100).substring(1, 3));
-            }
-            return sb.toString();
-        } catch (java.security.NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 
     /**

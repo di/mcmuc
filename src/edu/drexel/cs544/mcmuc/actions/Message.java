@@ -1,5 +1,25 @@
 package edu.drexel.cs544.mcmuc.actions;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.security.InvalidKeyException;
+import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
+import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.PKCS8EncodedKeySpec;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -51,10 +71,10 @@ public class Message extends Action implements JSON {
             this.hasTo = true;
         } else
             this.hasTo = false;
-
         if (key != null) {
             this.key = key;
             this.hasKey = true;
+            encryptBody(key);            
         } else
             this.hasKey = false;
     }
@@ -101,6 +121,71 @@ public class Message extends Action implements JSON {
      */
     public Message(String from, String body, String to, Certificate key) {
         init(from, body, to, key);
+    }
+    
+    public void decryptBody(Certificate PrivateKey)
+    {
+    	InputStream inStream = new ByteArrayInputStream(PrivateKey.getCertificate());
+    	try {
+			byte[] encKey = new byte[inStream.available()];
+			inStream.read(encKey);
+			PKCS8EncodedKeySpec privKeySpec = new PKCS8EncodedKeySpec(encKey);
+            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+            PrivateKey priv = (RSAPrivateKey) keyFactory.generatePrivate(privKeySpec);
+            Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
+            cipher.init(Cipher.DECRYPT_MODE, priv);
+            byte[] textBytes = cipher.doFinal(Certificate.stringToBytes(body)); 
+            this.body = new String(textBytes);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		} catch (InvalidKeySpecException e) {
+			e.printStackTrace();
+		} catch (InvalidKeyException e) {
+			e.printStackTrace();
+		} catch (NoSuchPaddingException e) {
+			e.printStackTrace();
+		} catch (IllegalBlockSizeException e) {
+			e.printStackTrace();
+		} catch (BadPaddingException e) {
+			e.printStackTrace();
+		}
+    	
+    }
+    
+    public void encryptBody(Certificate PublicKey)
+    {
+    	InputStream inStream = new ByteArrayInputStream(PublicKey.getCertificate());
+        CertificateFactory cf;
+		try {
+			cf = CertificateFactory.getInstance("X.509");
+			X509Certificate cert = (X509Certificate)cf.generateCertificate(inStream);
+			System.out.println(cert.getSigAlgName());
+			if(cert.getSigAlgName().equalsIgnoreCase("SHA1withRSA"))
+			{
+				RSAPublicKey pubkey = (RSAPublicKey)cert.getPublicKey();
+	            Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
+	            cipher.init(Cipher.ENCRYPT_MODE, pubkey);
+	            byte[] ciphertextBytes = cipher.doFinal(this.body.getBytes());
+	            this.body = Certificate.bytesToString(ciphertextBytes);
+			}
+			else
+				System.err.println("Only SHA1withRSA public keys are supported");
+			
+		} catch (CertificateException e) {
+			System.err.println("Only valid X.509 certificates are supported");
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		} catch (NoSuchPaddingException e) {
+			e.printStackTrace();
+		} catch (InvalidKeyException e) {
+			e.printStackTrace();
+		} catch (IllegalBlockSizeException e) {
+			e.printStackTrace();
+		} catch (BadPaddingException e) {
+			e.printStackTrace();
+		} 
     }
 
     /**

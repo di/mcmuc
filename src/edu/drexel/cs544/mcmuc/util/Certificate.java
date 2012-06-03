@@ -14,7 +14,7 @@ import org.json.JSONObject;
  */
 public class Certificate implements JSON {
 	private String format;
-	private String certificate;
+	private byte[] certificate;
 	
 	/**
 	 * Accessor for certificate's format
@@ -27,9 +27,9 @@ public class Certificate implements JSON {
 	
 	/**
 	 * Accessor for certificiate
-	 * @return String certificate
+	 * @return byte[] certificate
 	 */
-	public String getCertificate()
+	public byte[] getCertificate()
 	{
 		return certificate;
 	}
@@ -40,7 +40,7 @@ public class Certificate implements JSON {
 	 * @param format type of certificate, such as X.509 or PGP
 	 * @param certificate the actual certificate
 	 */
-	public Certificate(String format, String certificate)
+	public Certificate(String format, byte[] certificate)
 	{
 		this.format = format;
 		this.certificate = certificate;
@@ -55,11 +55,38 @@ public class Certificate implements JSON {
 	{
 		try {
 			format = json.getString("format");
-			certificate = json.getString("certificate");
+			certificate = stringToBytes(json.getString("certificate"));
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
 	}
+	
+	/**
+	 * Converts a byte array into a hex string
+	 * @param array byte[] to convert to hex string
+	 * @return String of byte[] as hex
+	 */
+    public static String bytesToString(byte[] array) {
+        StringBuffer sb = new StringBuffer();
+		for (int i = 0; i < array.length; ++i) {
+		    sb.append(Integer.toHexString((array[i] & 0xFF) | 0x100).substring(1, 3));
+		}
+		return sb.toString();
+    }
+    
+    /**
+     * Converts a hex string to a byte array
+     * @param s String of hex to convert to byte[]
+     * @return byte[] of hex String
+     */
+    public static byte[] stringToBytes(String s)
+    {
+        byte[] data = new byte[s.length() / 2];
+        for (int i = 0; i < s.length(); i += 2) {
+            data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4) + Character.digit(s.charAt(i+1), 16));
+        }
+        return data;
+    }
 
 	/**
 	 * Serializes the Certificate object into JSON notation
@@ -70,7 +97,7 @@ public class Certificate implements JSON {
 		
 		try {
 			json.put("format", format);
-			json.put("certificate", certificate);
+			json.put("certificate", bytesToString(certificate));
 		} catch (JSONException e) {
 
 		}
