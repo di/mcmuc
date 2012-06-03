@@ -19,6 +19,7 @@ import edu.drexel.cs544.mcmuc.channels.Channel;
 public class MulticastReceiveRunnable implements Runnable {
 
     Channel channel;
+    Boolean done;
 
     /**
      * The only necessary parameter to create a MulticastReceiveRunnable object is the channel
@@ -29,6 +30,10 @@ public class MulticastReceiveRunnable implements Runnable {
         this.channel = channel;
     }
 
+    public void stop() {
+        this.done = true;
+    }
+
     /**
      * MRR receives datagrams on the channel and gets the JSON data payload.
      * MRR records the received JSON in the duplicate detector and passes it to
@@ -36,7 +41,8 @@ public class MulticastReceiveRunnable implements Runnable {
      * exceed 1000 bytes.
      */
     public void run() {
-        while (true) {
+        this.done = false;
+        while (!this.done) {
             byte[] buf = new byte[1000];
             DatagramPacket dp = new DatagramPacket(buf, buf.length);
             channel.receive(dp);

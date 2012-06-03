@@ -10,6 +10,8 @@ import edu.drexel.cs544.mcmuc.util.MulticastReceiveRunnable;
  */
 public class Forwarder extends Channel {
 
+    private MulticastReceiveRunnable runner;
+
     /**
      * Creates a channel on the given port and starts the multicast thread for the room
      * 
@@ -17,7 +19,7 @@ public class Forwarder extends Channel {
      */
     Forwarder(int port) {
         super(port);
-        MulticastReceiveRunnable runner = new MulticastReceiveRunnable(this);
+        runner = new MulticastReceiveRunnable(this);
         Thread runnerThread = new Thread(runner);
         runnerThread.start();
     }
@@ -28,5 +30,9 @@ public class Forwarder extends Channel {
     @Override
     public void handleNewMessage(JSONObject jo) {
         this.send(jo);
+    }
+
+    public void shutdown() {
+        runner.stop();
     }
 }

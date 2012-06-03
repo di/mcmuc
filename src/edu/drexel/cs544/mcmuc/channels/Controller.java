@@ -3,6 +3,7 @@ package edu.drexel.cs544.mcmuc.channels;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 import org.json.JSONException;
@@ -179,8 +180,11 @@ public class Controller extends Channel {
      * @param userName String name to associate with user in the room
      */
     public void useRoom(String roomName, String userName) {
-        Room room = new Room(roomName, channels.keySet(), userName);
-        channels.put(room.getPort(), room);
+        Room room = new Room(roomName, new HashSet<Integer>(roomNames.values()), userName);
+        Forwarder oldChannel = (Forwarder) channels.put(room.getPort(), room);
+        if (oldChannel != null) {
+            oldChannel.shutdown();
+        }
         roomNames.put(roomName, room.getPort());
         this.send(new UseRooms(Arrays.asList(room.getPort())));
         this.output("* Created new room: \"" + roomName + "\" with user \"" + userName + "\"");
