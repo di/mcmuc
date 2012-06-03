@@ -11,6 +11,7 @@ import org.json.JSONObject;
 
 import edu.drexel.cs544.mcmuc.actions.Action;
 import edu.drexel.cs544.mcmuc.actions.ListRooms;
+import edu.drexel.cs544.mcmuc.actions.PollPresence;
 import edu.drexel.cs544.mcmuc.actions.Preserve;
 import edu.drexel.cs544.mcmuc.actions.Timeout;
 import edu.drexel.cs544.mcmuc.actions.UseRooms;
@@ -42,6 +43,7 @@ public class Controller extends Channel {
         MulticastReceiveRunnable runner = new MulticastReceiveRunnable(this);
         Thread runnerThread = new Thread(runner);
         runnerThread.start();
+        this.send(new ListRooms());
     }
 
     private static final Controller instance = new Controller(CONTROL_PORT);
@@ -145,10 +147,11 @@ public class Controller extends Channel {
      * 
      * @param roomPort int
      */
-    public void useRoom(int roomPort) {
+    public synchronized void useRoom(int roomPort) {
         if (!channels.keySet().contains(roomPort)) {
             Forwarder fwd = new Forwarder(roomPort);
             channels.put(roomPort, fwd);
+            fwd.send(new PollPresence());
         } else {
             // This port is already in use, either by a Room or Forwarder
         }
