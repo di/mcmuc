@@ -228,9 +228,9 @@ public class Message extends Action implements JSON {
                 if (message.hasTo()) {
                     Room r = (Room) channel;
                     if (r.getUserName().equals(message.getTo()))
-                        Controller.getInstance().output(message.getFrom() + " (private): " + message.getBody() + " (" + message.getUID() + ")");
+                        Controller.getInstance().output(message.getFrom() + "@" + ((Room) channel).getName() + " (private): " + message.getBody() + " (" + message.getUID() + ")");
                 } else
-                    Controller.getInstance().output(message.getFrom() + ": " + message.getBody() + " (" + message.getUID() + ")");
+                    Controller.getInstance().output(message.getFrom() + "@" + ((Room) channel).getName() + ": " + message.getBody() + " (" + message.getUID() + ")");
                 channel.send(message);
             }
         }
