@@ -186,9 +186,9 @@ public class Presence extends Action implements JSON {
 
             public void run() {
                 if (message.getStatus() == Status.Online)
-                    Controller.getInstance().output(message.getFrom() + "@" + ((Room) channel).getName() + " is online " + " (" + message.getUID() + ")");
+                    Controller.getInstance().alert(message.getFrom() + "@" + ((Room) channel).getName() + " is online " + " (" + message.getUID() + ")");
                 else if (message.getStatus() == Status.Offline)
-                    Controller.getInstance().output(message.getFrom() + "@" + ((Room) channel).getName() + " is offline " + " (" + message.getUID() + ")");
+                    Controller.getInstance().alert(message.getFrom() + "@" + ((Room) channel).getName() + " is offline " + " (" + message.getUID() + ")");
 
                 List<Certificate> keys = message.getKeys();
                 if (keys != null) {

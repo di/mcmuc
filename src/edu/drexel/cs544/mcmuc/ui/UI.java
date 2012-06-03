@@ -6,4 +6,6 @@ public interface UI {
 
     void output(String outputString);
 
+    void alert(String string);
+
 }

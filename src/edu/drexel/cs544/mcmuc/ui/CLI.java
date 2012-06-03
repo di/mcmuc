@@ -65,9 +65,9 @@ public class CLI extends Thread implements UI {
             String[] args = { matcher.group(1), matcher.group(2), matcher.group(3) };
             sendCommand(new CLICommand(CLICommand.Command.PVTMESSAGE, args));
         } else {
-            output("Received an unknown command: \"" + s + "\"");
+            alert("Received an unknown command: \"" + s + "\"");
             String cmds = "Available commands:\n" + "\t message @<room-name> <message>\n" + "\t message <user-name>@<room-name> <message>\n" + "\t presence @<room-name> <status>\n" + "\t use-room <user-name>@<room-name>\n" + "\t exit\n";
-            output(cmds);
+            alert(cmds);
         }
     }
 
@@ -81,10 +81,19 @@ public class CLI extends Thread implements UI {
     }
 
     /**
+     * Output a string to the UI, as an alert
+     * 
+     * @param s String to output
+     */
+    public void alert(String s) {
+        output("* " + s);
+    }
+
+    /**
      * Reads input from System.in and sends it to input() for parsing. Repeat until the command is 'exit'.
      */
     public void run() {
-        this.output("McMUC CLI waiting for a command. (Type 'exit' or CTRL-C to quit)");
+        this.alert("McMUC CLI waiting for a command. (Type 'exit' or CTRL-C to quit)");
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         while (true) {
             String s = null;

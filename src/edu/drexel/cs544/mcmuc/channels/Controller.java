@@ -94,12 +94,21 @@ public class Controller extends Channel {
      * 
      * @param outputString String to display
      */
-    public void output(String outputString) {
+    public void output(String string) {
         if (this.ui != null) {
-            this.ui.output(outputString);
+            this.ui.output(string);
         } else {
             // Poor man's UI
-            System.out.println(outputString);
+            System.out.println(string);
+        }
+    }
+
+    public void alert(String string) {
+        if (this.ui != null) {
+            this.ui.alert(string);
+        } else {
+            // Poor man's UI
+            System.out.println("* " + string);
         }
     }
 
@@ -187,7 +196,7 @@ public class Controller extends Channel {
         }
         roomNames.put(roomName, room.getPort());
         this.send(new UseRooms(Arrays.asList(room.getPort())));
-        this.output("* Created new room: \"" + roomName + "\" with user \"" + userName + "\"");
+        this.alert("Created new room: \"" + roomName + "\" with user \"" + userName + "\"");
     }
 
     /**
