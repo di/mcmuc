@@ -12,10 +12,10 @@ import org.json.JSONObject;
 import edu.drexel.cs544.mcmuc.actions.Action;
 import edu.drexel.cs544.mcmuc.actions.ListRooms;
 import edu.drexel.cs544.mcmuc.actions.PollPresence;
+import edu.drexel.cs544.mcmuc.actions.Presence.Status;
 import edu.drexel.cs544.mcmuc.actions.Preserve;
 import edu.drexel.cs544.mcmuc.actions.Timeout;
 import edu.drexel.cs544.mcmuc.actions.UseRooms;
-import edu.drexel.cs544.mcmuc.actions.Presence.Status;
 import edu.drexel.cs544.mcmuc.ui.UI;
 import edu.drexel.cs544.mcmuc.util.Certificate;
 import edu.drexel.cs544.mcmuc.util.MulticastReceiveRunnable;
@@ -239,15 +239,16 @@ public class Controller extends Channel {
             System.err.println("Room not found!");
         }
     }
-    
+
     /**
      * Adds a public/private key pair to the room identified by roomName
+     * 
      * @param roomName String the room
      * @param publicKey Certificate public key
      * @param privateKey Certificate private key
      * @see Room
      */
-    public void addKeyPair(String roomName, Certificate publicKey, Certificate privateKey){
+    public void addKeyPair(String roomName, Certificate publicKey, Certificate privateKey) {
         Room room = (Room) channels.get(roomNames.get(roomName));
         if (room != null) {
             room.addKeyPair(publicKey, privateKey);
@@ -255,14 +256,15 @@ public class Controller extends Channel {
             System.err.println("Room not found!");
         }
     }
-    
+
     /**
      * Removes a public/private key pair from the room identified by roomName
+     * 
      * @param roomName String the room
      * @param publicKey Certificate public key
      */
-    public void removeKeyPair(String roomName, Certificate publicKey){
-    	Room room = (Room) channels.get(roomNames.get(roomName));
+    public void removeKeyPair(String roomName, Certificate publicKey) {
+        Room room = (Room) channels.get(roomNames.get(roomName));
         if (room != null) {
             room.removeKeyPair(publicKey);
         } else {
@@ -287,6 +289,7 @@ public class Controller extends Channel {
 
     /**
      * Sets the Controller's UI
+     * 
      * @param ui UI to set
      */
     public void setUI(UI ui) {
