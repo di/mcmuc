@@ -123,19 +123,28 @@ public class Message extends Action implements JSON {
         init(from, body, to, key);
     }
     
+    /**
+     * Decrypts the body of the message, using the provided private key certificate of the user
+     * that received the message. Only X.509 certificates using RSA privates keys are currently supported.
+     * @param Private Certificate for the receiver of the message.
+     */
     public void decryptBody(Certificate PrivateKey)
     {
     	InputStream inStream = new ByteArrayInputStream(PrivateKey.getCertificate());
     	try {
-			byte[] encKey = new byte[inStream.available()];
-			inStream.read(encKey);
-			PKCS8EncodedKeySpec privKeySpec = new PKCS8EncodedKeySpec(encKey);
+			byte[] keyBytes = new byte[inStream.available()];
+			inStream.read(keyBytes);
+			
+			PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(keyBytes);
             KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-            PrivateKey priv = (RSAPrivateKey) keyFactory.generatePrivate(privKeySpec);
+            PrivateKey key = (RSAPrivateKey)keyFactory.generatePrivate(keySpec);
+            
             Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
-            cipher.init(Cipher.DECRYPT_MODE, priv);
+            cipher.init(Cipher.DECRYPT_MODE, key);
+            
             byte[] textBytes = cipher.doFinal(Certificate.stringToBytes(body)); 
             this.body = new String(textBytes);
+            
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (NoSuchAlgorithmException e) {
@@ -154,6 +163,11 @@ public class Message extends Action implements JSON {
     	
     }
     
+    /**
+     * Encrypts the body of the message, using the provided public key certificate of the intended
+     * recipient. Only X.509 certificates using RSA public keys are currently supported.
+     * @param PublicKey Certificate for the message receipent's public key
+     */
     public void encryptBody(Certificate PublicKey)
     {
     	InputStream inStream = new ByteArrayInputStream(PublicKey.getCertificate());
@@ -161,20 +175,16 @@ public class Message extends Action implements JSON {
 		try {
 			cf = CertificateFactory.getInstance("X.509");
 			X509Certificate cert = (X509Certificate)cf.generateCertificate(inStream);
-			System.out.println(cert.getSigAlgName());
-			if(cert.getSigAlgName().equalsIgnoreCase("SHA1withRSA"))
-			{
-				RSAPublicKey pubkey = (RSAPublicKey)cert.getPublicKey();
-	            Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
-	            cipher.init(Cipher.ENCRYPT_MODE, pubkey);
-	            byte[] ciphertextBytes = cipher.doFinal(this.body.getBytes());
-	            this.body = Certificate.bytesToString(ciphertextBytes);
-			}
-			else
-				System.err.println("Only SHA1withRSA public keys are supported");
+			RSAPublicKey key = (RSAPublicKey)cert.getPublicKey();
 			
+            Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
+            cipher.init(Cipher.ENCRYPT_MODE, key);
+            
+            byte[] cipherText = cipher.doFinal(this.body.getBytes());
+            this.body = Certificate.bytesToString(cipherText);
+            
 		} catch (CertificateException e) {
-			System.err.println("Only valid X.509 certificates are supported");
+			e.printStackTrace();
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
 		} catch (NoSuchPaddingException e) {
