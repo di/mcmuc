@@ -4,6 +4,7 @@ import java.nio.ByteBuffer;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -78,10 +79,11 @@ public class Room extends Channel {
      * Sends the user's per-room status out to the Room channel
      */
     private void sendStatus() {
-        if (this.keyPairs.keySet().isEmpty())
+        if (this.keyPairs.keySet().isEmpty()) {
             this.send(new Presence(this.getUserName(), roomPresence));
-        else
+        } else {
             this.send(new Presence(this.getUserName(), roomPresence, new ArrayList<Certificate>(keyPairs.keySet())));
+        }
     }
 
     /**
@@ -124,6 +126,7 @@ public class Room extends Channel {
         super(choosePort(name, portsInUse));
         this.name = name;
         this.userName = userName;
+        this.keyPairs = new HashMap<Certificate, Certificate>();
         MulticastReceiveRunnable runner = new MulticastReceiveRunnable(this);
         Thread runnerThread = new Thread(runner);
         runnerThread.start();
