@@ -11,6 +11,7 @@ import org.json.JSONObject;
 
 import edu.drexel.cs544.mcmuc.actions.Action;
 import edu.drexel.cs544.mcmuc.actions.ListRooms;
+import edu.drexel.cs544.mcmuc.actions.Message;
 import edu.drexel.cs544.mcmuc.actions.PollPresence;
 import edu.drexel.cs544.mcmuc.actions.Presence;
 import edu.drexel.cs544.mcmuc.actions.Presence.Status;
@@ -291,15 +292,16 @@ public class Controller extends Channel {
     }
 
     /**
-     * Send the given action to the room associated with roomName
+     * Send the given message to the room associated with roomName
      * 
      * @param roomName String name of room to send action to
-     * @param action Action to send
+     * @param message Message to send
      */
-    public void sendToRoom(String roomName, Action action) {
+    public void messageRoom(String roomName, Message message) {
         Room room = (Room) channels.get(roomNames.get(roomName));
         if (room != null) {
-            room.send(action);
+            room.send(message);
+            this.output(message.getFrom() + "@" + roomName + ": " + message.getBody()); // To create a new command prompt
         } else {
             this.alert("Room not found!");
         }

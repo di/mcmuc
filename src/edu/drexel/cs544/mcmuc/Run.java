@@ -64,9 +64,9 @@ public class Run {
                 }
                 controller.setRoomStatus(command.getArg(0), s);
             } else if (command.getCommand() == CLICommand.Command.MESSAGE) {
-                controller.sendToRoom(command.getArg(0), new Message(controller.getUserName(command.getArg(0)), command.getArg(1)));
+                controller.messageRoom(command.getArg(0), new Message(controller.getUserName(command.getArg(0)), command.getArg(1)));
             } else if (command.getCommand() == CLICommand.Command.PVTMESSAGE) {
-                controller.sendToRoom(command.getArg(1), new Message(controller.getUserName(command.getArg(1)), command.getArg(2), command.getArg(0)));
+                controller.messageRoom(command.getArg(1), new Message(controller.getUserName(command.getArg(1)), command.getArg(2), command.getArg(0)));
             } else if (command.getCommand() == CLICommand.Command.ADDKEY) {
             	try {
 					FileInputStream publicKeyFile = new FileInputStream(command.getArg(1));
@@ -102,7 +102,7 @@ public class Run {
     				publicKeyFile.read(publicKey);
     				
     				Certificate cert = new Certificate("X.509",publicKey);
-    				controller.sendToRoom(command.getArg(2), new Message(controller.getUserName(command.getArg(2)), command.getArg(3), command.getArg(1), cert));
+    				controller.messageRoom(command.getArg(2), new Message(controller.getUserName(command.getArg(2)), command.getArg(3), command.getArg(1), cert));
     			} catch (FileNotFoundException e) {
     				e.printStackTrace();
     			} catch (IOException e) {
