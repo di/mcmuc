@@ -84,7 +84,7 @@ public class CLI extends Thread implements UI {
         	sendCommand(new CLICommand(CLICommand.Command.SECUREMESSAGE, args));
         } else {
             alert("Received an unknown command: \"" + s + "\"");
-            String cmds = "Available commands:\n" + "\t message @<room-name> <message>\n" + "\t message <user-name>@<room-name> <message>\n" + "\t presence @<room-name> <status>\n" + "\t use-room <user-name>@<room-name>\n" + "\t add-key public='<key-file>' private='<key-file>'\n" + "\t remove-key public='<key-file>'\n" + "\t message key='<public-key-file>' <user-name>@<room-name> <message>\n" + "\t exit\n";
+            String cmds = "Available commands:\n" + "\t message @<room-name> <message>\n" + "\t message <user-name>@<room-name> <message>\n" + "\t presence @<room-name> <status>\n" + "\t use-room <user-name>@<room-name>\n" + "\t add-key @<room-name> public='<key-file>' private='<key-file>'\n" + "\t remove-key @<room-name> public='<key-file>'\n" + "\t message key='<public-key-file>' <user-name>@<room-name> <message>\n" + "\t exit\n";
             alert(cmds);
         }
     }
