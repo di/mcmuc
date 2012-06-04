@@ -235,8 +235,9 @@ public class Controller extends Channel {
         Room room = (Room) channels.get(roomNames.get(roomName));
         if (room != null) {
             room.setStatus(presence);
+            this.alert("Set presence for \"" + room.getUserName() + "@" + roomName + "\" to \"" + presence.toString().toLowerCase() + "\"");
         } else {
-            System.err.println("Room not found!");
+            this.alert("Room not found!");
         }
     }
 
@@ -252,8 +253,9 @@ public class Controller extends Channel {
         Room room = (Room) channels.get(roomNames.get(roomName));
         if (room != null) {
             room.addKeyPair(publicKey, privateKey);
+            this.alert("Added key pair for \"" + room.getUserName() + "@" + roomName + "\"");
         } else {
-            System.err.println("Room not found!");
+            this.alert("Room not found!");
         }
     }
 
@@ -267,8 +269,9 @@ public class Controller extends Channel {
         Room room = (Room) channels.get(roomNames.get(roomName));
         if (room != null) {
             room.removeKeyPair(publicKey);
+            this.alert("Removed key pair for \"" + room.getUserName() + "@" + roomName + "\"");
         } else {
-            System.err.println("Room not found!");
+            this.alert("Room not found!");
         }
     }
 
@@ -283,7 +286,7 @@ public class Controller extends Channel {
         if (room != null) {
             room.send(action);
         } else {
-            System.err.println("Room not found!");
+            this.alert("Room not found!");
         }
     }
 
