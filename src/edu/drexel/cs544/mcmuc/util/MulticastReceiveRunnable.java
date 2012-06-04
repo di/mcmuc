@@ -30,6 +30,9 @@ public class MulticastReceiveRunnable implements Runnable {
         this.channel = channel;
     }
 
+    /**
+     * Sets the done flag to true
+     */
     public void stop() {
         this.done = true;
     }

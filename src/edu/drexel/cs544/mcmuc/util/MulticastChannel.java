@@ -105,6 +105,10 @@ public class MulticastChannel {
         }
     }
 
+    /**
+     * Returns the multicast port used by the channel
+     * @return int the port
+     */
     public int getPort() {
         return this.multicastPort;
     }

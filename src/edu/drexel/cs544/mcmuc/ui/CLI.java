@@ -29,6 +29,9 @@ public class CLI extends Thread implements UI {
     private String removeKeyRegex = "(?i)remove-key @(\\w+) public='(\\w+)'";
     private String secureMessageRegex = "(?i)message key='(\\w+)' (\\w+)@(\\w+) (.+)";
 
+    /**
+     * Initializes the CLI, setting the command ready flag to false
+     */
     public CLI() {
         command_is_ready.set(false);
     }

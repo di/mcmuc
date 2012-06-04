@@ -32,6 +32,9 @@ public class Forwarder extends Channel {
         this.send(jo);
     }
 
+    /**
+     * Stop the multicast thread
+     */
     public void shutdown() {
         runner.stop();
     }
