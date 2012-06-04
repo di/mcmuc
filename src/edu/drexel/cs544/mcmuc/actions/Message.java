@@ -320,6 +320,12 @@ public class Message extends Action implements JSON {
 
             public void run() {
                 channel.resetPrimaryTimer();
+                if(message.hasKey()){
+                	Room r = (Room)channel;
+                	Certificate privateKey = r.getKeyPairs().get(message.getKey());
+                	if(privateKey != null)
+                		message.decryptBody(privateKey);
+                }
                 if (message.hasTo()) {
                     Room r = (Room) channel;
                     if (r.getUserName().equals(message.getTo()))

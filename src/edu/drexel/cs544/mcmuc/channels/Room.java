@@ -3,6 +3,8 @@ package edu.drexel.cs544.mcmuc.channels;
 import java.nio.ByteBuffer;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Map;
 import java.util.Set;
 
 import org.json.JSONException;
@@ -14,6 +16,7 @@ import edu.drexel.cs544.mcmuc.actions.PollPresence;
 import edu.drexel.cs544.mcmuc.actions.Presence;
 import edu.drexel.cs544.mcmuc.actions.Presence.Status;
 import edu.drexel.cs544.mcmuc.util.MulticastReceiveRunnable;
+import edu.drexel.cs544.mcmuc.util.Certificate;
 
 /**
  * A Room is a Channel tied to a specific port that users can exchange message actions on.
@@ -27,7 +30,40 @@ public class Room extends Channel {
     private Status roomPresence;
     private String userName;
     private String name;
+    private Map<Certificate, Certificate> keyPairs;
 
+    /**
+     * Add a public/private key pair to the room
+     * @param publicKey Certificate public key
+     * @param privateKey Certificate private key
+     */
+    public void addKeyPair(Certificate publicKey, Certificate privateKey)
+    {
+    	if(keyPairs.get(publicKey) != privateKey){
+    		keyPairs.put(publicKey, privateKey);
+    		sendStatus();
+    	}
+    }
+    
+    /**
+     * Remove a public/private key pair from the room
+     * @param publicKey Certificate public key
+     */
+    public void removeKeyPair(Certificate publicKey)
+    {
+    	if(keyPairs.remove(publicKey) != null)
+    		sendStatus();
+    }
+    
+    /**
+     * Returns the public/private key pairs for the room
+     * @return Map<Certificate, Certificate> public/private key pairs
+     */
+    public Map<Certificate, Certificate> getKeyPairs()
+    {
+    	return keyPairs;
+    }
+    
     /**
      * Sets the user's per-room status
      * 
@@ -35,7 +71,18 @@ public class Room extends Channel {
      */
     public void setStatus(Status newPresence) {
         roomPresence = newPresence;
-        this.send(new Presence(this.getUserName(), roomPresence));
+        sendStatus();
+    }
+    
+    /**
+     * Sends the user's per-room status out to the Room channel
+     */
+    private void sendStatus()
+    {
+        if(this.keyPairs.keySet().isEmpty())
+        	this.send(new Presence(this.getUserName(), roomPresence));
+        else
+        	this.send(new Presence(this.getUserName(), roomPresence, new ArrayList<Certificate>(keyPairs.keySet())));
     }
 
     /**

@@ -1,5 +1,7 @@
 package edu.drexel.cs544.mcmuc.util;
 
+import java.util.Arrays;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -16,6 +18,40 @@ public class Certificate implements JSON {
 	private String format;
 	private byte[] certificate;
 	
+	/**
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + Arrays.hashCode(certificate);
+		result = prime * result + ((format == null) ? 0 : format.hashCode());
+		return result;
+	}
+
+	/**
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (!(obj instanceof Certificate))
+			return false;
+		Certificate other = (Certificate) obj;
+		if (!Arrays.equals(certificate, other.certificate))
+			return false;
+		if (format == null) {
+			if (other.format != null)
+				return false;
+		} else if (!format.equals(other.format))
+			return false;
+		return true;
+	}
+
 	/**
 	 * Accessor for certificate's format
 	 * @return String format
