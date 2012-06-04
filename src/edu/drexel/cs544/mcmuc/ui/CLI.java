@@ -25,9 +25,9 @@ public class CLI extends Thread implements UI {
     private String presenceRegex = "(?i)presence @(\\w+) (\\w+)";
     private String messageRegex = "(?i)message @(\\w+) (.+)";
     private String privateMessageRegex = "(?i)message (\\w+)@(\\w+) (.+)";
-    private String addKeyRegex = "(?i)add-key @(\\w+) public='(\\w+)' private='(\\w+)'";
-    private String removeKeyRegex = "(?i)remove-key @(\\w+) public='(\\w+)'";
-    private String secureMessageRegex = "(?i)message key='(\\w+)' (\\w+)@(\\w+) (.+)";
+    private String addKeyRegex = "(?i)add-key @(\\w+) public='(.+)' private='(.+)'";
+    private String removeKeyRegex = "(?i)remove-key @(\\w+) public='(.+)'";
+    private String secureMessageRegex = "(?i)message key='(.+)' (\\w+)@(\\w+) (.+)";
 
     /**
      * Initializes the CLI, setting the command ready flag to false

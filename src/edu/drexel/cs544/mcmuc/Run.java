@@ -97,7 +97,7 @@ public class Run {
 				}
             } else if (command.getCommand() == CLICommand.Command.SECUREMESSAGE) {
               	try {
-              		FileInputStream publicKeyFile = new FileInputStream(command.getArg(1));
+              		FileInputStream publicKeyFile = new FileInputStream(command.getArg(0));
     				byte publicKey[] = new byte[(int)publicKeyFile.available()];
     				publicKeyFile.read(publicKey);
     				
