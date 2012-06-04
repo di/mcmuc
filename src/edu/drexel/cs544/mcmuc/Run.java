@@ -1,10 +1,15 @@
 package edu.drexel.cs544.mcmuc;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
 import edu.drexel.cs544.mcmuc.actions.Message;
 import edu.drexel.cs544.mcmuc.actions.Presence.Status;
 import edu.drexel.cs544.mcmuc.channels.Controller;
 import edu.drexel.cs544.mcmuc.ui.CLI;
 import edu.drexel.cs544.mcmuc.ui.CLICommand;
+import edu.drexel.cs544.mcmuc.util.Certificate;
 
 /**
  * Run exists to exercise a simple command-line interface to the Multicast Multi-User Chat protocol.
@@ -63,11 +68,46 @@ public class Run {
             } else if (command.getCommand() == CLICommand.Command.PVTMESSAGE) {
                 controller.sendToRoom(command.getArg(1), new Message(controller.getUserName(command.getArg(1)), command.getArg(2), command.getArg(0)));
             } else if (command.getCommand() == CLICommand.Command.ADDKEY) {
-            	
+            	try {
+					FileInputStream publicKeyFile = new FileInputStream(command.getArg(1));
+					byte publicKey[] = new byte[(int)publicKeyFile.available()];
+					publicKeyFile.read(publicKey);
+					
+					FileInputStream privateKeyFile = new FileInputStream(command.getArg(2));
+					byte privateKey[] = new byte[(int)privateKeyFile.available()];
+					privateKeyFile.read(privateKey);
+					
+					controller.addKeyPair(command.getArg(0), new Certificate("X.509",publicKey), new Certificate("X.509",privateKey));
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
             } else if (command.getCommand() == CLICommand.Command.REMOVEKEY) {
-            	
+            	try {
+					FileInputStream publicKeyFile = new FileInputStream(command.getArg(1));
+					byte publicKey[] = new byte[(int)publicKeyFile.available()];
+					publicKeyFile.read(publicKey);
+						
+					controller.removeKeyPair(command.getArg(0), new Certificate("X.509",publicKey));
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
             } else if (command.getCommand() == CLICommand.Command.SECUREMESSAGE) {
-            	
+              	try {
+              		FileInputStream publicKeyFile = new FileInputStream(command.getArg(1));
+    				byte publicKey[] = new byte[(int)publicKeyFile.available()];
+    				publicKeyFile.read(publicKey);
+    				
+    				Certificate cert = new Certificate("X.509",publicKey);
+    				controller.sendToRoom(command.getArg(2), new Message(controller.getUserName(command.getArg(2)), command.getArg(3), command.getArg(1), cert));
+    			} catch (FileNotFoundException e) {
+    				e.printStackTrace();
+    			} catch (IOException e) {
+    				e.printStackTrace();
+    			}
             }
         }
     }

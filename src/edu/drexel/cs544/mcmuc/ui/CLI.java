@@ -25,8 +25,8 @@ public class CLI extends Thread implements UI {
     private String presenceRegex = "(?i)presence @(\\w+) (\\w+)";
     private String messageRegex = "(?i)message @(\\w+) (.+)";
     private String privateMessageRegex = "(?i)message (\\w+)@(\\w+) (.+)";
-    private String addKeyRegex = "(?i)add-key public='(\\w+)' private='(\\w+)'";
-    private String removeKeyRegex = "(?i)remove-key public='(\\w+)'";
+    private String addKeyRegex = "(?i)add-key @(\\w+) public='(\\w+)' private='(\\w+)'";
+    private String removeKeyRegex = "(?i)remove-key @(\\w+) public='(\\w+)'";
     private String secureMessageRegex = "(?i)message key='(\\w+)' (\\w+)@(\\w+) (.+)";
 
     public CLI() {
@@ -70,12 +70,12 @@ public class CLI extends Thread implements UI {
         } else if (s.matches(addKeyRegex)){
         	matcher = Pattern.compile(addKeyRegex).matcher(s);
         	matcher.find();
-        	String[] args = { matcher.group(1), matcher.group(2) };
+        	String[] args = { matcher.group(1), matcher.group(2), matcher.group(3) };
         	sendCommand(new CLICommand(CLICommand.Command.ADDKEY, args));
         } else if (s.matches(removeKeyRegex)){
         	matcher = Pattern.compile(removeKeyRegex).matcher(s);
         	matcher.find();
-        	String[] args = { matcher.group(1) };
+        	String[] args = { matcher.group(1), matcher.group(2) };
         	sendCommand(new CLICommand(CLICommand.Command.REMOVEKEY, args));
         } else if (s.matches(secureMessageRegex)){
         	matcher = Pattern.compile(secureMessageRegex).matcher(s);
@@ -84,7 +84,7 @@ public class CLI extends Thread implements UI {
         	sendCommand(new CLICommand(CLICommand.Command.SECUREMESSAGE, args));
         } else {
             alert("Received an unknown command: \"" + s + "\"");
-            String cmds = "Available commands:\n" + "\t message @<room-name> <message>\n" + "\t message <user-name>@<room-name> <message>\n" + "\t presence @<room-name> <status>\n" + "\t use-room <user-name>@<room-name>\n" + "\t exit\n";
+            String cmds = "Available commands:\n" + "\t message @<room-name> <message>\n" + "\t message <user-name>@<room-name> <message>\n" + "\t presence @<room-name> <status>\n" + "\t use-room <user-name>@<room-name>\n" + "\t add-key public='<key-file>' private='<key-file>'\n" + "\t remove-key public='<key-file>'\n" + "\t message key='<public-key-file>' <user-name>@<room-name> <message>\n" + "\t exit\n";
             alert(cmds);
         }
     }
