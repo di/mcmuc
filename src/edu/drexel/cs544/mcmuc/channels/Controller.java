@@ -17,6 +17,7 @@ import edu.drexel.cs544.mcmuc.actions.Timeout;
 import edu.drexel.cs544.mcmuc.actions.UseRooms;
 import edu.drexel.cs544.mcmuc.actions.Presence.Status;
 import edu.drexel.cs544.mcmuc.ui.UI;
+import edu.drexel.cs544.mcmuc.util.Certificate;
 import edu.drexel.cs544.mcmuc.util.MulticastReceiveRunnable;
 
 /**
@@ -229,6 +230,36 @@ public class Controller extends Channel {
         Room room = (Room) channels.get(roomNames.get(roomName));
         if (room != null) {
             room.setStatus(presence);
+        } else {
+            System.err.println("Room not found!");
+        }
+    }
+    
+    /**
+     * Adds a public/private key pair to the room identified by roomName
+     * @param roomName String the room
+     * @param publicKey Certificate public key
+     * @param privateKey Certificate private key
+     * @see Room
+     */
+    public void addKeyPair(String roomName, Certificate publicKey, Certificate privateKey){
+        Room room = (Room) channels.get(roomNames.get(roomName));
+        if (room != null) {
+            room.addKeyPair(publicKey, privateKey);
+        } else {
+            System.err.println("Room not found!");
+        }
+    }
+    
+    /**
+     * Removes a public/private key pair from the room identified by roomName
+     * @param roomName String the room
+     * @param publicKey Certificate public key
+     */
+    public void removeKeyPair(String roomName, Certificate publicKey){
+    	Room room = (Room) channels.get(roomNames.get(roomName));
+        if (room != null) {
+            room.removeKeyPair(publicKey);
         } else {
             System.err.println("Room not found!");
         }

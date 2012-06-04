@@ -62,6 +62,12 @@ public class Run {
                 controller.sendToRoom(command.getArg(0), new Message(controller.getUserName(command.getArg(0)), command.getArg(1)));
             } else if (command.getCommand() == CLICommand.Command.PVTMESSAGE) {
                 controller.sendToRoom(command.getArg(1), new Message(controller.getUserName(command.getArg(1)), command.getArg(2), command.getArg(0)));
+            } else if (command.getCommand() == CLICommand.Command.ADDKEY) {
+            	
+            } else if (command.getCommand() == CLICommand.Command.REMOVEKEY) {
+            	
+            } else if (command.getCommand() == CLICommand.Command.SECUREMESSAGE) {
+            	
             }
         }
     }
