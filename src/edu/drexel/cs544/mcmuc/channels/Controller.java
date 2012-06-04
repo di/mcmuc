@@ -106,6 +106,11 @@ public class Controller extends Channel {
         }
     }
 
+    /**
+     * Takes the given String and outputs it, either through a UI or System.out, prefixed with a '*'
+     * 
+     * @param string String to display
+     */
     public void alert(String string) {
         if (this.ui != null) {
             this.ui.alert(string);
@@ -280,6 +285,10 @@ public class Controller extends Channel {
         }
     }
 
+    /**
+     * Sets the Controller's UI
+     * @param ui UI to set
+     */
     public void setUI(UI ui) {
         this.ui = ui;
     }
