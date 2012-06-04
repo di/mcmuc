@@ -1,9 +1,5 @@
 package edu.drexel.cs544.mcmuc.util;
 
-import java.io.UnsupportedEncodingException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -36,36 +32,20 @@ public class DuplicateDetector {
     }
 
     /**
-     * A message's hash is the concatenation of its unique identifer (uid) and the MD5
-     * hash of its JSON serialization
-     * 
-     * @param jo Action serialized into JSON to be hashed
-     * @return String the hash
-     * @throws UnsupportedEncodingException
-     */
-    private String getMessageHash(JSONObject jo) {
-        String hash = null;
-        try {
-        	MessageDigest md = MessageDigest.getInstance("MD5");
-            byte[] array = md.digest(jo.toString().getBytes());
-            hash = jo.getString("uid") + Certificate.bytesToString(array);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-		}
-        return hash;
-    }
-
-    /**
-     * Add a seen message's hash. If the hash is already in the CLLQ then the message
+     * Add a seen message's UID. If the UID is already in the CLLQ then the message
      * is a duplicate that has already been forwarded, and must not be forwarded further
      * 
-     * @param uid String hash
+     * @param uid String UID
      * @return true if hash was added to the CLLQ, false otherwise
      */
     public boolean add(JSONObject jo) {
-        return q.add(getMessageHash(jo));
+        String uid = null;
+        try {
+            uid = jo.getString("uid");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return q.add(uid);
     }
 
     /**
