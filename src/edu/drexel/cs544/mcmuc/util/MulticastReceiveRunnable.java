@@ -46,7 +46,7 @@ public class MulticastReceiveRunnable implements Runnable {
     public void run() {
         this.done = false;
         while (!this.done) {
-            byte[] buf = new byte[1000];
+            byte[] buf = new byte[65507];
             DatagramPacket dp = new DatagramPacket(buf, buf.length);
             channel.receive(dp);
             String s = new String(dp.getData(), 0, dp.getLength());
