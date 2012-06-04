@@ -12,6 +12,7 @@ import org.json.JSONObject;
 import edu.drexel.cs544.mcmuc.actions.Action;
 import edu.drexel.cs544.mcmuc.actions.ListRooms;
 import edu.drexel.cs544.mcmuc.actions.PollPresence;
+import edu.drexel.cs544.mcmuc.actions.Presence;
 import edu.drexel.cs544.mcmuc.actions.Presence.Status;
 import edu.drexel.cs544.mcmuc.actions.Preserve;
 import edu.drexel.cs544.mcmuc.actions.Timeout;
@@ -198,14 +199,28 @@ public class Controller extends Channel {
      * @param userName String name to associate with user in the room
      */
     public void useRoom(String roomName, String userName) {
-        Room room = new Room(roomName, new HashSet<Integer>(roomNames.values()), userName);
-        Forwarder oldChannel = (Forwarder) channels.put(room.getPort(), room);
-        if (oldChannel != null) {
-            oldChannel.shutdown();
+        Room room;
+        System.out.println(roomNames);
+        if (roomNames.containsKey(roomName)) {
+            room = (Room) channels.get(roomNames.get(roomName));
+            if (room.getUserName().equals(userName)) {
+                this.alert("Room \"" + roomName + "\" already exists with user \"" + userName + "\"");
+            } else {
+                room.setStatus(Presence.Status.Offline);
+                room.setUserName(userName);
+                room.setStatus(Presence.Status.Online);
+                this.alert("Room \"" + roomName + "\" already exists, updating user to \"" + userName + "\"");
+            }
+        } else {
+            room = new Room(roomName, new HashSet<Integer>(roomNames.values()), userName);
+            Forwarder oldChannel = (Forwarder) channels.put(room.getPort(), room);
+            if (oldChannel != null) {
+                oldChannel.shutdown();
+            }
+            roomNames.put(roomName, room.getPort());
+            this.send(new UseRooms(Arrays.asList(room.getPort())));
+            this.alert("Created new room: \"" + roomName + "\" with user \"" + userName + "\"");
         }
-        roomNames.put(roomName, room.getPort());
-        this.send(new UseRooms(Arrays.asList(room.getPort())));
-        this.alert("Created new room: \"" + roomName + "\" with user \"" + userName + "\"");
     }
 
     /**

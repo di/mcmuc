@@ -114,6 +114,15 @@ public class Room extends Channel {
     }
 
     /**
+     * Accessor for the user's per-room nickname
+     * 
+     * @param username String the user's per-room nickname
+     */
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    /**
      * Chooses a port for the room using the hash algorithm and the set of ports already in use,
      * sets the use's per-room status to Online, passes the userName to the room, and starts the
      * multicast thread for the room.
