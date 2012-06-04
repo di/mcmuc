@@ -305,8 +305,7 @@ public class Message extends Action implements JSON {
     }
 
     /**
-     * Display the message to the user and if it is not a duplicate (that is, already forwarded)
-     * forward it on the channel
+     * Display the message to the user and forward it on the channel
      */
     public void process(Channel channel) {
         class Runner implements Runnable {
