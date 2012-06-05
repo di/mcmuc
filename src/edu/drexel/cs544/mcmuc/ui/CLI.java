@@ -13,8 +13,12 @@ import edu.drexel.cs544.mcmuc.ui.CLICommand.Command;
  * A very basic Command-line interface - possible commands are:
  * message @<room-name> <message>
  * message <user-name>@<room-name> <message>
+ * message key='<public-key-file>' <user-name>@<room-name> <message>
  * presence @<room-name> <status>
  * use-room <user-name>@<room-name>
+ * leave-room @<room-name>
+ * add-key @<room-name> public='<public-key-file>' private='<public-key-file>'
+ * remove-key @<room-name> public='<public-key-file>'
  * exit
  */
 public class CLI extends Thread implements UI {
@@ -22,6 +26,7 @@ public class CLI extends Thread implements UI {
     AtomicBoolean command_is_ready = new AtomicBoolean();
     CLICommand command = null;
     private String useRoomRegex = "(?i)use-room (\\w+)@(\\w+)";
+    private String leaveRoomRegex = "(?i)leave-room @(\\w+)";
     private String presenceRegex = "(?i)presence @(\\w+) (\\w+)";
     private String messageRegex = "(?i)message @(\\w+) (.+)";
     private String privateMessageRegex = "(?i)message (\\w+)@(\\w+) (.+)";
@@ -55,6 +60,11 @@ public class CLI extends Thread implements UI {
             matcher.find();
             String[] args = { matcher.group(1), matcher.group(2) };
             sendCommand(new CLICommand(CLICommand.Command.USEROOM, args));
+        } else if(s.matches(leaveRoomRegex)) {
+            matcher = Pattern.compile(leaveRoomRegex).matcher(s);
+            matcher.find();
+            String[] args = { matcher.group(1) };
+            sendCommand(new CLICommand(CLICommand.Command.LEAVEROOM, args));
         } else if (s.matches(presenceRegex)) {
             matcher = Pattern.compile(presenceRegex).matcher(s);
             matcher.find();

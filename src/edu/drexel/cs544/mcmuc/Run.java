@@ -52,6 +52,8 @@ public class Run {
                 System.exit(0);
             } else if (command.getCommand() == CLICommand.Command.USEROOM) {
                 controller.useRoom(command.getArg(1), command.getArg(0));
+            } else if (command.getCommand() == CLICommand.Command.LEAVEROOM) {
+            	controller.leaveRoom(command.getArg(0));
             } else if (command.getCommand() == CLICommand.Command.PRESENCE) {
                 Status s;
                 if (command.getArg(1).equalsIgnoreCase("Online"))

@@ -189,7 +189,10 @@ public class Controller extends Channel {
         Integer p = roomNames.remove(roomName);
         if (p != null) {
             leaveRoom(p);
+            this.alert("Left room: \"" + roomName + "\"");
         }
+        else
+        	this.alert("Room: \"" + roomName + "\" does not exist");
     }
 
     /**
