@@ -56,7 +56,7 @@ public class CLI extends Thread implements UI {
             sendCommand(new CLICommand(CLICommand.Command.EXIT, null));
          else if (s.matches(useRoomRegex))
             sendCommand(new CLICommand(CLICommand.Command.USEROOM, getCmdArgs(useRoomRegex,s,2)));
-         else if(s.matches(leaveRoomRegex))
+         else if (s.matches(leaveRoomRegex))
             sendCommand(new CLICommand(CLICommand.Command.LEAVEROOM, getCmdArgs(leaveRoomRegex,s,1)));
          else if (s.matches(presenceRegex))
             sendCommand(new CLICommand(CLICommand.Command.PRESENCE, getCmdArgs(presenceRegex,s,2)));
@@ -84,8 +84,7 @@ public class CLI extends Thread implements UI {
      * @param n int first n matching groups to return
      * @return String[] first n matching groups
      */
-    private String[] getCmdArgs(String regex, String input, int n)
-    {
+    private String[] getCmdArgs(String regex, String input, int n) {
     	String args[] = new String[n];
     	
     	Matcher matcher = Pattern.compile(regex).matcher(input);
