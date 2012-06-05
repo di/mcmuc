@@ -49,57 +49,52 @@ public class CLI extends Thread implements UI {
      * @param s String to parse into a command and its arguments
      */
     public synchronized void input(String s) {
-        Matcher matcher = null;
 
         if (s == null) {
             // do nothing
-        } else if (s.equalsIgnoreCase("exit")) {
+        }else if (s.equalsIgnoreCase("exit"))
             sendCommand(new CLICommand(CLICommand.Command.EXIT, null));
-        } else if (s.matches(useRoomRegex)) {
-            matcher = Pattern.compile(useRoomRegex).matcher(s);
-            matcher.find();
-            String[] args = { matcher.group(1), matcher.group(2) };
-            sendCommand(new CLICommand(CLICommand.Command.USEROOM, args));
-        } else if(s.matches(leaveRoomRegex)) {
-            matcher = Pattern.compile(leaveRoomRegex).matcher(s);
-            matcher.find();
-            String[] args = { matcher.group(1) };
-            sendCommand(new CLICommand(CLICommand.Command.LEAVEROOM, args));
-        } else if (s.matches(presenceRegex)) {
-            matcher = Pattern.compile(presenceRegex).matcher(s);
-            matcher.find();
-            String[] args = { matcher.group(1), matcher.group(2) };
-            sendCommand(new CLICommand(CLICommand.Command.PRESENCE, args));
-        } else if (s.matches(messageRegex)) {
-            matcher = Pattern.compile(messageRegex).matcher(s);
-            matcher.find();
-            String[] args = { matcher.group(1), matcher.group(2) };
-            sendCommand(new CLICommand(CLICommand.Command.MESSAGE, args));
-        } else if (s.matches(privateMessageRegex)) {
-            matcher = Pattern.compile(privateMessageRegex).matcher(s);
-            matcher.find();
-            String[] args = { matcher.group(1), matcher.group(2), matcher.group(3) };
-            sendCommand(new CLICommand(CLICommand.Command.PVTMESSAGE, args));
-        } else if (s.matches(addKeyRegex)){
-        	matcher = Pattern.compile(addKeyRegex).matcher(s);
-        	matcher.find();
-        	String[] args = { matcher.group(1), matcher.group(2), matcher.group(3) };
-        	sendCommand(new CLICommand(CLICommand.Command.ADDKEY, args));
-        } else if (s.matches(removeKeyRegex)){
-        	matcher = Pattern.compile(removeKeyRegex).matcher(s);
-        	matcher.find();
-        	String[] args = { matcher.group(1), matcher.group(2) };
-        	sendCommand(new CLICommand(CLICommand.Command.REMOVEKEY, args));
-        } else if (s.matches(secureMessageRegex)){
-        	matcher = Pattern.compile(secureMessageRegex).matcher(s);
-        	matcher.find();
-        	String[] args = { matcher.group(1), matcher.group(2), matcher.group(3), matcher.group(4) };
-        	sendCommand(new CLICommand(CLICommand.Command.SECUREMESSAGE, args));
-        } else {
+         else if (s.matches(useRoomRegex))
+            sendCommand(new CLICommand(CLICommand.Command.USEROOM, getCmdArgs(useRoomRegex,s,2)));
+         else if(s.matches(leaveRoomRegex))
+            sendCommand(new CLICommand(CLICommand.Command.LEAVEROOM, getCmdArgs(leaveRoomRegex,s,1)));
+         else if (s.matches(presenceRegex))
+            sendCommand(new CLICommand(CLICommand.Command.PRESENCE, getCmdArgs(presenceRegex,s,2)));
+         else if (s.matches(messageRegex))
+            sendCommand(new CLICommand(CLICommand.Command.MESSAGE, getCmdArgs(messageRegex,s,2)));
+         else if (s.matches(privateMessageRegex))
+            sendCommand(new CLICommand(CLICommand.Command.PVTMESSAGE, getCmdArgs(privateMessageRegex,s,3)));
+         else if (s.matches(addKeyRegex))
+        	sendCommand(new CLICommand(CLICommand.Command.ADDKEY, getCmdArgs(addKeyRegex,s,3)));
+         else if (s.matches(removeKeyRegex))
+        	sendCommand(new CLICommand(CLICommand.Command.REMOVEKEY, getCmdArgs(removeKeyRegex,s,2)));
+         else if (s.matches(secureMessageRegex))
+        	sendCommand(new CLICommand(CLICommand.Command.SECUREMESSAGE, getCmdArgs(secureMessageRegex,s,4)));
+         else {
             alert("Received an unknown command: \"" + s + "\"");
             String cmds = "Available commands:\n" + "\t message @<room-name> <message>\n" + "\t message <user-name>@<room-name> <message>\n" + "\t presence @<room-name> <status>\n" + "\t use-room <user-name>@<room-name>\n" + "\t add-key @<room-name> public='<key-file>' private='<key-file>'\n" + "\t remove-key @<room-name> public='<key-file>'\n" + "\t message key='<public-key-file>' <user-name>@<room-name> <message>\n" + "\t exit\n";
             alert(cmds);
         }
+    }
+    
+    /**
+     * Given an input string and regular expression, return the first n matching groups as an array
+     * @param regex String regular expression to match input against
+     * @param input String input
+     * @param n int first n matching groups to return
+     * @return String[] first n matching groups
+     */
+    private String[] getCmdArgs(String regex, String input, int n)
+    {
+    	String args[] = new String[n];
+    	
+    	Matcher matcher = Pattern.compile(regex).matcher(input);
+    	matcher.find();
+    	
+    	for(int i=0; i<n; i++)
+    		args[i] = matcher.group(i+1);
+    	
+    	return args;
     }
 
     /**
