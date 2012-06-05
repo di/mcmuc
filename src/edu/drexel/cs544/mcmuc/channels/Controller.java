@@ -301,7 +301,7 @@ public class Controller extends Channel {
         Room room = (Room) channels.get(roomNames.get(roomName));
         if (room != null) {
             room.send(message);
-            this.output(message.getFrom() + "@" + roomName + ": " + message.getBody()); // To create a new command prompt
+            this.output(message.getFrom() + "@" + roomName + ": " + (message.hasKey() ? "*encrypted*" : message.getBody())); // To create a new command prompt
         } else {
             this.alert("Room not found!");
         }
