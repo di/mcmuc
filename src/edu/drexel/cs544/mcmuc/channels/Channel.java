@@ -52,6 +52,7 @@ public abstract class Channel {
         mcc = new MulticastChannel(port);
         if (port != Controller.CONTROL_PORT) {
             primary = new PrimaryTimer(port);
+            secondary = new SecondaryTimer(port);
             resetPrimaryTimer();
         }
     }
