@@ -190,9 +190,8 @@ public class Controller extends Channel {
         if (p != null) {
             leaveRoom(p);
             this.alert("Left room: \"" + roomName + "\"");
-        }
-        else
-        	this.alert("Room: \"" + roomName + "\" does not exist");
+        } else
+            this.alert("Room: \"" + roomName + "\" does not exist");
     }
 
     /**
@@ -204,7 +203,6 @@ public class Controller extends Channel {
      */
     public void useRoom(String roomName, String userName) {
         Room room;
-        System.out.println(roomNames);
         if (roomNames.containsKey(roomName)) {
             room = (Room) channels.get(roomNames.get(roomName));
             if (room.getUserName().equals(userName)) {
