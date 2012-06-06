@@ -20,7 +20,6 @@ import edu.drexel.cs544.mcmuc.actions.Timeout;
 import edu.drexel.cs544.mcmuc.actions.UseRooms;
 import edu.drexel.cs544.mcmuc.ui.UI;
 import edu.drexel.cs544.mcmuc.util.Certificate;
-import edu.drexel.cs544.mcmuc.util.MulticastReceiveRunnable;
 
 /**
  * Controller represents a control channel, which is a fixed port for the sending of
@@ -43,9 +42,6 @@ public class Controller extends Channel {
     private Controller(int port) {
         super(port);
         channels.put(port, this);
-        MulticastReceiveRunnable runner = new MulticastReceiveRunnable(this);
-        Thread runnerThread = new Thread(runner);
-        runnerThread.start();
         this.send(new ListRooms());
     }
 
@@ -122,31 +118,19 @@ public class Controller extends Channel {
         }
     }
 
+    public boolean hasForwarder(int port) {
+        return (!roomNames.containsValue(port) && channels.containsKey(port));
+    }
+
     /**
      * Resets the primary timer for the Room on roomPort
      * 
      * @param roomPort int port of room to reset primary timer for
      */
     public void resetPrimaryTimer(int roomPort) {
-        channels.get(roomPort).resetPrimaryTimer();
-    }
-
-    /**
-     * Stops the primary timer for the Room on roomPort
-     * 
-     * @param roomPort int port of room to stop primary timer for
-     */
-    public void stopPrimaryTimer(int roomPort) {
-        channels.get(roomPort).stopPrimaryTimer();
-    }
-
-    /**
-     * Starts the secondary timer for the Room on roomPort
-     * 
-     * @param roomPort int port of room to start secondary timer for
-     */
-    public void startSecondaryTimer(int roomPort) {
-        channels.get(roomPort).startSecondaryTimer();
+        if (hasForwarder(roomPort)) {
+            ((Forwarder) channels.get(roomPort)).resetPrimaryTimer();
+        }
     }
 
     /**
@@ -156,7 +140,8 @@ public class Controller extends Channel {
      * @param roomPort int
      */
     public synchronized void useRoom(int roomPort) {
-        if (!channels.keySet().contains(roomPort)) {
+        if (!channels.keySet().contains(roomPort) && roomPort != Controller.CONTROL_PORT) {
+            System.out.println(channels.keySet());
             Forwarder fwd = new Forwarder(roomPort);
             channels.put(roomPort, fwd);
             fwd.send(new PollPresence());
@@ -177,6 +162,7 @@ public class Controller extends Channel {
             Room r = (Room) c;
             r.setStatus(Status.Offline);
         }
+        c.shutdown();
     }
 
     /**

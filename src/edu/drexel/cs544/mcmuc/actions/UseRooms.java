@@ -48,8 +48,10 @@ public class UseRooms extends RoomAction {
     public void process(Channel channel) {
         class Runner implements Runnable {
             UseRooms message;
+            Channel channel;
 
-            Runner(UseRooms m) {
+            Runner(UseRooms m, Channel c) {
+                channel = c;
                 message = m;
             }
 
@@ -58,9 +60,10 @@ public class UseRooms extends RoomAction {
                 for (int room : message.getRooms()) {
                     controller.useRoom(room);
                 }
+                channel.send(message);
             }
         }
-        Thread t = new Thread(new Runner(this));
+        Thread t = new Thread(new Runner(this, channel));
         t.start();
     }
 }

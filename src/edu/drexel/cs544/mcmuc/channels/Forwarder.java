@@ -2,7 +2,7 @@ package edu.drexel.cs544.mcmuc.channels;
 
 import org.json.JSONObject;
 
-import edu.drexel.cs544.mcmuc.util.MulticastReceiveRunnable;
+import edu.drexel.cs544.mcmuc.util.PrimaryTimer;
 
 /**
  * Forwarder is a channel for the client simply forwards messages to other clients on
@@ -10,7 +10,7 @@ import edu.drexel.cs544.mcmuc.util.MulticastReceiveRunnable;
  */
 public class Forwarder extends Channel {
 
-    private MulticastReceiveRunnable runner;
+    private PrimaryTimer primary;
 
     /**
      * Creates a channel on the given port and starts the multicast thread for the room
@@ -19,9 +19,9 @@ public class Forwarder extends Channel {
      */
     Forwarder(int port) {
         super(port);
-        runner = new MulticastReceiveRunnable(this);
-        Thread runnerThread = new Thread(runner);
-        runnerThread.start();
+        Controller.getInstance().alert("Starting Forwarder [" + this.getPort() + "]" + " (" + Thread.currentThread().getId() + ")");
+        primary = new PrimaryTimer(port);
+        resetPrimaryTimer();
     }
 
     /**
@@ -29,13 +29,17 @@ public class Forwarder extends Channel {
      */
     @Override
     public void handleNewMessage(JSONObject jo) {
+        Controller.getInstance().alert("Got [" + this.getPort() + "]" + " (" + Thread.currentThread().getId() + ")");
+        Controller.getInstance().alert(jo.toString());
+        this.resetPrimaryTimer();
         this.send(jo);
     }
 
     /**
-     * Stop the multicast thread
+     * If the primary timer is already running, stop it. Then, set the timer for a
+     * random interval between 5 to 10 minutes.
      */
-    public void shutdown() {
-        runner.stop();
+    public void resetPrimaryTimer() {
+        primary.reset();
     }
 }

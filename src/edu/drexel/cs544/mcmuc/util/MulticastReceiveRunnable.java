@@ -35,6 +35,7 @@ public class MulticastReceiveRunnable implements Runnable {
      */
     public void stop() {
         this.done = true;
+        System.out.println("Shutting down thread!");
     }
 
     /**
@@ -64,5 +65,6 @@ public class MulticastReceiveRunnable implements Runnable {
                 // Duplicate message
             }
         }
+        System.out.println("Thread has been shut down!");
     }
 }

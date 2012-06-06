@@ -17,7 +17,6 @@ import edu.drexel.cs544.mcmuc.actions.PollPresence;
 import edu.drexel.cs544.mcmuc.actions.Presence;
 import edu.drexel.cs544.mcmuc.actions.Presence.Status;
 import edu.drexel.cs544.mcmuc.util.Certificate;
-import edu.drexel.cs544.mcmuc.util.MulticastReceiveRunnable;
 
 /**
  * A Room is a Channel tied to a specific port that users can exchange message actions on.
@@ -136,9 +135,6 @@ public class Room extends Channel {
         this.name = name;
         this.userName = userName;
         this.keyPairs = new HashMap<Certificate, Certificate>();
-        MulticastReceiveRunnable runner = new MulticastReceiveRunnable(this);
-        Thread runnerThread = new Thread(runner);
-        runnerThread.start();
 
         // Send the necessary initial messages
         setStatus(Status.Online);

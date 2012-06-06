@@ -6,26 +6,29 @@ import edu.drexel.cs544.mcmuc.channels.Controller;
  * SecondaryTimer implements the following part of the protocol channel timeout algorithm:
  * Any client that see the 'timeout' action stops its own timer.
  * If any client responds to the 'timeout' poll before a timeout period of 60 seconds,
- * all clients keep port N open and reset their timers. If no clients respond, all 
+ * all clients keep port N open and reset their timers. If no clients respond, all
  * clients shut down on port N.
  */
 public class SecondaryTimer implements Runnable {
 
     int port;
-    
-	/**
-	 * The secondary timer is tied to a specific channel's port
-	 * @param port in the port to apply the timeout algorithm to
-	 */
+
+    /**
+     * The secondary timer is tied to a specific channel's port
+     * 
+     * @param port in the port to apply the timeout algorithm to
+     */
     public SecondaryTimer(int port) {
+        Controller.getInstance().alert("Secondary Timer created [" + port + "]" + " (" + Thread.currentThread().getId() + ")");
         this.port = port;
     }
 
     /**
-     * If the secondary timer for a room expires, no client on the network is actively using it, 
+     * If the secondary timer for a room expires, no client on the network is actively using it,
      * so leave the room (freeing allocated resources)
      */
     public void run() {
-    	Controller.getInstance().leaveRoom(port);
+        Controller.getInstance().alert("Secondary Timer has ended [" + port + "]" + " (" + Thread.currentThread().getId() + ")");
+        Controller.getInstance().leaveRoom(port);
     }
 }

@@ -74,7 +74,7 @@ public class Message extends Action implements JSON {
         if (key != null) {
             this.key = key;
             this.hasKey = true;
-            encryptBody(key);            
+            encryptBody(key);
         } else
             this.hasKey = false;
     }
@@ -122,80 +122,80 @@ public class Message extends Action implements JSON {
     public Message(String from, String body, String to, Certificate key) {
         init(from, body, to, key);
     }
-    
+
     /**
      * Decrypts the body of the message, using the provided private key certificate of the user
      * that received the message. Only X.509 certificates using RSA privates keys are currently supported.
+     * 
      * @param Private Certificate for the receiver of the message.
      */
-    public void decryptBody(Certificate PrivateKey)
-    {
-    	InputStream inStream = new ByteArrayInputStream(PrivateKey.getCertificate());
-    	try {
-			byte[] keyBytes = new byte[inStream.available()];
-			inStream.read(keyBytes);
-			
-			PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(keyBytes);
+    public void decryptBody(Certificate PrivateKey) {
+        InputStream inStream = new ByteArrayInputStream(PrivateKey.getCertificate());
+        try {
+            byte[] keyBytes = new byte[inStream.available()];
+            inStream.read(keyBytes);
+
+            PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(keyBytes);
             KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-            PrivateKey key = (RSAPrivateKey)keyFactory.generatePrivate(keySpec);
-            
+            PrivateKey key = (RSAPrivateKey) keyFactory.generatePrivate(keySpec);
+
             Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
             cipher.init(Cipher.DECRYPT_MODE, key);
-            
-            byte[] textBytes = cipher.doFinal(Certificate.stringToBytes(body)); 
+
+            byte[] textBytes = cipher.doFinal(Certificate.stringToBytes(body));
             this.body = new String(textBytes);
-            
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-		} catch (InvalidKeySpecException e) {
-			e.printStackTrace();
-		} catch (InvalidKeyException e) {
-			e.printStackTrace();
-		} catch (NoSuchPaddingException e) {
-			e.printStackTrace();
-		} catch (IllegalBlockSizeException e) {
-			e.printStackTrace();
-		} catch (BadPaddingException e) {
-			e.printStackTrace();
-		}
-    	
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (InvalidKeySpecException e) {
+            e.printStackTrace();
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        } catch (NoSuchPaddingException e) {
+            e.printStackTrace();
+        } catch (IllegalBlockSizeException e) {
+            e.printStackTrace();
+        } catch (BadPaddingException e) {
+            e.printStackTrace();
+        }
+
     }
-    
+
     /**
      * Encrypts the body of the message, using the provided public key certificate of the intended
      * recipient. Only X.509 certificates using RSA public keys are currently supported.
+     * 
      * @param PublicKey Certificate for the message receipent's public key
      */
-    public void encryptBody(Certificate PublicKey)
-    {
-    	InputStream inStream = new ByteArrayInputStream(PublicKey.getCertificate());
+    public void encryptBody(Certificate PublicKey) {
+        InputStream inStream = new ByteArrayInputStream(PublicKey.getCertificate());
         CertificateFactory cf;
-		try {
-			cf = CertificateFactory.getInstance("X.509");
-			X509Certificate cert = (X509Certificate)cf.generateCertificate(inStream);
-			RSAPublicKey key = (RSAPublicKey)cert.getPublicKey();
-			
+        try {
+            cf = CertificateFactory.getInstance("X.509");
+            X509Certificate cert = (X509Certificate) cf.generateCertificate(inStream);
+            RSAPublicKey key = (RSAPublicKey) cert.getPublicKey();
+
             Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
             cipher.init(Cipher.ENCRYPT_MODE, key);
-            
+
             byte[] cipherText = cipher.doFinal(this.body.getBytes());
             this.body = Certificate.bytesToString(cipherText);
-            
-		} catch (CertificateException e) {
-			e.printStackTrace();
-		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-		} catch (NoSuchPaddingException e) {
-			e.printStackTrace();
-		} catch (InvalidKeyException e) {
-			e.printStackTrace();
-		} catch (IllegalBlockSizeException e) {
-			e.printStackTrace();
-		} catch (BadPaddingException e) {
-			e.printStackTrace();
-		} 
+
+        } catch (CertificateException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (NoSuchPaddingException e) {
+            e.printStackTrace();
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        } catch (IllegalBlockSizeException e) {
+            e.printStackTrace();
+        } catch (BadPaddingException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -318,12 +318,11 @@ public class Message extends Action implements JSON {
             }
 
             public void run() {
-                channel.resetPrimaryTimer();
-                if(message.hasKey()){
-                	Room r = (Room)channel;
-                	Certificate privateKey = r.getKeyPairs().get(message.getKey());
-                	if(privateKey != null)
-                		message.decryptBody(privateKey);
+                if (message.hasKey()) {
+                    Room r = (Room) channel;
+                    Certificate privateKey = r.getKeyPairs().get(message.getKey());
+                    if (privateKey != null)
+                        message.decryptBody(privateKey);
                 }
                 if (message.hasTo()) {
                     Room r = (Room) channel;

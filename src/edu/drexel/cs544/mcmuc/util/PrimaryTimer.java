@@ -1,6 +1,10 @@
 package edu.drexel.cs544.mcmuc.util;
 
 import java.util.Arrays;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 import edu.drexel.cs544.mcmuc.actions.Timeout;
 import edu.drexel.cs544.mcmuc.channels.Controller;
@@ -16,6 +20,14 @@ import edu.drexel.cs544.mcmuc.channels.Controller;
 public class PrimaryTimer implements Runnable {
 
     int port;
+    private static int maxDelay = 60;
+    private static int minDelay = 30;
+
+    private SecondaryTimer secondary;
+
+    private static int secondDelay = 60;
+    private ScheduledFuture<?> handler;
+    private ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
 
     /**
      * The primary timer is tied to a specific channel's port
@@ -31,11 +43,38 @@ public class PrimaryTimer implements Runnable {
      * send a Timeout action on the control channel for the room.
      */
     public void run() {
+        Controller.getInstance().alert("Primary Timer has ended [" + port + "]" + " (" + Thread.currentThread().getId() + ")");
         Controller controller = Controller.getInstance();
+        Timeout timeout = new Timeout(Arrays.asList(port));
+        controller.send(timeout);
+        startSecondaryTimer();
+        while (!Thread.currentThread().isInterrupted()) {
 
-        if (!controller.channels.keySet().contains(port)) {
-            Timeout timeout = new Timeout(Arrays.asList(port));
-            controller.send(timeout);
         }
+        Controller.getInstance().alert("Primary Timer thread has been interrupted [" + port + "]" + " (" + Thread.currentThread().getId() + ")");
+        return;
+    }
+
+    public void reset() {
+        Controller.getInstance().alert("Resetting Primary Timer [" + this.port + "]" + " (" + Thread.currentThread().getId() + ")");
+        int delay = minDelay + (int) (Math.random() * ((maxDelay - minDelay) + 1));
+        Controller.getInstance().alert("Primary Timer delay is: " + delay + " [" + this.port + "]" + " (" + Thread.currentThread().getId() + ")");
+        if (handler != null) {
+            handler.cancel(true);
+        }
+        handler = scheduler.schedule(this, delay, TimeUnit.SECONDS);
+    }
+
+    /**
+     * If the secondary timer is already running, stop it. Then, set the timer for
+     * 60 seconds.
+     */
+    public void startSecondaryTimer() {
+        secondary = new SecondaryTimer(this.port);
+        Controller.getInstance().alert("Starting Secondary Timer [" + this.port + "]" + " (" + Thread.currentThread().getId() + ")");
+        if (handler != null) {
+            handler.cancel(true);
+        }
+        handler = scheduler.schedule(secondary, secondDelay, TimeUnit.SECONDS);
     }
 }

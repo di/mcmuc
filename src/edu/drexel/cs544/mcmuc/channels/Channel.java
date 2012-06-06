@@ -1,17 +1,12 @@
 package edu.drexel.cs544.mcmuc.channels;
 
 import java.net.DatagramPacket;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
 
 import org.json.JSONObject;
 
 import edu.drexel.cs544.mcmuc.actions.Action;
 import edu.drexel.cs544.mcmuc.util.MulticastChannel;
-import edu.drexel.cs544.mcmuc.util.PrimaryTimer;
-import edu.drexel.cs544.mcmuc.util.SecondaryTimer;
+import edu.drexel.cs544.mcmuc.util.MulticastReceiveRunnable;
 
 /**
  * A channel is a dynamic port that is actively being used for chat by one or more
@@ -29,18 +24,7 @@ import edu.drexel.cs544.mcmuc.util.SecondaryTimer;
 public abstract class Channel {
 
     private MulticastChannel mcc;
-
-    private PrimaryTimer primary;
-    private SecondaryTimer secondary;
-
-    private ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
-
-    private ScheduledFuture<?> primaryHandler;
-    private ScheduledFuture<?> secondaryHandler;
-
-    private static int maxDelay = 600;
-    private static int minDelay = 300;
-    private static int secondDelay = 60;
+    private MulticastReceiveRunnable runner;
 
     /**
      * Create a new multicast channel on a given port. If this not the control port, start
@@ -50,11 +34,9 @@ public abstract class Channel {
      */
     Channel(int port) {
         mcc = new MulticastChannel(port);
-        if (port != Controller.CONTROL_PORT) {
-            primary = new PrimaryTimer(port);
-            secondary = new SecondaryTimer(port);
-            resetPrimaryTimer();
-        }
+        runner = new MulticastReceiveRunnable(this);
+        Thread runnerThread = new Thread(runner);
+        runnerThread.start();
     }
 
     /**
@@ -109,34 +91,10 @@ public abstract class Channel {
     }
 
     /**
-     * If the primary timer is already running, stop it. Then, set the timer for a
-     * random interval between 5 to 10 minutes.
+     * Stop the multicast thread
      */
-    public void resetPrimaryTimer() {
-        if (getPort() != Controller.CONTROL_PORT) {
-            int delay = minDelay + (int) (Math.random() * ((maxDelay - minDelay) + 1));
-            stopPrimaryTimer();
-            primaryHandler = scheduler.schedule(primary, delay, TimeUnit.SECONDS);
-        }
-    }
-
-    /**
-     * Stop primary timer
-     */
-    public void stopPrimaryTimer() {
-        if (primaryHandler != null)
-            primaryHandler.cancel(true);
-    }
-
-    /**
-     * If the secondary timer is already running, stop it. Then, set the timer for
-     * 60 seconds.
-     */
-    public void startSecondaryTimer() {
-        if (getPort() != Controller.CONTROL_PORT) {
-            if (secondaryHandler != null)
-                secondaryHandler.cancel(true);
-            secondaryHandler = scheduler.schedule(secondary, secondDelay, TimeUnit.SECONDS);
-        }
+    public void shutdown() {
+        Controller.getInstance().alert("Shutting down Channel [" + this.getPort() + "]");
+        runner.stop();
     }
 }
