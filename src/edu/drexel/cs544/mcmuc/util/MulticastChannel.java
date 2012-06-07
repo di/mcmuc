@@ -95,14 +95,18 @@ public class MulticastChannel {
      * for processing
      * 
      * @param dp DatagramPacket received
+     * @throws IOException
      * @see MulticastSocket
      */
-    public void receive(DatagramPacket dp) {
-        try {
-            multicastSocket.receive(dp);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void receive(DatagramPacket dp) throws IOException {
+    	multicastSocket.receive(dp);
+    }
+    
+    /**
+     * Closes the multicast socket
+     */
+    public void close(){
+    	multicastSocket.close();
     }
 
     /**

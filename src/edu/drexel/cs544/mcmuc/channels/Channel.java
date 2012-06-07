@@ -1,7 +1,7 @@
 package edu.drexel.cs544.mcmuc.channels;
 
+import java.io.IOException;
 import java.net.DatagramPacket;
-
 import org.json.JSONObject;
 
 import edu.drexel.cs544.mcmuc.actions.Action;
@@ -75,10 +75,18 @@ public abstract class Channel {
      * Passes the datagram packet to the multicast channel for receival
      * 
      * @param dp a datagram packet
+     * @throws IOException 
      * @see MulticastChannel
      */
-    public void receive(DatagramPacket dp) {
+    public void receive(DatagramPacket dp) throws IOException {
         mcc.receive(dp);
+    }
+    
+    /**
+     * Close the multicast channel
+     */
+    public void close(){
+    	mcc.close();
     }
 
     /**
