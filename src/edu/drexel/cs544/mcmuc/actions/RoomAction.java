@@ -8,8 +8,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import edu.drexel.cs544.mcmuc.Channel;
-import edu.drexel.cs544.mcmuc.JSON;
+import edu.drexel.cs544.mcmuc.channels.Channel;
+import edu.drexel.cs544.mcmuc.util.JSON;
 
 /**
  * RoomAction is the common parent class to the room management message types:
@@ -115,6 +115,10 @@ public abstract class RoomAction extends Action implements JSON {
         return json;
     }
 
+    /**
+     * Method responsible for processing of actions received on the given channel - implementation
+     * is left to child classes.
+     */
     @Override
     public abstract void process(Channel channel);
 

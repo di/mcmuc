@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.json.JSONObject;
 
-import edu.drexel.cs544.mcmuc.Channel;
-import edu.drexel.cs544.mcmuc.Controller;
+import edu.drexel.cs544.mcmuc.channels.Channel;
+import edu.drexel.cs544.mcmuc.channels.Controller;
 
 /**
  * The use-rooms action is used to reply to a list-rooms action. Clients will either
@@ -22,6 +22,7 @@ public class UseRooms extends RoomAction {
     /**
      * The use-rooms action must carry a list of rooms that receiving clients should
      * begin or continue forwarding traffic for.
+     * 
      * @param rooms List<Integer> the list of the rooms
      */
     public UseRooms(List<Integer> rooms) {
@@ -30,18 +31,27 @@ public class UseRooms extends RoomAction {
 
     /**
      * Deserializes JSON into a UseRooms object
+     * 
      * @param json the JSON to deserialize
      */
     public UseRooms(JSONObject json) {
         super(json, UseRooms.action);
     }
 
+    /**
+     * Upon receiving a UseRooms action, iterate through the list of rooms, and pass the port
+     * to Controller to reserve resources for the room.
+     * 
+     * @see Controller
+     */
     @Override
     public void process(Channel channel) {
         class Runner implements Runnable {
             UseRooms message;
+            Channel channel;
 
-            Runner(UseRooms m) {
+            Runner(UseRooms m, Channel c) {
+                channel = c;
                 message = m;
             }
 
@@ -50,9 +60,10 @@ public class UseRooms extends RoomAction {
                 for (int room : message.getRooms()) {
                     controller.useRoom(room);
                 }
+                channel.send(message);
             }
         }
-        Thread t = new Thread(new Runner(this));
+        Thread t = new Thread(new Runner(this, channel));
         t.start();
     }
 }

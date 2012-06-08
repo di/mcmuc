@@ -6,8 +6,8 @@ import java.util.Set;
 
 import org.json.JSONObject;
 
-import edu.drexel.cs544.mcmuc.Channel;
-import edu.drexel.cs544.mcmuc.Controller;
+import edu.drexel.cs544.mcmuc.channels.Channel;
+import edu.drexel.cs544.mcmuc.channels.Controller;
 
 /**
  * The list-rooms action is used by clients to update channel use information.
@@ -23,6 +23,11 @@ public class ListRooms extends RoomAction {
 
     public static final String action = "list-rooms";
 
+    /**
+     * Allows ListRooms to be created with a list of rooms to query about
+     * 
+     * @param rooms List<Integer> set of rooms to query about
+     */
     public ListRooms(List<Integer> rooms) {
         super(rooms, ListRooms.action);
     }
@@ -37,12 +42,19 @@ public class ListRooms extends RoomAction {
 
     /**
      * Deserializes JSON into a ListRooms object
+     * 
      * @param json the JSON to deserialize
      */
     public ListRooms(JSONObject json) {
         super(json, ListRooms.action);
     }
 
+    /**
+     * On receiving a ListRooms action, each client must reply with a UseRooms action
+     * containing the intersection of its ports in use and the ports contained in the
+     * ListRooms query - if there are no ports in the query, the clients responds with
+     * the complete set of its ports in use
+     */
     @Override
     public void process(Channel channel) {
         class Runner implements Runnable {
@@ -53,8 +65,11 @@ public class ListRooms extends RoomAction {
             }
 
             public void run() {
-            	Set<Integer> roomsInUse = Controller.getInstance().portsInUse;
-                roomsInUse.retainAll(message.getRooms());
+                Set<Integer> roomsInUse = Controller.getInstance().channels.keySet();
+
+                if (message.getRooms() != null)
+                    roomsInUse.retainAll(message.getRooms());
+
                 if (!roomsInUse.isEmpty()) {
                     UseRooms useReply = new UseRooms(new ArrayList<Integer>(roomsInUse));
                     Controller.getInstance().send(useReply);

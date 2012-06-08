@@ -1,12 +1,33 @@
 package edu.drexel.cs544.mcmuc.actions;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.security.InvalidKeyException;
+import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
+import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.PKCS8EncodedKeySpec;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import edu.drexel.cs544.mcmuc.Certificate;
-import edu.drexel.cs544.mcmuc.Channel;
-import edu.drexel.cs544.mcmuc.Controller;
-import edu.drexel.cs544.mcmuc.JSON;
+import edu.drexel.cs544.mcmuc.channels.Channel;
+import edu.drexel.cs544.mcmuc.channels.Controller;
+import edu.drexel.cs544.mcmuc.channels.Room;
+import edu.drexel.cs544.mcmuc.util.Certificate;
+import edu.drexel.cs544.mcmuc.util.JSON;
 
 /**
  * A chat room message action must carry a "from" field, which is a nickname that identifies
@@ -50,10 +71,10 @@ public class Message extends Action implements JSON {
             this.hasTo = true;
         } else
             this.hasTo = false;
-
         if (key != null) {
             this.key = key;
             this.hasKey = true;
+            encryptBody(key);
         } else
             this.hasKey = false;
     }
@@ -100,6 +121,81 @@ public class Message extends Action implements JSON {
      */
     public Message(String from, String body, String to, Certificate key) {
         init(from, body, to, key);
+    }
+
+    /**
+     * Decrypts the body of the message, using the provided private key certificate of the user
+     * that received the message. Only X.509 certificates using RSA privates keys are currently supported.
+     * 
+     * @param Private Certificate for the receiver of the message.
+     */
+    public void decryptBody(Certificate PrivateKey) {
+        InputStream inStream = new ByteArrayInputStream(PrivateKey.getCertificate());
+        try {
+            byte[] keyBytes = new byte[inStream.available()];
+            inStream.read(keyBytes);
+
+            PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(keyBytes);
+            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+            PrivateKey key = (RSAPrivateKey) keyFactory.generatePrivate(keySpec);
+
+            Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
+            cipher.init(Cipher.DECRYPT_MODE, key);
+
+            byte[] textBytes = cipher.doFinal(Certificate.stringToBytes(body));
+            this.body = new String(textBytes);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (InvalidKeySpecException e) {
+            e.printStackTrace();
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        } catch (NoSuchPaddingException e) {
+            e.printStackTrace();
+        } catch (IllegalBlockSizeException e) {
+            e.printStackTrace();
+        } catch (BadPaddingException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    /**
+     * Encrypts the body of the message, using the provided public key certificate of the intended
+     * recipient. Only X.509 certificates using RSA public keys are currently supported.
+     * 
+     * @param PublicKey Certificate for the message receipent's public key
+     */
+    public void encryptBody(Certificate PublicKey) {
+        InputStream inStream = new ByteArrayInputStream(PublicKey.getCertificate());
+        CertificateFactory cf;
+        try {
+            cf = CertificateFactory.getInstance("X.509");
+            X509Certificate cert = (X509Certificate) cf.generateCertificate(inStream);
+            RSAPublicKey key = (RSAPublicKey) cert.getPublicKey();
+
+            Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
+            cipher.init(Cipher.ENCRYPT_MODE, key);
+
+            byte[] cipherText = cipher.doFinal(this.body.getBytes());
+            this.body = Certificate.bytesToString(cipherText);
+
+        } catch (CertificateException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (NoSuchPaddingException e) {
+            e.printStackTrace();
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        } catch (IllegalBlockSizeException e) {
+            e.printStackTrace();
+        } catch (BadPaddingException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -208,6 +304,9 @@ public class Message extends Action implements JSON {
         return json;
     }
 
+    /**
+     * Display the message to the user and forward it on the channel
+     */
     public void process(Channel channel) {
         class Runner implements Runnable {
             Message message;
@@ -219,7 +318,18 @@ public class Message extends Action implements JSON {
             }
 
             public void run() {
-                Controller.getInstance().display("Got:\n" + message.getFrom() + ": " + message.getBody() + " (" + message.getUID() + ")");
+                if (message.hasKey()) {
+                    Room r = (Room) channel;
+                    Certificate privateKey = r.getKeyPairs().get(message.getKey());
+                    if (privateKey != null)
+                        message.decryptBody(privateKey);
+                }
+                if (message.hasTo()) {
+                    Room r = (Room) channel;
+                    if (r.getUserName().equals(message.getTo()))
+                        Controller.getInstance().output(message.getFrom() + "@" + ((Room) channel).getName() + " (private): " + message.getBody() + " (" + message.getUID() + ")");
+                } else
+                    Controller.getInstance().output(message.getFrom() + "@" + ((Room) channel).getName() + ": " + message.getBody() + " (" + message.getUID() + ")");
                 channel.send(message);
             }
         }

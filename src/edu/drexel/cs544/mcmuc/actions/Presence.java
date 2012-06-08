@@ -8,10 +8,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import edu.drexel.cs544.mcmuc.Certificate;
-import edu.drexel.cs544.mcmuc.Channel;
-import edu.drexel.cs544.mcmuc.Controller;
-import edu.drexel.cs544.mcmuc.JSON;
+import edu.drexel.cs544.mcmuc.channels.Channel;
+import edu.drexel.cs544.mcmuc.channels.Controller;
+import edu.drexel.cs544.mcmuc.channels.Room;
+import edu.drexel.cs544.mcmuc.util.Certificate;
+import edu.drexel.cs544.mcmuc.util.JSON;
 
 /**
  * Presence is used by each client to respond to a broadcast PollPresence.
@@ -21,14 +22,16 @@ import edu.drexel.cs544.mcmuc.JSON;
  * {'action':'presence','from':'<from>','status':'<status>','keys':[<keys>]} if they are.
  */
 public class Presence extends Action implements JSON {
-	public static final String action = "presence";
-	
+    public static final String action = "presence";
+
     private String from;
     private Status status;
     private List<Certificate> keys;
 
-    public enum Status { Online, Offline }
-    
+    public enum Status {
+        Online, Offline
+    }
+
     /**
      * Initializes the from, status, and keys attributes of the Presence class. Status must be either:
      * 'online' or 'offline'
@@ -108,14 +111,14 @@ public class Presence extends Action implements JSON {
 
         try {
             this.from = json.getString("from");
-            
+
             String rawStatus = json.getString("status");
-            if(rawStatus.equalsIgnoreCase("online"))
-            	this.status = Status.Online;
-            else if(rawStatus.equalsIgnoreCase("online"))
-            	this.status = Status.Offline;
+            if (rawStatus.equalsIgnoreCase("online"))
+                this.status = Status.Online;
+            else if (rawStatus.equalsIgnoreCase("offline"))
+                this.status = Status.Offline;
             else
-            	throw new Exception("Unsupported status");
+                throw new Exception("Unsupported status");
 
             if (json.has("keys")) {
                 JSONArray keys = json.getJSONArray("keys");
@@ -128,11 +131,9 @@ public class Presence extends Action implements JSON {
                     }
                 }
             }
-
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
     }
 
     /**
@@ -148,12 +149,12 @@ public class Presence extends Action implements JSON {
             json.put("action", Presence.action);
             json.put("uid", uid);
             json.put("from", from);
-            
-            if(status == Status.Offline)
-            	json.put("status", "offline");
-            else if(status == Status.Online)
-            	json.put("status","online");
-            
+
+            if (status == Status.Offline)
+                json.put("status", "offline");
+            else if (status == Status.Online)
+                json.put("status", "online");
+
             if (keys != null) {
                 Iterator<Certificate> itr = keys.iterator();
                 while (itr.hasNext()) {
@@ -161,14 +162,16 @@ public class Presence extends Action implements JSON {
                 }
                 json.put("keys", list);
             }
-
         } catch (JSONException e) {
-
+            e.printStackTrace();
         }
-
         return json;
     }
 
+    /**
+     * Upon receiving a Presence from another client, display it to the user. If any keys are
+     * included, also display those to the user, then forward it on the channel.
+     */
     @Override
     public void process(Channel channel) {
         class Runner implements Runnable {
@@ -181,27 +184,24 @@ public class Presence extends Action implements JSON {
             }
 
             public void run() {
-            	if(message.getStatus() == Status.Online)
-            		Controller.getInstance().display(message.getFrom() + " is online " + " (" + message.getUID() + ")");
-            	else if (message.getStatus() == Status.Offline)
-            		Controller.getInstance().display(message.getFrom() + " is offline " + " (" + message.getUID() + ")");
-            	
-            	List<Certificate> keys = message.getKeys();
-                if(keys != null)
-                {
-                	Iterator<Certificate> it = keys.iterator();
-                	while(it.hasNext())
-                	{
-                		Certificate c = it.next();
-                		Controller.getInstance().display("Advertised " + c.getFormat() + " public-key cert from " + message.getFrom() + ":\n\t" + c.getCertificate());
-                	}
+                if (message.getStatus() == Status.Online)
+                    Controller.getInstance().alert(message.getFrom() + "@" + ((Room) channel).getName() + " is online " + " (" + message.getUID() + ")");
+                else if (message.getStatus() == Status.Offline)
+                    Controller.getInstance().alert(message.getFrom() + "@" + ((Room) channel).getName() + " is offline " + " (" + message.getUID() + ")");
+
+                List<Certificate> keys = message.getKeys();
+                if (keys != null) {
+                    Iterator<Certificate> it = keys.iterator();
+                    while (it.hasNext()) {
+                        Certificate c = it.next();
+                        Controller.getInstance().output("Advertised " + c.getFormat() + " public-key cert from " + message.getFrom() + ":\n\t" + c.getCertificate());
+                    }
                 }
+
                 channel.send(message);
             }
         }
         Thread t = new Thread(new Runner(this, channel));
         t.start();
-
     }
-
 }

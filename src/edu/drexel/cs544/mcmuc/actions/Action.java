@@ -2,7 +2,7 @@ package edu.drexel.cs544.mcmuc.actions;
 
 import org.json.JSONObject;
 
-import edu.drexel.cs544.mcmuc.Channel;
+import edu.drexel.cs544.mcmuc.channels.Channel;
 
 /**
  * Action extends ActionBase and is the direct parent class for the various action types.
