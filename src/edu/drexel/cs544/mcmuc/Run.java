@@ -51,6 +51,7 @@ public class Run {
                 CLICommand command = cli.getNextCommand();
                 if (command.getCommand() == CLICommand.Command.EXIT) { // Stop and kill this program
                     System.err.println("Exit command received, shutting down...");
+                    controller.shutdown();
                     System.exit(0);
                 } else if (command.getCommand() == CLICommand.Command.USEROOM) {
                     controller.useRoom(command.getArg(1), command.getArg(0));

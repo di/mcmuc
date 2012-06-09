@@ -362,6 +362,9 @@ public class Controller extends Channel {
      * Shutdown the Controller.
      */
     public void shutdown() {
+        for (Channel c : channels.values()) {
+            c.shutdown();
+        }
         super.mcc.close();
         super.runner.stop();
     }
