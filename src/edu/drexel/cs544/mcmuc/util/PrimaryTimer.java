@@ -20,8 +20,8 @@ import edu.drexel.cs544.mcmuc.channels.Controller;
 public class PrimaryTimer implements Runnable {
 
     int port;
-    private static int maxDelay = 60;
-    private static int minDelay = 30;
+    private static int maxDelay = 600;
+    private static int minDelay = 300;
 
     private SecondaryTimer secondary;
 
