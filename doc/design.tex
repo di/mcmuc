@@ -101,17 +101,12 @@ body/from fields). Thus the protocol will require unique message ID numbers;
 each client can generate a unique ID for each message it creates, and every
 other client can use this ID to determine if the message is a duplicate or not.
 This must be an attribute of every message and each client would have a history
-of message IDs seen. Clients must also store an MD5 hash of the message with the
-ID, so that IDs may eventually be reused. So the client receives
+of message IDs seen. So the client receives
 \begin{align*}
 \{\text{`uid'}:\text{`}X\text{'},\langle Y\rangle\}
 \end{align*}
 where $\langle Y\rangle$  is a collection of key/value pairs, and only forwards
-it once, but would forward 
-\begin{align*}
-\{\text{`uid'}:\text{'}X\text{'},\langle Z\rangle\}
-\end{align*}
-if $Y$ has a different hash than $Z$, and so on.
+it once.
 
 From a security perspective, one can't rely on any particular behavior (globally
 unique ids) from a client. For a sequence of packets sent by a given client, the
