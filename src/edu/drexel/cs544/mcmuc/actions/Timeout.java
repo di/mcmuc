@@ -1,9 +1,8 @@
 package edu.drexel.cs544.mcmuc.actions;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 import org.json.JSONObject;
 
@@ -59,12 +58,13 @@ public class Timeout extends RoomAction {
             }
 
             public void run() {
-                Set<Integer> roomPortsInUse = new HashSet<Integer>(Controller.getInstance().roomNames.values());
-                roomPortsInUse.retainAll(message.getRooms());
+                Collection<Integer> roomsInUse = Controller.getInstance().getRoomsInUse(message.getRooms());
 
-                if (!roomPortsInUse.isEmpty()) {
-                    Preserve reply = new Preserve(new ArrayList<Integer>(roomPortsInUse));
+                if (!roomsInUse.isEmpty()) {
+                    Preserve reply = new Preserve(new ArrayList<Integer>(roomsInUse));
                     Controller.getInstance().send(reply);
+                } else {
+                    Controller.getInstance().send(message);
                 }
             }
         }

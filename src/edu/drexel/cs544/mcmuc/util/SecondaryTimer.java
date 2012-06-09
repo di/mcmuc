@@ -19,7 +19,6 @@ public class SecondaryTimer implements Runnable {
      * @param port in the port to apply the timeout algorithm to
      */
     public SecondaryTimer(int port) {
-        Controller.getInstance().alert("Secondary Timer created [" + port + "]" + " (" + Thread.currentThread().getId() + ")");
         this.port = port;
     }
 
@@ -28,7 +27,6 @@ public class SecondaryTimer implements Runnable {
      * so leave the room (freeing allocated resources)
      */
     public void run() {
-        Controller.getInstance().alert("Secondary Timer has ended [" + port + "]" + " (" + Thread.currentThread().getId() + ")");
-        Controller.getInstance().leaveRoom(port);
+        Controller.getInstance().stopForwarder(port);
     }
 }

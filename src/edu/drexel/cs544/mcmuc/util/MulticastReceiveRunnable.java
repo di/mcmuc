@@ -36,9 +36,7 @@ public class MulticastReceiveRunnable implements Runnable {
      * Sets the done flag to true
      */
     public void stop() {
-    	channel.close();
         this.done = true;
-        System.out.println("Shutting down thread!");
     }
 
     /**
@@ -50,33 +48,32 @@ public class MulticastReceiveRunnable implements Runnable {
     public void run() {
         this.done = false;
         while (!this.done) {
-        	byte[] buf = new byte[65507];
-			DatagramPacket dp = new DatagramPacket(buf, buf.length);
+            byte[] buf = new byte[65507];
+            DatagramPacket dp = new DatagramPacket(buf, buf.length);
 
-			try{
-				channel.receive(dp);
-			} catch(SocketException e) {
-				break;
-			} catch (IOException e) {
-				e.printStackTrace();
-				break;
-			}
+            try {
+                channel.receive(dp);
+            } catch (SocketException e) {
+                break;
+            } catch (IOException e) {
+                e.printStackTrace();
+                break;
+            }
 
-			String s = new String(dp.getData(), 0, dp.getLength());
-			JSONObject jo = null;
-			try {
-			    jo = new JSONObject(s);
-			} catch (JSONException e) {
-			    System.err.println("Got bad JSON data. Contents:\n" + s);
-			    e.printStackTrace();
-			}
+            String s = new String(dp.getData(), 0, dp.getLength());
+            JSONObject jo = null;
+            try {
+                jo = new JSONObject(s);
+            } catch (JSONException e) {
+                System.err.println("Got bad JSON data. Contents:\n" + s);
+                e.printStackTrace();
+            }
 
-			if (DuplicateDetector.getInstance().add(jo)) {
-			    channel.handleNewMessage(jo);
-			} else {
-			    // Duplicate message
-			}
+            if (DuplicateDetector.getInstance().add(jo)) {
+                channel.handleNewMessage(jo);
+            } else {
+                // Duplicate message
+            }
         }
-        System.out.println("Thread has been shut down!");
     }
 }

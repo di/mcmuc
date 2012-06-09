@@ -1,8 +1,8 @@
 package edu.drexel.cs544.mcmuc.actions;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 import org.json.JSONObject;
 
@@ -65,10 +65,7 @@ public class ListRooms extends RoomAction {
             }
 
             public void run() {
-                Set<Integer> roomsInUse = Controller.getInstance().channels.keySet();
-
-                if (message.getRooms() != null)
-                    roomsInUse.retainAll(message.getRooms());
+                Collection<Integer> roomsInUse = Controller.getInstance().getChannelsInUse(message.getRooms());
 
                 if (!roomsInUse.isEmpty()) {
                     UseRooms useReply = new UseRooms(new ArrayList<Integer>(roomsInUse));

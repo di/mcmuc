@@ -35,7 +35,7 @@ public class MulticastChannel {
             this.multicastSocket.joinGroup(multicastAddress);
         } catch (SocketException e) {
             System.err.println("Error: Multicast route likely does not exist. Add using (for example):\n" + "\t$ ip route add 224.0.0.0/4 dev eth0");
-            e.printStackTrace();
+            System.exit(0);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -51,7 +51,6 @@ public class MulticastChannel {
         // ActionBase a = new ActionBase(jo);
         DuplicateDetector.getInstance().add(jo);
         String msg = jo.toString();
-        // System.out.println("Sending: " + a.getUID());
         DatagramPacket dp = new DatagramPacket(msg.getBytes(), msg.length(), this.multicastAddress, this.multicastPort);
         try {
             this.multicastSocket.send(dp);
@@ -70,8 +69,6 @@ public class MulticastChannel {
     public void send(Action action) {
         DuplicateDetector.getInstance().add(action.toJSON());
         String msg = action.toJSON().toString();
-        // System.out.println("Sending: " + action.getUID());
-        // System.out.println("\tJSON: " + action.toJSON().toString());
 
         DatagramPacket dp = new DatagramPacket(msg.getBytes(), msg.length(), this.multicastAddress, this.multicastPort);
         try {
@@ -99,14 +96,14 @@ public class MulticastChannel {
      * @see MulticastSocket
      */
     public void receive(DatagramPacket dp) throws IOException {
-    	multicastSocket.receive(dp);
+        multicastSocket.receive(dp);
     }
-    
+
     /**
      * Closes the multicast socket
      */
-    public void close(){
-    	multicastSocket.close();
+    public void close() {
+        multicastSocket.close();
     }
 
     /**

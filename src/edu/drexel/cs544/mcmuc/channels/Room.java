@@ -217,4 +217,9 @@ public class Room extends Channel {
             System.err.println("Message action type not supported: " + actionString);
         }
     }
+
+    public void shutdown() {
+        super.mcc.close();
+        super.runner.stop();
+    }
 }

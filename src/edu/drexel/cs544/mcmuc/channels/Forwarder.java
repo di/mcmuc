@@ -19,7 +19,6 @@ public class Forwarder extends Channel {
      */
     Forwarder(int port) {
         super(port);
-        Controller.getInstance().alert("Starting Forwarder [" + this.getPort() + "]" + " (" + Thread.currentThread().getId() + ")");
         primary = new PrimaryTimer(port);
         resetPrimaryTimer();
     }
@@ -29,8 +28,6 @@ public class Forwarder extends Channel {
      */
     @Override
     public void handleNewMessage(JSONObject jo) {
-        Controller.getInstance().alert("Got [" + this.getPort() + "]" + " (" + Thread.currentThread().getId() + ")");
-        Controller.getInstance().alert(jo.toString());
         this.resetPrimaryTimer();
         this.send(jo);
     }
@@ -41,5 +38,11 @@ public class Forwarder extends Channel {
      */
     public void resetPrimaryTimer() {
         primary.reset();
+    }
+
+    public void shutdown() {
+        primary.cancelAll();
+        super.mcc.close();
+        super.runner.stop();
     }
 }

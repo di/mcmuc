@@ -41,7 +41,6 @@ public class Preserve extends RoomAction {
      */
     @Override
     public void process(Channel channel) {
-        Controller.getInstance().alert("Got a Preserve message");
         class Runner implements Runnable {
             Preserve message;
             Channel channel;

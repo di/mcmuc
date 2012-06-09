@@ -43,22 +43,14 @@ public class PrimaryTimer implements Runnable {
      * send a Timeout action on the control channel for the room.
      */
     public void run() {
-        Controller.getInstance().alert("Primary Timer has ended [" + port + "]" + " (" + Thread.currentThread().getId() + ")");
         Controller controller = Controller.getInstance();
         Timeout timeout = new Timeout(Arrays.asList(port));
         controller.send(timeout);
         startSecondaryTimer();
-        while (!Thread.currentThread().isInterrupted()) {
-
-        }
-        Controller.getInstance().alert("Primary Timer thread has been interrupted [" + port + "]" + " (" + Thread.currentThread().getId() + ")");
-        return;
     }
 
     public void reset() {
-        Controller.getInstance().alert("Resetting Primary Timer [" + this.port + "]" + " (" + Thread.currentThread().getId() + ")");
         int delay = minDelay + (int) (Math.random() * ((maxDelay - minDelay) + 1));
-        Controller.getInstance().alert("Primary Timer delay is: " + delay + " [" + this.port + "]" + " (" + Thread.currentThread().getId() + ")");
         if (handler != null) {
             handler.cancel(true);
         }
@@ -71,10 +63,13 @@ public class PrimaryTimer implements Runnable {
      */
     public void startSecondaryTimer() {
         secondary = new SecondaryTimer(this.port);
-        Controller.getInstance().alert("Starting Secondary Timer [" + this.port + "]" + " (" + Thread.currentThread().getId() + ")");
         if (handler != null) {
             handler.cancel(true);
         }
         handler = scheduler.schedule(secondary, secondDelay, TimeUnit.SECONDS);
+    }
+
+    public void cancelAll() {
+        handler.cancel(true);
     }
 }
