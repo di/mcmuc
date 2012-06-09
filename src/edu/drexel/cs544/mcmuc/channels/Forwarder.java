@@ -40,6 +40,9 @@ public class Forwarder extends Channel {
         primary.reset();
     }
 
+    /**
+     * Shutdown the Forwarder. Cancel all pending timers.
+     */
     public void shutdown() {
         primary.cancelAll();
         super.mcc.close();

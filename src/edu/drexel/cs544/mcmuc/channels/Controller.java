@@ -150,10 +150,26 @@ public class Controller extends Channel {
         }
     }
 
+    /**
+     * Start a forwarder on the given port
+     * 
+     * @param roomPort the port
+     */
     public void startForwarder(int roomPort) {
         Forwarder fwd = new Forwarder(roomPort);
         channels.put(roomPort, fwd);
         fwd.send(new PollPresence());
+    }
+
+    /**
+     * Shutdown the forwarder on a given port
+     * 
+     * @param port the port
+     */
+
+    public void stopForwarder(int port) {
+        Forwarder f = (Forwarder) channels.remove(port);
+        f.shutdown();
     }
 
     /**
@@ -167,11 +183,6 @@ public class Controller extends Channel {
         r.setStatus(Status.Offline);
         r.shutdown();
         startForwarder(roomPort);
-    }
-
-    public void stopForwarder(int port) {
-        Forwarder f = (Forwarder) channels.remove(port);
-        f.shutdown();
     }
 
     /**
@@ -317,6 +328,13 @@ public class Controller extends Channel {
         this.ui = ui;
     }
 
+    /**
+     * Return a list of the rooms in use. If a set of rooms is provided,
+     * only respond about those rooms. Otherwise, return all rooms in use.
+     * 
+     * @param list
+     * @return
+     */
     public Collection<Integer> getRoomsInUse(List<Integer> list) {
         Collection<Integer> roomsInUse = roomNames.values();
         if (list != null) {
@@ -325,6 +343,13 @@ public class Controller extends Channel {
         return roomsInUse;
     }
 
+    /**
+     * Return a list of the channels in use. If a set of channels is provided,
+     * only respond about those channels. Otherwise, return all channels in use.
+     * 
+     * @param list
+     * @return
+     */
     public Collection<Integer> getChannelsInUse(List<Integer> list) {
         Collection<Integer> roomsInUse = channels.keySet();
         if (list != null) {
@@ -333,6 +358,9 @@ public class Controller extends Channel {
         return roomsInUse;
     }
 
+    /**
+     * Shutdown the Controller.
+     */
     public void shutdown() {
         super.mcc.close();
         super.runner.stop();

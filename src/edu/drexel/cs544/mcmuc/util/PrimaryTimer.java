@@ -49,6 +49,9 @@ public class PrimaryTimer implements Runnable {
         startSecondaryTimer();
     }
 
+    /**
+     * Cancel pending timers, and start a new PrimaryTimer
+     */
     public void reset() {
         int delay = minDelay + (int) (Math.random() * ((maxDelay - minDelay) + 1));
         if (handler != null) {
@@ -69,6 +72,9 @@ public class PrimaryTimer implements Runnable {
         handler = scheduler.schedule(secondary, secondDelay, TimeUnit.SECONDS);
     }
 
+    /**
+     * Cancel all pending timers
+     */
     public void cancelAll() {
         handler.cancel(true);
     }

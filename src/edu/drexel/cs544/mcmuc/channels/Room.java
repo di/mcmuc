@@ -218,6 +218,9 @@ public class Room extends Channel {
         }
     }
 
+    /**
+     * Shutdown the Room.
+     */
     public void shutdown() {
         super.mcc.close();
         super.runner.stop();
