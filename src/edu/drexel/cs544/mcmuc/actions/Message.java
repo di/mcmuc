@@ -63,7 +63,7 @@ public class Message extends Action implements JSON {
      * @param to String to
      * @param key Certificate key
      */
-    private void init(String from, String body, String to, Certificate key) {
+    private void init(String from, String body, String to, Certificate key, boolean encrypt) {
         this.from = from;
         this.body = body;
         if (to != null) {
@@ -74,7 +74,8 @@ public class Message extends Action implements JSON {
         if (key != null) {
             this.key = key;
             this.hasKey = true;
-            encryptBody(key);
+            if(encrypt)
+            	encryptBody(key);
         } else
             this.hasKey = false;
     }
@@ -86,7 +87,7 @@ public class Message extends Action implements JSON {
      * @param body String body
      */
     public Message(String from, String body) {
-        init(from, body, null, null);
+        init(from, body, null, null, false);
     }
 
     /**
@@ -97,7 +98,7 @@ public class Message extends Action implements JSON {
      * @param to String to
      */
     public Message(String from, String body, String to) {
-        init(from, body, to, null);
+        init(from, body, to, null, false);
     }
 
     /**
@@ -108,7 +109,7 @@ public class Message extends Action implements JSON {
      * @param key Certificate key
      */
     public Message(String from, String body, Certificate key) {
-        init(from, body, null, key);
+        init(from, body, null, key, true);
     }
 
     /**
@@ -120,7 +121,7 @@ public class Message extends Action implements JSON {
      * @param key Certificate key
      */
     public Message(String from, String body, String to, Certificate key) {
-        init(from, body, to, key);
+        init(from, body, to, key, true);
     }
 
     /**
@@ -219,7 +220,7 @@ public class Message extends Action implements JSON {
             if (json.has("key"))
                 key = new Certificate(json.getJSONObject("key"));
 
-            init(from, body, to, key);
+            init(from, body, to, key, false);
 
         } catch (JSONException e) {
             e.printStackTrace();

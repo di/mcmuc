@@ -203,7 +203,8 @@ each new room, by specifying a new channel that clients should listen on and
 forward traffic. When a new client connects to the network, they send a message
 on the control channel announcing their existence, and its neighbors inform the
 client of the channels they know about.
-Version Negotiation
+
+\subsection{Version Negotiation}
 
 Due to the nature of Multicast IP, the protocol will indiscriminately send it's
 multicast messages to all clients on a LAN. Since any version of the protocol
@@ -215,6 +216,37 @@ which is not properly formatted or of a type described in the version it is
 using. Similarly, it shall be the responsibility of all future versions to offer
 full backwards compatibility, or fully ignore messages from incompatible
 versions.
+
+Since messages in the the protocol are JSON, a standard data excange format, new 
+attributes can added to any to message type by simply adding a new key/value pair
+to the JSON representation.
+
+For example, if a implementor of a future version of the protocol wishes to allow
+a poll-presence message to be directed to a subset of the users in a chat room, a
+'clients' key/value can be added, while still allowing previous implementations to
+continue parsing the message as they did before.
+
+\begin{align*}
+\textbf{Client A}:& \text{\{ `uid' : `X', `action' : `poll-presence', `from' :
+`dsi23' , `status' : `online' \}} \\
+\textbf{Client A}:& \text{\{ `uid' : `X', `action' : `poll-presence', `from' :
+`dsi23' , `status' : `online', `clients' : ['bb482','cek47'] \}} \\
+\end{align*}
+
+Also, because the messages are JSON, creating a new type of message is simply
+a matter of choosing a set of key/value pairs, using universal and language-idependent
+data structures.
+
+For example, if the designer of a future version of the protocol wishes to allow clients
+to exchange user icons, a new message type is simple to implement:
+
+\begin{align*}
+\textbf{Client A}:& \text{\{ `uid' : `X', `action' : `icon', `from' :
+`dsi23' , `format' : `jpeg', `width' : `50px', `height' : `50px', `image' : `...' \}} \\
+\end{align*}
+
+The implementor of the new version of the protocol simply needs to 
+retrieve the image and add any application logic.
 
 \section{Joining a MUC}
 
