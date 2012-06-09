@@ -22,7 +22,7 @@ import edu.drexel.cs544.mcmuc.actions.UseRooms;
 import edu.drexel.cs544.mcmuc.actions.Presence.Status;
 import edu.drexel.cs544.mcmuc.ui.UI;
 import edu.drexel.cs544.mcmuc.util.Certificate;
-import edu.drexel.cs544.mcmuc.util.RoomDoesNotExistError;
+import edu.drexel.cs544.mcmuc.util.RoomDoesNotExistException;
 
 /**
  * Controller represents a control channel, which is a fixed port for the sending of
@@ -190,15 +190,15 @@ public class Controller extends Channel {
      * to Offline, and remove the port from the set of Channels.
      * 
      * @param roomName String name of room to leave
-     * @throws RoomDoesNotExistError
+     * @throws RoomDoesNotExistException
      */
-    public void leaveRoom(String roomName) throws RoomDoesNotExistError {
+    public void leaveRoom(String roomName) throws RoomDoesNotExistException {
         Integer p = roomNames.remove(roomName);
         if (p != null) {
             leaveRoom(p);
             this.alert("Left room: \"" + roomName + "\"");
         } else {
-            throw new RoomDoesNotExistError(roomName);
+            throw new RoomDoesNotExistException(roomName);
         }
     }
 
@@ -253,16 +253,16 @@ public class Controller extends Channel {
      * 
      * @param roomName String name of room to set presence for
      * @param presence Presence to set
-     * @throws RoomDoesNotExistError
+     * @throws RoomDoesNotExistException
      * @see Status
      */
-    public void setRoomStatus(String roomName, Status presence) throws RoomDoesNotExistError {
+    public void setRoomStatus(String roomName, Status presence) throws RoomDoesNotExistException {
         Room room = (Room) channels.get(roomNames.get(roomName));
         if (room != null) {
             room.setStatus(presence);
             this.alert("Set presence for \"" + room.getUserName() + "@" + roomName + "\" to \"" + presence.toString().toLowerCase() + "\"");
         } else {
-            throw new RoomDoesNotExistError(roomName);
+            throw new RoomDoesNotExistException(roomName);
         }
     }
 
@@ -272,16 +272,16 @@ public class Controller extends Channel {
      * @param roomName String the room
      * @param publicKey Certificate public key
      * @param privateKey Certificate private key
-     * @throws RoomDoesNotExistError
+     * @throws RoomDoesNotExistException
      * @see Room
      */
-    public void addKeyPair(String roomName, Certificate publicKey, Certificate privateKey) throws RoomDoesNotExistError {
+    public void addKeyPair(String roomName, Certificate publicKey, Certificate privateKey) throws RoomDoesNotExistException {
         Room room = (Room) channels.get(roomNames.get(roomName));
         if (room != null) {
             room.addKeyPair(publicKey, privateKey);
             this.alert("Added key pair for \"" + room.getUserName() + "@" + roomName + "\"");
         } else {
-            throw new RoomDoesNotExistError(roomName);
+            throw new RoomDoesNotExistException(roomName);
         }
     }
 
@@ -290,15 +290,15 @@ public class Controller extends Channel {
      * 
      * @param roomName String the room
      * @param publicKey Certificate public key
-     * @throws RoomDoesNotExistError
+     * @throws RoomDoesNotExistException
      */
-    public void removeKeyPair(String roomName, Certificate publicKey) throws RoomDoesNotExistError {
+    public void removeKeyPair(String roomName, Certificate publicKey) throws RoomDoesNotExistException {
         Room room = (Room) channels.get(roomNames.get(roomName));
         if (room != null) {
             room.removeKeyPair(publicKey);
             this.alert("Removed key pair for \"" + room.getUserName() + "@" + roomName + "\"");
         } else {
-            throw new RoomDoesNotExistError(roomName);
+            throw new RoomDoesNotExistException(roomName);
         }
     }
 
@@ -307,15 +307,15 @@ public class Controller extends Channel {
      * 
      * @param roomName String name of room to send action to
      * @param message Message to send
-     * @throws RoomDoesNotExistError
+     * @throws RoomDoesNotExistException
      */
-    public void messageRoom(String roomName, Message message) throws RoomDoesNotExistError {
+    public void messageRoom(String roomName, Message message) throws RoomDoesNotExistException {
         Room room = (Room) channels.get(roomNames.get(roomName));
         if (room != null) {
             room.send(message);
             this.output(message.getFrom() + "@" + roomName + ": " + (message.hasKey() ? "*encrypted*" : message.getBody())); // To create a new command prompt
         } else {
-            throw new RoomDoesNotExistError(roomName);
+            throw new RoomDoesNotExistException(roomName);
         }
     }
 

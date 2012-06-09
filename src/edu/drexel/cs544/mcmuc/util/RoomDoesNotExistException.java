@@ -1,13 +1,13 @@
 package edu.drexel.cs544.mcmuc.util;
 
 /**
- * RoomDoesNotExistError is returned whenever a room is requested that does not exist
+ * RoomDoesNotExistException is returned whenever a room is requested that does not exist
  */
 @SuppressWarnings("serial")
-public class RoomDoesNotExistError extends Exception {
+public class RoomDoesNotExistException extends Exception {
     String roomName;
 
-    public RoomDoesNotExistError(String roomName) {
+    public RoomDoesNotExistException(String roomName) {
         this.roomName = roomName;
     }
 

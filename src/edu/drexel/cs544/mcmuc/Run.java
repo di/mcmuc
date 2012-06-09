@@ -10,7 +10,7 @@ import edu.drexel.cs544.mcmuc.channels.Controller;
 import edu.drexel.cs544.mcmuc.ui.CLI;
 import edu.drexel.cs544.mcmuc.ui.CLICommand;
 import edu.drexel.cs544.mcmuc.util.Certificate;
-import edu.drexel.cs544.mcmuc.util.RoomDoesNotExistError;
+import edu.drexel.cs544.mcmuc.util.RoomDoesNotExistException;
 
 /**
  * Run exists to exercise a simple command-line interface to the Multicast Multi-User Chat protocol.
@@ -96,7 +96,7 @@ public class Run {
                     Certificate cert = new Certificate("X.509", publicKey);
                     controller.messageRoom(command.getArg(2), new Message(controller.getUserName(command.getArg(2)), command.getArg(3), command.getArg(1), cert));
                 }
-            } catch (RoomDoesNotExistError e) {
+            } catch (RoomDoesNotExistException e) {
                 cli.alert(e.getMessage());
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
