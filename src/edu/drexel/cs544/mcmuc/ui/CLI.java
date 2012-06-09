@@ -7,7 +7,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import edu.drexel.cs544.mcmuc.channels.Controller;
 import edu.drexel.cs544.mcmuc.ui.CLICommand.Command;
 
 /**
@@ -75,9 +74,6 @@ public class CLI extends Thread implements UI {
             alert("Received an unknown command: \"" + s + "\"");
             String cmds = "Available commands:\n" + "\t message @<room-name> <message>\n" + "\t message <user-name>@<room-name> <message>\n" + "\t presence @<room-name> <status>\n" + "\t use-room <user-name>@<room-name>\n" + "\t leave-room @<room-name>\n" + "\t add-key @<room-name> public='<key-file>' private='<key-file>'\n" + "\t remove-key @<room-name> public='<key-file>'\n" + "\t message key='<public-key-file>' <user-name>@<room-name> <message>\n" + "\t exit\n";
             alert(cmds);
-            alert(Controller.getInstance().channels.toString());
-            alert(Controller.getInstance().roomNames.toString());
-
         }
     }
 
