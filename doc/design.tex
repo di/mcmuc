@@ -177,16 +177,12 @@ string\rangle  , \text{`body'} : \langle string\rangle \\
 \langle string\rangle  ] [ , \text{`key'}: \langle certificate\rangle  ]
 \end{align*}
 \section{States of a Node}
-See included diagrams for full-size DFAs of a control channel and a MUC channel.
+The following diagram has four states, and shows all messages which cause
+transitions between states. All other messages do not cause state transitions
+and thus are not shown for simplicity.
 \begin{center}
-\scalebox{.38}{
-\input{state1.tikz}
-}
-\end{center}
-
-\begin{center}
-\scalebox{.38}{
-\input{state2.tikz}
+\scalebox{.8}{
+\input{state.tikz}
 }
 \end{center}
 \section{Joining a Network}
@@ -329,6 +325,20 @@ Since the protocol uses UDP, which makes no promise of reliability, the
 reliability of the protocol is a function of the number of peers. Clients
 forward messages even for rooms they're not in and thus adding or removing peers
 from the network can alter the reliability of any given chat room.
+
+However, the IP Multicast that underlies the communication between nodes allows
+for the flooding of message to assume the delivery of message regardless of the
+topology of the network.
+
+Our protocol is also robust because it allows for as many rooms as there are
+ports on the host computer and allows the client to use a different username for
+each room.  It allows the client to have either an online or offline status in
+each room, and it allows for both encrypted and uncrypted message transmission. 
+
+We expect our implementation to be fairly robust to fuzzing, as no clients are
+granted any special security privileges. Also, the JSON parser we selected is
+widely-used and well-tested in the open source community, and thus corrupted
+data is unlikely to reach our application.  
 
 \section{Security Considerations}
 

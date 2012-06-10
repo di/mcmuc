@@ -28,3 +28,7 @@ To register the public/private keypair on the receiving end, issue the following
 Any other client may now send an encrypted message to that client with the following command:
 
 	$ message key='cakey.p8c' <user-name>@<room-name> <message>
+
+
+## Documents
+Design doc, state diagram and sample conversation are in `/docs`

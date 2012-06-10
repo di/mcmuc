@@ -1,0 +1,42 @@
+\RequirePackage{fix-cm}
+\documentclass{article}
+\usepackage{fullpage}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[noend]{algorithmic}
+\usepackage[nothing]{algorithm}
+\usepackage{tikz}
+\usepackage{latexsym}
+\usepackage{float}
+\usepackage{hyperref}
+\usetikzlibrary{arrows,automata}
+\providecommand{\e}[1]{\ensuremath{\times 10^{#1}}}
+\renewcommand{\thealgorithm}{}
+\renewcommand*{\thefootnote}{[\arabic{footnote}]}
+\usepackage[graphics,tightpage,active]{preview}
+\PreviewEnvironment{tikzpicture}
+\begin{document}
+    \begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,semithick, node
+    distance=8cm]
+      \node[state, initial, text width=2cm, align=center, accepting] (q1) at (0,0)
+        {Accepting on Control Channel};
+      \node[state, text width=2cm, align=center, above right of=q1] (q2)
+        {Room Accepting on Control Channel, Port $X$};
+      \node[state, text width=2cm, align=center, below right of=q1] (q3)
+        {Forwarder Accepting on Control Channel, Port $X$, waiting for
+        \texttt{<preserve>}};
+      \node[state, text width=2cm, align=center, above right of=q3] (q4)
+        {Forwarder Accepting on Control Channel, Port $X$};
+
+      \path
+            (q1) edge[text width=3cm, bend left] node {\texttt{<use-room $X$>} from local client} (q2)
+            (q2) edge[text width=3cm, bend left] node {\texttt{<leave-room $X$>} from local client} (q4)
+            (q4) edge[text width=3cm, bend left] node[above right] {\texttt{<use-room $X$>} from local client} (q2)
+            (q4) edge[text width=3cm, bend left] node {\texttt{<timeout $X$>}} (q3)
+            (q3) edge[text width=3cm, bend left] node[below right] {\texttt{<preserve $X$>}} (q4)
+            (q3) edge[text width=2cm, bend left] node {No preserve message received (local timeout)} (q1)
+            (q1) edge[text width=3cm] node {\texttt{<use-room $X$>} from network} (q4)
+            ;
+    \end{tikzpicture}
+\end{document}

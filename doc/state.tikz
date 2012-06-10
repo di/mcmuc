@@ -1,0 +1,22 @@
+    \begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,semithick, node
+    distance=8cm]
+      \node[state, initial, text width=2cm, align=center, accepting] (q1) at (0,0)
+        {Accepting on Control Channel};
+      \node[state, text width=2cm, align=center, above right of=q1] (q2)
+        {Room Accepting on Control Channel, Port $X$};
+      \node[state, text width=2cm, align=center, below right of=q1] (q3)
+        {Forwarder Accepting on Control Channel, Port $X$, waiting for
+        \texttt{<preserve>}};
+      \node[state, text width=2cm, align=center, above right of=q3] (q4)
+        {Forwarder Accepting on Control Channel, Port $X$};
+
+      \path
+            (q1) edge[text width=3cm, bend left] node {\texttt{<use-room $X$>} from local client} (q2)
+            (q2) edge[text width=3cm, bend left] node {\texttt{<leave-room $X$>} from local client} (q4)
+            (q4) edge[text width=3cm, bend left] node[above right] {\texttt{<use-room $X$>} from local client} (q2)
+            (q4) edge[text width=3cm, bend left] node {\texttt{<timeout $X$>}} (q3)
+            (q3) edge[text width=3cm, bend left] node[below right] {\texttt{<preserve $X$>}} (q4)
+            (q3) edge[text width=2cm, bend left] node {No \texttt{<preserve>} message received (local timeout)} (q1)
+            (q1) edge[text width=3cm] node {\texttt{<use-room $X$>} from network} (q4)
+            ;
+    \end{tikzpicture}
