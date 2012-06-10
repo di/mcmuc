@@ -22,7 +22,9 @@ Two sample public and private keys have provided to test the sending and receivi
 cacert.pem (the public key) and cakey.p8c (the private key)
 
 To register the public/private keypair on the receiving end, issue the following command:
-add-key @<room-name> public='cacert.pem' private='cakey.p8c'
+
+	$ add-key @<room-name> public='cacert.pem' private='cakey.p8c'
 
 Any other client may now send an encrypted message to that client with the following command:
-message key='cakey.p8c' <user-name>@<room-name> <message>
+
+	$ message key='cakey.p8c' <user-name>@<room-name> <message>
